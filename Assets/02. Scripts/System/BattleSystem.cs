@@ -185,37 +185,5 @@ public class BattleSystem : MonoBehaviour
             dialogBox.EnableDialogText(true);
             StartCoroutine(PerformPlayerMove());
         }
-        /*
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-           if (currentSkill < 2)
-           {
-               currentSkill = currentSkill + 2;
-           }
-        }
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-           if (currentSkill < 3)
-           {
-               ++currentSkill;
-           }
-        }
-        if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-           if (1 < currentSkill)
-           {
-               currentSkill = currentSkill - 2;
-           }
-        }
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-           if (0 < currentSkill)
-           {
-               --currentSkill;
-           }
-        }
-
-        dialogBox.UpdateSkillSelection(currentSkill, playerUnit.BattlePokemon.Skills[currentSkill]);
-        */
     }
 }

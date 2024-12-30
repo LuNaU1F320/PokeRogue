@@ -16,7 +16,7 @@ MonoBehaviour:
   pokemonDescription: 
   frontSprite: {fileID: 21300000, guid: 841a26582fcf1bd4883e68c4f8045584, type: 3}
   backSprite: {fileID: 21300000, guid: 0e6298de3bc650b4c88a19a111a3b1ee, type: 3}
-  pokemonType1: 3
+  pokemonType1: 13
   pokemonType2: 0
   maxHp: 85
   attack: 105

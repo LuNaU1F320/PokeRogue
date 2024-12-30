@@ -974,7 +974,7 @@ MonoBehaviour:
   nameTxt: {fileID: 714274418}
   levelTxt: {fileID: 24832287}
   hpbar: {fileID: 108742263}
-  Type: {fileID: 1081828802}
+  PokemonTypeImg: {fileID: 1081828802}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -2676,7 +2676,7 @@ MonoBehaviour:
   nameTxt: {fileID: 1864579625}
   levelTxt: {fileID: 231681592}
   hpbar: {fileID: 500405536}
-  Type: {fileID: 1003617611}
+  PokemonTypeImg: {fileID: 1003617611}
 --- !u!1 &1443342242
 GameObject:
   m_ObjectHideFlags: 0
