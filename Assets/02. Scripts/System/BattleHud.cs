@@ -18,8 +18,8 @@ public class BattleHud : MonoBehaviour
         levelTxt.text = "" + SetPokemon.PokemonLevel;
         hpbar.SetHp((float)SetPokemon.PokemonHp / SetPokemon.MaxHp);
     }
-    public void UpdateHp()
+    public IEnumerator UpdateHp()
     {
-        hpbar.SetHp((float)_pokemon.PokemonHp / _pokemon.MaxHp);
+        yield return hpbar.SetHpSmooth((float)_pokemon.PokemonHp / _pokemon.MaxHp);
     }
 }
