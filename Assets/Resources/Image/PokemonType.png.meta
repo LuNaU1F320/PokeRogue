@@ -425,7 +425,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Psychinc
+      name: Psychic
       rect:
         serializedVersion: 2
         x: 0
@@ -555,7 +555,7 @@ TextureImporter:
       None: 286417047
       Normal: 1810330498
       Poison: -733614090
-      Psychinc: 1320668530
+      Psychic: 1320668530
       Rock: 1413171221
       Steel: -283313124
       Stellar: 1756694485

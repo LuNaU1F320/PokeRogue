@@ -115,8 +115,9 @@ public class BattleDialogBox : MonoBehaviour
                 Debug.Log($"스프라이트 이름: {sprite.name}");
             }
         }
-        skillDetailText.text = $"{skill.SkillBase.SkillPower}\n{skill.SkillBase.SkillAccuary}";
+        skillDetailText.text = $"{(skill.SkillBase.SkillPower == 0 ? "-" : skill.SkillBase.SkillPower.ToString())}\n{(skill.SkillBase.SkillAccuary == 0 ? "-" : skill.SkillBase.SkillAccuary.ToString())}";
     }
+    /*
     // public void UpdateSkillSelection(int selectedSkill, Skill skill)
     // {
     //     for (int i = 0; i < skillTexts.Count; i++)
@@ -152,6 +153,8 @@ public class BattleDialogBox : MonoBehaviour
     //     // typeImg.sprite = Resources.Load<Sprite>($"Image/{skill.SkillBase.CategoryKey.ToString()}");
     //     skillDetailText.text = $"{skill.SkillBase.SkillPower}\n{skill.SkillBase.SkillAccuary}";
     // }
+    */
+
     public void SetSkillNames(List<Skill> skills)
     {
         for (int i = 0; i < skillTexts.Count; i++)

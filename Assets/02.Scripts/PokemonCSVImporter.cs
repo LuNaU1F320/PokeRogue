@@ -38,20 +38,6 @@ public class PokemonCSVImporter : EditorWindow
 
         string folderPath = "Assets/Game/Resources/Pokemons";
 
-        // // Ensure the directory exists
-        // if (!AssetDatabase.IsValidFolder("Assets/Game"))
-        // {
-        //     AssetDatabase.CreateFolder("Assets", "Game");
-        // }
-        // if (!AssetDatabase.IsValidFolder("Assets/Game/Resources"))
-        // {
-        //     AssetDatabase.CreateFolder("Assets/Game", "Resources");
-        // }
-        // if (!AssetDatabase.IsValidFolder(folderPath))
-        // {
-        //     AssetDatabase.CreateFolder("Assets/Game/Resources", "Pokemons");
-        // }
-
         for (int i = 1; i < lines.Length; i++)
         {
             if (string.IsNullOrWhiteSpace(lines[i])) continue;
@@ -61,7 +47,7 @@ public class PokemonCSVImporter : EditorWindow
             PokemonBase pokemon = ScriptableObject.CreateInstance<PokemonBase>();
 
             // Set properties
-            int index = int.Parse(values[0]); // CSV 첫 번째 열: PokemonIndex
+            int index = int.Parse(values[0]);
             pokemon.GetType().GetField("pokemonIndex", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(pokemon, index);
             pokemon.GetType().GetField("pokemonName", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(pokemon, values[1]);
             pokemon.GetType().GetField("pokemonDescription", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(pokemon, values[2]);
@@ -74,38 +60,60 @@ public class PokemonCSVImporter : EditorWindow
             pokemon.GetType().GetField("spDefence", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(pokemon, int.Parse(values[9]));
             pokemon.GetType().GetField("speed", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(pokemon, int.Parse(values[10]));
 
+            // Parse and set LearnableSkills
+            List<LearnableSkill> learnableSkills = ParseLearnableSkills(values[11]);
+            pokemon.GetType().GetField("learnableSkills", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(pokemon, learnableSkills);
+
             // Load sprites
-            string formattedIndex = index.ToString("D3"); // 001 형식으로 변환
+            string formattedIndex = index.ToString("D3");
             string frontImgPath = $"Assets/04.Images/PokemonSprite_Front/{formattedIndex}.png";
             string backImgPath = $"Assets/04.Images/PokemonSprite_Back/{formattedIndex}.png";
-
-            // Debugging sprite paths
-            Debug.Log($"Loading Front Sprite from path: {frontImgPath}");
-            Debug.Log($"Loading Back Sprite from path: {backImgPath}");
 
             Sprite frontSprite = AssetDatabase.LoadAssetAtPath<Sprite>(frontImgPath);
             Sprite backSprite = AssetDatabase.LoadAssetAtPath<Sprite>(backImgPath);
 
-            // Debug check if sprites are null
-            if (frontSprite == null)
-            {
-                Debug.LogError($"Failed to load Front Sprite for Pokemon {index} at path: {frontImgPath}");
-            }
-            if (backSprite == null)
-            {
-                Debug.LogError($"Failed to load Back Sprite for Pokemon {index} at path: {backImgPath}");
-            }
-
             pokemon.GetType().GetField("frontSprite", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(pokemon, frontSprite);
             pokemon.GetType().GetField("backSprite", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(pokemon, backSprite);
-
             // Save ScriptableObject
             string assetPath = $"{folderPath}/{formattedIndex}_{values[1]}.asset";
             AssetDatabase.CreateAsset(pokemon, assetPath);
         }
-
         AssetDatabase.SaveAssets();
         Debug.Log("CSV Import Completed!");
     }
+    private List<LearnableSkill> ParseLearnableSkills(string skillData)
+    {
+        List<LearnableSkill> skills = new List<LearnableSkill>();
 
+        // |로 스킬을 나누기
+        string[] skillEntries = skillData.Split('|');
+
+        foreach (string entry in skillEntries)
+        {
+            // 공백 제거 후 항목 처리
+            string trimmedEntry = entry.Trim();
+            if (string.IsNullOrEmpty(trimmedEntry)) continue;
+
+            // '몸통박치기:1' 형식으로 나누기
+            string[] parts = trimmedEntry.Split(':');
+
+            if (parts.Length == 2)
+            {
+                string skillName = parts[0].Trim();
+                int level = int.Parse(parts[1].Trim());
+
+                // 해당 스킬을 SkillBase로 로드
+                SkillBase skillBase = Resources.Load<SkillBase>($"Skills/{skillName}_Skill");
+                if (skillBase != null)
+                {
+                    skills.Add(new LearnableSkill(skillBase, level));
+                }
+                else
+                {
+                    Debug.LogWarning($"SkillBase not found at path: Skills/{skillName}_Skill");
+                }
+            }
+        }
+        return skills;
+    }
 }

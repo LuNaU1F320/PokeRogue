@@ -114,7 +114,7 @@ public enum PokemonType
     Ground,
     Rock,
     Flying,
-    Psychinc,
+    Psychic,
     Dark,
     Steel,
     Bug,

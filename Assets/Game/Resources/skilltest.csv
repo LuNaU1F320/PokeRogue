@@ -1,6 +1,0 @@
-SkillIndex,SkillName,SkillType,CategoryKey,SkillPower,SkillAccuary,SkillPP
-1,막치기,Normal,Physical,40,100%,35
-2,태권당수,Fighting,Physical,50,100%,25
-3,연속뺨치기,Normal,Physical,15,85%,10
-4,연속펀치,Normal,Physical,18,85%,15
-5,메가톤펀치,Normal,Physical,80,85%,20
