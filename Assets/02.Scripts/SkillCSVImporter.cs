@@ -80,7 +80,7 @@ public class SkillCSVImporter : EditorWindow
             skill.GetType().GetField("skillPP", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
                 .SetValue(skill, int.Parse(values[6]));
 
-            // 파일명 앞에 인덱스를 추가 (예: 000_막치기_Skill.asset)
+            // 파일명 앞에 인덱스를 추가 
             string fileName = $"{skillIndex:D3}_{values[1]}_Skill.asset"; // skillIndex를 3자리로 포맷
             string assetPath = Path.Combine(folderPath, fileName);
             AssetDatabase.CreateAsset(skill, assetPath);
