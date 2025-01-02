@@ -5,6 +5,7 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Skill", menuName = "Pokemon/Create new Skill")]
 public class SkillBase : ScriptableObject
 {
+    [SerializeField] int skillIndex;
     [SerializeField] string skillName;
 
     [TextArea]
