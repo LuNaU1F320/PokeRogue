@@ -2350,8 +2350,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd1aaee1f93b71b4699086df7e34cfca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  basePokemon: {fileID: 11400000, guid: faa6cae0e59df96458787a8f916e55e3, type: 2}
-  level: 77
+  basePokemon: {fileID: 11400000, guid: 0b193e08e62e4a645a646a7221017237, type: 2}
+  level: 111
   isPlayerUnit: 1
 --- !u!1 &981133371
 GameObject:
