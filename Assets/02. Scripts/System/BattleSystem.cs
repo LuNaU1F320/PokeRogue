@@ -83,8 +83,9 @@ public class BattleSystem : MonoBehaviour
         yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.PokemonBase.PokemonName}의 {skill.SkillBase.SkillName}!");
         yield return new WaitForSeconds(1.0f);
 
-        bool isFainted = enemyUnit.BattlePokemon.TakeDamage(skill, playerUnit.BattlePokemon);
+        var (startHp, endHp, isFainted) = enemyUnit.BattlePokemon.TakeDamage(skill, playerUnit.BattlePokemon);
         yield return enemyHud.UpdateHp();
+        // yield return enemyHud.AnimateTextHp();
         if (isFainted == true)
         {
             yield return dialogBox.TypeDialog($"{enemyUnit.BattlePokemon.PokemonBase.PokemonName}은(는) 쓰려졌다!");
@@ -102,8 +103,10 @@ public class BattleSystem : MonoBehaviour
         yield return dialogBox.TypeDialog($"{enemyUnit.BattlePokemon.PokemonBase.PokemonName}의 {skill.SkillBase.SkillName}!");
         yield return new WaitForSeconds(1.0f);
 
-        bool isFainted = playerUnit.BattlePokemon.TakeDamage(skill, playerUnit.BattlePokemon);
-        yield return playerHud.UpdateHp();
+        var (startHp, endHp, isFainted) = playerUnit.BattlePokemon.TakeDamage(skill, playerUnit.BattlePokemon);
+        // yield return playerHud.UpdateHp();
+        StartCoroutine(playerHud.UpdateHp());
+        yield return StartCoroutine(playerHud.AnimateTextHp(startHp, endHp));
         if (isFainted == true)
         {
             yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.PokemonBase.PokemonName}은(는) 쓰려졌다!");
