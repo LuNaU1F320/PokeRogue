@@ -13,11 +13,11 @@ public class BattleUnit : MonoBehaviour
     public void SetUp()
     {
         BattlePokemon = new Pokemon(basePokemon, level);
-        
-        if (isPlayerUnit )
+
+        if (isPlayerUnit)
         {
-            GetComponent<Image>().sprite = BattlePokemon.PokemonBase.BackSprite;
-            GetComponent<Image>().SetNativeSize();
+            GetComponent<SpriteRenderer>().sprite = BattlePokemon.PokemonBase.BackSprite;
+            // GetComponent<Image>().SetNativeSize();
         }
         else
         {

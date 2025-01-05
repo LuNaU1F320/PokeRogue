@@ -53,9 +53,28 @@ public class Pokemon
     {
         get { return Mathf.FloorToInt((PokemonBase.MaxHp * PokemonLevel) / 100f) + 10; }
     }
-    public (int startHp, int endHp, bool isFainted) TakeDamage(Skill skill, Pokemon attacker)
+    public (int startHp, int endHp, DamageDetails damageDetails) TakeDamage(Skill skill, Pokemon attacker)
     {
-        float modifiers = Random.Range(0.85f, 1.0f);
+        if (skill.SkillBase.CategoryKey == CategoryKey.Status)
+        {
+            // 변화기 처리
+            return (PokemonHp, PokemonHp, new DamageDetails { TypeEffectiveness = 1f, Critical = 1f, Fainted = false });
+        }
+        float critical = 1f;        //급소
+        if (Random.value * 100f < 6.25f)
+        {
+            critical = 2f;
+        }
+        float typeDmgMag = TypeChart.GetEffectiveness(skill.SkillBase.SkillType, this.PokemonBase.Type1) * TypeChart.GetEffectiveness(skill.SkillBase.SkillType, this.PokemonBase.Type2);       //타입별 데미지 배율
+
+        var damageDetails = new DamageDetails()
+        {
+            TypeEffectiveness = typeDmgMag,
+            Critical = critical,
+            Fainted = false
+        };
+
+        float modifiers = Random.Range(0.85f, 1.0f) * typeDmgMag * critical;
         float a = (2 * attacker.PokemonLevel + 10) / 250.0f;
         float d = a * skill.SkillBase.SkillPower * ((float)attacker.Attack / Defence) + 2;
         int damage = Mathf.FloorToInt(d * modifiers);
@@ -65,14 +84,21 @@ public class Pokemon
         if (PokemonHp <= 0)
         {
             PokemonHp = 0;
-            return (startHp, 0, true);
+            damageDetails.Fainted = true;
+            return (startHp, 0, damageDetails);
         }
-        return (startHp, PokemonHp, false);
+        return (startHp, PokemonHp, damageDetails);
     }
     public Skill GetRandomSkill()
     {
         int r = Random.Range(0, Skills.Count);
         return Skills[r];
+    }
+    public class DamageDetails
+    {
+        public bool Fainted { get; set; }
+        public float Critical { get; set; }
+        public float TypeEffectiveness { get; set; }
     }
     public PokemonType Type1
     {

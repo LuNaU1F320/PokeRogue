@@ -57,7 +57,7 @@ public class BattleSystem : MonoBehaviour
         skillCount = playerUnit.BattlePokemon.Skills.Count;
 
         yield return dialogBox.TypeDialog($"앗! 야생 {enemyUnit.BattlePokemon.PokemonBase.PokemonName}가 \n튀어나왔다!");
-        yield return new WaitForSeconds(1f);
+        // yield return new WaitForSeconds(1f);
 
         PlayerAction();
 
@@ -81,12 +81,13 @@ public class BattleSystem : MonoBehaviour
 
         var skill = playerUnit.BattlePokemon.Skills[currentSkill];
         yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.PokemonBase.PokemonName}의 {skill.SkillBase.SkillName}!");
-        yield return new WaitForSeconds(1.0f);
+        // yield return new WaitForSeconds(1.0f);
 
-        var (startHp, endHp, isFainted) = enemyUnit.BattlePokemon.TakeDamage(skill, playerUnit.BattlePokemon);
+        var (startHp, endHp, damageDetails) = enemyUnit.BattlePokemon.TakeDamage(skill, playerUnit.BattlePokemon);
         yield return enemyHud.UpdateHp();
+        yield return StartCoroutine(ShowDamageDetails(damageDetails));
         // yield return enemyHud.AnimateTextHp();
-        if (isFainted == true)
+        if (damageDetails.Fainted == true)
         {
             yield return dialogBox.TypeDialog($"{enemyUnit.BattlePokemon.PokemonBase.PokemonName}은(는) 쓰려졌다!");
         }
@@ -101,19 +102,51 @@ public class BattleSystem : MonoBehaviour
         var skill = enemyUnit.BattlePokemon.GetRandomSkill();
 
         yield return dialogBox.TypeDialog($"{enemyUnit.BattlePokemon.PokemonBase.PokemonName}의 {skill.SkillBase.SkillName}!");
-        yield return new WaitForSeconds(1.0f);
+        // yield return new WaitForSeconds(1.0f);
 
-        var (startHp, endHp, isFainted) = playerUnit.BattlePokemon.TakeDamage(skill, playerUnit.BattlePokemon);
+        var (startHp, endHp, damageDetails) = playerUnit.BattlePokemon.TakeDamage(skill, playerUnit.BattlePokemon);
         // yield return playerHud.UpdateHp();
         StartCoroutine(playerHud.UpdateHp());
+        yield return StartCoroutine(ShowDamageDetails(damageDetails));
         yield return StartCoroutine(playerHud.AnimateTextHp(startHp, endHp));
-        if (isFainted == true)
+        if (damageDetails.Fainted == true)
         {
             yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.PokemonBase.PokemonName}은(는) 쓰려졌다!");
         }
         else
         {
             PlayerAction();
+        }
+    }
+
+    IEnumerator ShowDamageDetails(Pokemon.DamageDetails damageDetails)
+    {
+        if (damageDetails.Critical > 1f)
+        {
+            yield return dialogBox.TypeDialog("급소에 맞았다!");
+        }
+        if (damageDetails.TypeEffectiveness > 1)
+        {
+            if (damageDetails.TypeEffectiveness > 2)
+            {
+                yield return dialogBox.TypeDialog("효과가 굉장했다!!");
+            }
+            else
+            {
+                yield return dialogBox.TypeDialog("효과가 대단했다!");
+            }
+        }
+
+        else if (damageDetails.TypeEffectiveness < 1f)
+        {
+            if (damageDetails.TypeEffectiveness == 0)
+            {
+                yield return dialogBox.TypeDialog("효과가 없는 듯 하다...");
+            }
+            else
+            {
+                yield return dialogBox.TypeDialog("효과가 별로인듯 하다...");
+            }
         }
     }
 

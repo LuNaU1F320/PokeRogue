@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5073655c03dece548bd7c8970b70fa57, type: 3}
-  m_Name: "385_\uAC00\uB4DC\uC2A4\uC6F9_Skill"
+  m_Name: "\uAC00\uB4DC\uC2A4\uC6F9_Skill"
   m_EditorClassIdentifier: 
   skillIndex: 385
   skillName: "\uAC00\uB4DC\uC2A4\uC6F9"

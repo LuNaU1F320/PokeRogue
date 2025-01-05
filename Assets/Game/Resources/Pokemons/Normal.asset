@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 271878df85541a1469db368301d2282b, type: 3}
+  m_Name: Normal
+  m_EditorClassIdentifier: 
+  pokemonIndex: 0
+  pokemonName: "\uB178\uB9D0\uBAAC"
+  pokemonDescription: 
+  frontSprite: {fileID: 21300000, guid: 80b001eef5602d245871fb84321da135, type: 3}
+  backSprite: {fileID: 21300000, guid: 7e5cd51c1128cf441b08352f9286e491, type: 3}
+  pokemonType1: 1
+  pokemonType2: 0
+  maxHp: 100
+  attack: 100
+  defence: 100
+  spAttack: 100
+  spDefence: 100
+  speed: 100
+  learnableSkills:
+  - skillBase: {fileID: 11400000, guid: 1899288e010889343aa90ba33072d363, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: ae83515fe4b833e479c3676e65a47631, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: 8815c61227b8d49408ac347e08417475, type: 2}
+    level: 1
