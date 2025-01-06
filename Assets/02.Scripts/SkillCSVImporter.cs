@@ -36,13 +36,13 @@ public class SkillCSVImporter : EditorWindow
         string[] headers = lines[0].Split(',');
 
         string folderPath = "Assets/Game/Resources/Skills"; // Resources 폴더 내 경로
-
         // Ensure folder exists
         if (!AssetDatabase.IsValidFolder(folderPath))
         {
             AssetDatabase.CreateFolder("Assets/Game/Resources", "Skills");
         }
 
+        int skillsImported = 0;
         for (int i = 1; i < lines.Length; i++)
         {
             if (string.IsNullOrWhiteSpace(lines[i])) continue;
@@ -80,13 +80,14 @@ public class SkillCSVImporter : EditorWindow
             skill.GetType().GetField("skillPP", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
                 .SetValue(skill, int.Parse(values[6]));
 
-            // 파일명 앞에 인덱스를 추가 
-            string fileName = $"{skillIndex:D3}_{values[1]}_Skill.asset"; // skillIndex를 3자리로 포맷
+
+            string fileName = $"{values[1]}_Skill.asset";
             string assetPath = Path.Combine(folderPath, fileName);
             AssetDatabase.CreateAsset(skill, assetPath);
+            skillsImported++; // Increment counter
         }
 
         AssetDatabase.SaveAssets();
-        Debug.Log("Skill CSV Import Completed!");
+        Debug.Log($"Skill CSV Import Completed! {skillsImported} skills imported.");
     }
 }

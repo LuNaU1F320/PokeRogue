@@ -11,8 +11,8 @@ public class PokemonBase : ScriptableObject
     [TextArea]
     [SerializeField] string pokemonDescription;
 
-    [SerializeField] Sprite frontSprite;
-    [SerializeField] Sprite backSprite;
+    // [SerializeField] Sprite frontSprite;
+    // [SerializeField] Sprite backSprite;
 
     [SerializeField] PokemonType pokemonType1;
     [SerializeField] PokemonType pokemonType2;
@@ -26,6 +26,10 @@ public class PokemonBase : ScriptableObject
     [SerializeField] int speed;
     [SerializeField] List<LearnableSkill> learnableSkills;
 
+    public int PokemonIndex
+    {
+        get { return pokemonIndex; }
+    }
     public string PokemonName
     {
         get { return pokemonName; }
@@ -34,14 +38,14 @@ public class PokemonBase : ScriptableObject
     {
         get { return pokemonDescription; }
     }
-    public Sprite FrontSprite
-    {
-        get { return frontSprite; }
-    }
-    public Sprite BackSprite
-    {
-        get { return backSprite; }
-    }
+    // public Sprite FrontSprite
+    // {
+    //     get { return frontSprite; }
+    // }
+    // public Sprite BackSprite
+    // {
+    //     get { return backSprite; }
+    // }
     public PokemonType Type1
     {
         get { return pokemonType1; }
