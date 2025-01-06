@@ -15,8 +15,6 @@ MonoBehaviour:
   pokemonIndex: 418
   pokemonName: "\uBE0C\uC774\uC824"
   pokemonDescription: 
-  frontSprite: {fileID: 21300000, guid: ca7898fc234631843992c7550b134411, type: 3}
-  backSprite: {fileID: 21300000, guid: 7f9f3106507053d4b89953e2ce539093, type: 3}
   pokemonType1: 3
   pokemonType2: 0
   maxHp: 55
@@ -28,27 +26,31 @@ MonoBehaviour:
   learnableSkills:
   - skillBase: {fileID: 11400000, guid: 1899288e010889343aa90ba33072d363, type: 2}
     level: 1
-  - skillBase: {fileID: 11400000, guid: 76f3072f273446342b257f624f072a8c, type: 2}
+  - skillBase: {fileID: 11400000, guid: 94f07b5b9af1833409a1b8aa0bd10909, type: 2}
     level: 4
-  - skillBase: {fileID: 11400000, guid: 725d9224529b5714ba6fdc3596329af4, type: 2}
+  - skillBase: {fileID: 11400000, guid: 6a639e817f595c843af85c3f9190446b, type: 2}
     level: 7
-  - skillBase: {fileID: 11400000, guid: 42dbd267edc60ac44a5b93f2bbf5f80a, type: 2}
+  - skillBase: {fileID: 11400000, guid: fcb18d41500f8c0458cf920714811df8, type: 2}
     level: 11
-  - skillBase: {fileID: 11400000, guid: aae25caed14a9af48a0a3cdc3e26cdf5, type: 2}
+  - skillBase: {fileID: 11400000, guid: b26eb0eedf94b71458ee4a3bb1ad5913, type: 2}
     level: 15
-  - skillBase: {fileID: 11400000, guid: ac135f7ead604b94d9a51175bc3c19b5, type: 2}
+  - skillBase: {fileID: 11400000, guid: c7882090410a3e2488ff12e318c6ac9f, type: 2}
     level: 18
-  - skillBase: {fileID: 11400000, guid: d6bf20424f9b7f747837ea7249eaf041, type: 2}
+  - skillBase: {fileID: 11400000, guid: d600aef63460f9d47893d587c5f3f8ab, type: 2}
     level: 21
-  - skillBase: {fileID: 11400000, guid: 866f4e3a2660a3d42884bd670ba555b8, type: 2}
+  - skillBase: {fileID: 11400000, guid: f4cd63694493a8c4fb2e280e1a3ac922, type: 2}
     level: 24
-  - skillBase: {fileID: 11400000, guid: 00bfdad51e43f6c479da731f0ba5edcc, type: 2}
+  - skillBase: {fileID: 11400000, guid: a8abd184f53cf8e4d972d7a2b42a1d9f, type: 2}
     level: 27
-  - skillBase: {fileID: 11400000, guid: d5a141b02a606fc40a739ee667865b6b, type: 2}
+  - skillBase: {fileID: 11400000, guid: 0789562ac4aa3b54da2dc4c0594abe71, type: 2}
     level: 31
-  - skillBase: {fileID: 11400000, guid: da34cefe2a32a52449f82508e8025af9, type: 2}
+  - skillBase: {fileID: 11400000, guid: b3a168ca0beb230459aff365951171c7, type: 2}
+    level: 35
+  - skillBase: {fileID: 11400000, guid: d074a3171a45ce0459213e0d2742bbde, type: 2}
     level: 38
-  - skillBase: {fileID: 11400000, guid: a35feeeae9650ab4aa5f8f3a188440af, type: 2}
+  - skillBase: {fileID: 11400000, guid: 0993254688747a1479eff93fa68ea8fe, type: 2}
     level: 41
   - skillBase: {fileID: 11400000, guid: 30bac2e231fb5674eaa1f5962d4cb4d2, type: 2}
     level: 45
+  - skillBase: {fileID: 11400000, guid: 03428589a1a3f7448be88661fa25302e, type: 2}
+    level: 49

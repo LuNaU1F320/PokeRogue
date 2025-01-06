@@ -73,12 +73,40 @@ public class Pokemon
             Critical = critical,
             Fainted = false
         };
+        //물리특수 처리
+        float attack;
+        if (skill.SkillBase.CategoryKey == CategoryKey.Special)
+        {
+            attack = attacker.SpAttack;
+        }
+        else if (skill.SkillBase.CategoryKey == CategoryKey.Physical)
+        {
+            attack = attacker.Attack;
+        }
+        else
+        {
+            attack = 0;
+        }
+        float defence;
+        if (skill.SkillBase.CategoryKey == CategoryKey.Special)
+        {
+            defence = SpDefence;
+        }
+        else if (skill.SkillBase.CategoryKey == CategoryKey.Physical)
+        {
+            defence = Defence;
+        }
+        else
+        {
+            defence = Defence;
+        }
 
+        //float attack = (skill.SkillBase.IsSpecial) ? attacker.SpAttack : attacker.Attack;
         float modifiers = Random.Range(0.85f, 1.0f) * typeDmgMag * critical;
         float a = (2 * attacker.PokemonLevel + 10) / 250.0f;
-        float d = a * skill.SkillBase.SkillPower * ((float)attacker.Attack / Defence) + 2;
+        float d = a * skill.SkillBase.SkillPower * ((float)attack / defence) + 2;
         int damage = Mathf.FloorToInt(d * modifiers);
-
+        Debug.Log(damage);
         int startHp = PokemonHp;
         PokemonHp -= damage;
         if (PokemonHp <= 0)

@@ -80,6 +80,8 @@ public class BattleSystem : MonoBehaviour
         state = BattleState.Busy;
 
         var skill = playerUnit.BattlePokemon.Skills[currentSkill];
+        if (skill.SkillPP <= 0)
+            skill.SkillPP--;
         yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.PokemonBase.PokemonName}의 {skill.SkillBase.SkillName}!");
         // yield return new WaitForSeconds(1.0f);
 
@@ -100,7 +102,7 @@ public class BattleSystem : MonoBehaviour
     {
         state = BattleState.EnemyMove;
         var skill = enemyUnit.BattlePokemon.GetRandomSkill();
-
+        skill.SkillPP--;
         yield return dialogBox.TypeDialog($"{enemyUnit.BattlePokemon.PokemonBase.PokemonName}의 {skill.SkillBase.SkillName}!");
         // yield return new WaitForSeconds(1.0f);
 

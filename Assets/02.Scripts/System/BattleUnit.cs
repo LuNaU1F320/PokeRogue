@@ -41,6 +41,7 @@ public class BattleUnit : MonoBehaviour
             LoadSprites(json, sprite);
             CreateAnimationFrames();
             StartCoroutine(PlayAnimation());
+            Debug.Log("P_Mon : " + json.name + ".json" + sprite.name + ".png");
             // GetComponent<SpriteRenderer>().sprite = BattlePokemon.PokemonBase.BackSprite;
             // GetComponent<Image>().SetNativeSize();
         }
@@ -51,11 +52,11 @@ public class BattleUnit : MonoBehaviour
             LoadSprites(json, sprite);
             CreateAnimationFrames();
             StartCoroutine(PlayAnimation());
+            Debug.Log("E_Mon : " + json.name + ".json" + sprite.name + ".png");
             // GetComponent<Image>().sprite = BattlePokemon.PokemonBase.FrontSprite;
             // GetComponent<Image>().SetNativeSize();
         }
     }
-
     public void LoadSprites(TextAsset pokIdxjson, Texture2D pokIdxsprite)
     {
         JSONNode node = JSON.Parse(pokIdxjson.text);
@@ -66,23 +67,12 @@ public class BattleUnit : MonoBehaviour
             var frameNode = frames[i];
             string filename = frameNode["filename"];
             var frame = frameNode["frame"];
-            var sourceSize = frameNode["sourceSize"];
-            var spriteSourceSize = frameNode["spriteSourceSize"];
 
-            // sourceSize로 전체 스프라이트 크기를 정의
-            float sourceX = frame["x"].AsFloat;
-            float sourceY = pokIdxsprite.height - (frame["y"].AsFloat + sourceSize["h"].AsFloat); // sourceSize의 높이로 y를 계산
-            float sourceW = sourceSize["w"].AsFloat;
-            float sourceH = sourceSize["h"].AsFloat;
-
-            // spriteSourceSize를 사용하여 실제 사용할 스프라이트의 위치와 크기 정의
-            float x = sourceX + spriteSourceSize["x"].AsFloat;
-            float y = sourceY + spriteSourceSize["y"].AsFloat;
-            float w = spriteSourceSize["w"].AsFloat;
-            float h = spriteSourceSize["h"].AsFloat;
-
-            // y 좌표가 텍스처 경계를 벗어나지 않도록 조정
-            y = Mathf.Clamp(y, 0, pokIdxsprite.height - h);
+            // 프레임 데이터 추출
+            float x = frame["x"].AsFloat;
+            float y = pokIdxsprite.height - frame["y"].AsFloat - frame["h"].AsFloat; // y 좌표 수정
+            float w = frame["w"].AsFloat;
+            float h = frame["h"].AsFloat;
 
             Rect rect = new Rect(x, y, w, h);
             Vector2 pivot = new Vector2(0.5f, 0.5f); // 중심 피벗
@@ -90,7 +80,7 @@ public class BattleUnit : MonoBehaviour
             try
             {
                 Sprite sprite = Sprite.Create(pokIdxsprite, rect, pivot);
-                sprites[filename] = sprite; // 예제에서 key를 filename으로 변경
+                sprites[filename] = sprite;
             }
             catch (ArgumentException e)
             {
@@ -98,7 +88,50 @@ public class BattleUnit : MonoBehaviour
             }
         }
     }
+    /*
+        public void LoadSprites(TextAsset pokIdxjson, Texture2D pokIdxsprite)
+        {
+            JSONNode node = JSON.Parse(pokIdxjson.text);
+            var frames = node["textures"][0]["frames"].AsArray;
 
+            for (int i = 0; i < frames.Count; i++)
+            {
+                var frameNode = frames[i];
+                string filename = frameNode["filename"];
+                var frame = frameNode["frame"];
+                var sourceSize = frameNode["sourceSize"];
+                var spriteSourceSize = frameNode["spriteSourceSize"];
+
+                // sourceSize로 전체 스프라이트 크기를 정의
+                float sourceX = frame["x"].AsFloat;
+                float sourceY = pokIdxsprite.height - (frame["y"].AsFloat + sourceSize["h"].AsFloat); // sourceSize의 높이로 y를 계산
+                float sourceW = sourceSize["w"].AsFloat;
+                float sourceH = sourceSize["h"].AsFloat;
+
+                // spriteSourceSize를 사용하여 실제 사용할 스프라이트의 위치와 크기 정의
+                float x = sourceX + spriteSourceSize["x"].AsFloat;
+                float y = sourceY + spriteSourceSize["y"].AsFloat;
+                float w = spriteSourceSize["w"].AsFloat;
+                float h = spriteSourceSize["h"].AsFloat;
+
+                // y 좌표가 텍스처 경계를 벗어나지 않도록 조정
+                // y = Mathf.Clamp(y, 0, pokIdxsprite.height - h);
+
+                Rect rect = new Rect(x, y, w, h);
+                Vector2 pivot = new Vector2(0.5f, 0.5f); // 중심 피벗
+
+                try
+                {
+                    Sprite sprite = Sprite.Create(pokIdxsprite, rect, pivot);
+                    sprites[filename] = sprite; // 예제에서 key를 filename으로 변경
+                }
+                catch (ArgumentException e)
+                {
+                    Debug.LogError($"Failed to create sprite for {filename}. Error: {e.Message}");
+                }
+            }
+        }
+    */
     void CreateAnimationFrames()
     {
         // 여기서는 예시로 스프라이트 이름이 0001.png, 0002.png, ... 순으로 있다고 가정합니다.

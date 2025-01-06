@@ -64,8 +64,9 @@ public class PokemonCSVImporter : EditorWindow
             List<LearnableSkill> learnableSkills = ParseLearnableSkills(values[11]);
             pokemon.GetType().GetField("learnableSkills", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(pokemon, learnableSkills);
 
-            // Load sprites
             string formattedIndex = index.ToString("D3");
+            /*
+            // Load sprites
             string frontImgPath = $"Assets/04.Images/PokemonSprite_Front/{formattedIndex}.png";
             string backImgPath = $"Assets/04.Images/PokemonSprite_Back/{formattedIndex}.png";
 
@@ -74,6 +75,7 @@ public class PokemonCSVImporter : EditorWindow
 
             pokemon.GetType().GetField("frontSprite", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(pokemon, frontSprite);
             pokemon.GetType().GetField("backSprite", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(pokemon, backSprite);
+            */
             // Save ScriptableObject
             string assetPath = $"{folderPath}/{formattedIndex}_{values[1]}.asset";
             AssetDatabase.CreateAsset(pokemon, assetPath);

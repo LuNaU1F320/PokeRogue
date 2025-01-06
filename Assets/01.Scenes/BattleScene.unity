@@ -670,7 +670,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 515, y: 229}
+  m_AnchoredPosition: {x: 455, y: 208}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &240452459
@@ -737,7 +737,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd1aaee1f93b71b4699086df7e34cfca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  basePokemon: {fileID: 11400000, guid: 43d8008b9cda0054ea0feb5ca4e81dfd, type: 2}
+  basePokemon: {fileID: 11400000, guid: af31d6e791dfbba4a95e31336c736bff, type: 2}
   level: 100
   isPlayerUnit: 0
 --- !u!1 &310426304
@@ -1759,7 +1759,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -350, y: -200}
+  m_AnchoredPosition: {x: -336, y: -211}
   m_SizeDelta: {x: 500, y: 500}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &638876064
@@ -1826,7 +1826,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd1aaee1f93b71b4699086df7e34cfca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  basePokemon: {fileID: 11400000, guid: 06579e2d13bb2ec429a541d666f0c8e9, type: 2}
+  basePokemon: {fileID: 11400000, guid: 567388fb426e1a647ac1f76db97648d6, type: 2}
   level: 100
   isPlayerUnit: 1
 --- !u!1 &641148988
@@ -2486,7 +2486,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd1aaee1f93b71b4699086df7e34cfca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  basePokemon: {fileID: 0}
+  basePokemon: {fileID: 11400000, guid: 567388fb426e1a647ac1f76db97648d6, type: 2}
   level: 100
   isPlayerUnit: 1
 --- !u!1 &1003617609

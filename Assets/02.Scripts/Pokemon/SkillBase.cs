@@ -46,6 +46,21 @@ public class SkillBase : ScriptableObject
     {
         get { return skillPP; }
     }
+    /*
+    public bool IsSpecial
+    {
+        get
+        {
+            if (skillType == PokemonType.Fire || skillType == PokemonType.Water)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }*/
 }
 public enum CategoryKey
 {
