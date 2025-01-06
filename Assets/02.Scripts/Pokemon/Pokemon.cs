@@ -2,17 +2,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public class Pokemon
 {
-    public PokemonBase PokemonBase { get; set; }
-    public int PokemonLevel { get; set; }
+    [SerializeField] PokemonBase _base;
+    [SerializeField] int level;
+
+    public PokemonBase PokemonBase
+    {
+        get
+        {
+            return _base;
+        }
+    }
+    public int PokemonLevel
+    {
+        get
+        {
+            return level;
+        }
+    }
     public int PokemonHp { get; set; }
 
     public List<Skill> Skills { get; set; }
-    public Pokemon(PokemonBase pbase, int plevel)
+    public void Init()
     {
-        PokemonBase = pbase;
-        PokemonLevel = plevel;
+        // PokemonBase = pbase;
+        // PokemonLevel = plevel;
         PokemonHp = MaxHp;
 
         Skills = new List<Skill>();
@@ -106,7 +122,7 @@ public class Pokemon
         float a = (2 * attacker.PokemonLevel + 10) / 250.0f;
         float d = a * skill.SkillBase.SkillPower * ((float)attack / defence) + 2;
         int damage = Mathf.FloorToInt(d * modifiers);
-        Debug.Log(damage);
+        // Debug.Log(damage);
         int startHp = PokemonHp;
         PokemonHp -= damage;
         if (PokemonHp <= 0)

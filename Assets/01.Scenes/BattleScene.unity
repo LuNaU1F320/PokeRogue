@@ -382,7 +382,7 @@ RectTransform:
   - {fileID: 970337947}
   - {fileID: 744270267}
   - {fileID: 2069456917}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 2067398447}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -737,8 +737,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd1aaee1f93b71b4699086df7e34cfca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  basePokemon: {fileID: 11400000, guid: af31d6e791dfbba4a95e31336c736bff, type: 2}
-  level: 100
   isPlayerUnit: 0
 --- !u!1 &310426304
 GameObject:
@@ -1826,8 +1824,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd1aaee1f93b71b4699086df7e34cfca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  basePokemon: {fileID: 11400000, guid: 567388fb426e1a647ac1f76db97648d6, type: 2}
-  level: 100
   isPlayerUnit: 1
 --- !u!1 &641148988
 GameObject:
@@ -2026,8 +2022,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd1aaee1f93b71b4699086df7e34cfca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  basePokemon: {fileID: 11400000, guid: 1ac22d6c1051adb419c7d97c6fe66d7b, type: 2}
-  level: 130
   isPlayerUnit: 0
 --- !u!114 &744270269
 MonoBehaviour:
@@ -2398,6 +2392,52 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 833841719}
   m_CullTransparentMesh: 1
+--- !u!1 &936119588
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 936119590}
+  - component: {fileID: 936119589}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &936119589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 936119588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 074c0920cd551154c8eb022d22001a98, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerController: {fileID: 1410205263}
+  battleSystem: {fileID: 2067398446}
+--- !u!4 &936119590
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 936119588}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &970337946
 GameObject:
   m_ObjectHideFlags: 0
@@ -2486,8 +2526,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd1aaee1f93b71b4699086df7e34cfca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  basePokemon: {fileID: 11400000, guid: 567388fb426e1a647ac1f76db97648d6, type: 2}
-  level: 100
   isPlayerUnit: 1
 --- !u!1 &1003617609
 GameObject:
@@ -3115,6 +3153,68 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1354980205}
   m_CullTransparentMesh: 1
+--- !u!1 &1410205260
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1410205262}
+  - component: {fileID: 1410205261}
+  - component: {fileID: 1410205263}
+  m_Layer: 0
+  m_Name: Player
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1410205261
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1410205260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8508befb24d81da46a3f56327d7494af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pokemons:
+  - _base: {fileID: 11400000, guid: 2be198670c0c71544974cce144b66baa, type: 2}
+    level: 4
+  - _base: {fileID: 11400000, guid: 567388fb426e1a647ac1f76db97648d6, type: 2}
+    level: 10
+--- !u!4 &1410205262
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1410205260}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1410205263
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1410205260}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90ea210ee04db734fad10b80cbbe52fd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1411901050
 GameObject:
   m_ObjectHideFlags: 0
@@ -3653,6 +3753,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1639006111}
+  - component: {fileID: 1639006112}
   m_Layer: 5
   m_Name: Stage_UI
   m_TagString: Untagged
@@ -3682,6 +3783,23 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1639006112
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1639006110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e6bf8fe8a965d2f45b26feb82a90ddf3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wildPokemons:
+  - _base: {fileID: 11400000, guid: 5356862f08463374da1ce30eb50ebe46, type: 2}
+    level: 5
+  - _base: {fileID: 11400000, guid: 43d8008b9cda0054ea0feb5ca4e81dfd, type: 2}
+    level: 7
 --- !u!1 &1711242445
 GameObject:
   m_ObjectHideFlags: 0
@@ -4172,7 +4290,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2067398446
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4202,7 +4320,8 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 51413860}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2069456916
@@ -4437,6 +4556,7 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 519420032}
-  - {fileID: 51413860}
   - {fileID: 641148991}
   - {fileID: 2067398447}
+  - {fileID: 1410205262}
+  - {fileID: 936119590}

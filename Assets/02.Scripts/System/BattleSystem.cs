@@ -1,4 +1,5 @@
 using System.Collections;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,17 +19,26 @@ public class BattleSystem : MonoBehaviour
     [SerializeField] BattleHud enemyHud;
     [SerializeField] BattleDialogBox dialogBox;
 
+    public event Action<bool> OnBattleOver;
+
     BattleState state;
     int currentAction = 0;
     int currentSkill = 0;
     int skillCount = 0;
 
-    // Start is called before the first frame update
-    private void Start()
+    // private void Start()
+    // {
+    //     StartCoroutine(SetUpBattle());
+    // }
+    PokemonParty playerParty;
+    Pokemon wildPokemon;
+    public void StartBattle(PokemonParty playerParty, Pokemon wildPokemon)
     {
+        this.playerParty = playerParty;
+        this.wildPokemon = wildPokemon;
         StartCoroutine(SetUpBattle());
     }
-    private void Update()
+    public void HandleUpdate()
     {
         if (state == BattleState.PlayerAction)
         {
@@ -40,16 +50,16 @@ public class BattleSystem : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.G))
         {
-            Debug.Log(state);
-            Debug.Log(currentAction);
+            // Debug.Log(state);
+            // Debug.Log(currentAction);
         }
     }
 
     public IEnumerator SetUpBattle()
     {
-        playerUnit.SetUp();
+        playerUnit.SetUp(playerParty.GetHealthyPokemon());
+        enemyUnit.SetUp(wildPokemon);
         playerHud.SetHud(playerUnit.BattlePokemon);
-        enemyUnit.SetUp();
         enemyHud.SetHud(enemyUnit.BattlePokemon);
 
         dialogBox.SetSkillNames(playerUnit.BattlePokemon.Skills);
@@ -81,7 +91,13 @@ public class BattleSystem : MonoBehaviour
 
         var skill = playerUnit.BattlePokemon.Skills[currentSkill];
         if (skill.SkillPP <= 0)
+        {
             skill.SkillPP--;
+        }
+        while (dialogBox.IsTyping())
+        {
+            yield return null; // 이전 텍스트 출력이 끝날 때까지 대기
+        }
         yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.PokemonBase.PokemonName}의 {skill.SkillBase.SkillName}!");
         // yield return new WaitForSeconds(1.0f);
 
@@ -92,6 +108,11 @@ public class BattleSystem : MonoBehaviour
         if (damageDetails.Fainted == true)
         {
             yield return dialogBox.TypeDialog($"{enemyUnit.BattlePokemon.PokemonBase.PokemonName}은(는) 쓰려졌다!");
+            //애니메이션 재생
+
+            //플레이어 승리 (다음스테이지로)
+            yield return new WaitForSeconds(2.0f);
+            OnBattleOver(true);
         }
         else
         {
@@ -109,11 +130,31 @@ public class BattleSystem : MonoBehaviour
         var (startHp, endHp, damageDetails) = playerUnit.BattlePokemon.TakeDamage(skill, playerUnit.BattlePokemon);
         // yield return playerHud.UpdateHp();
         StartCoroutine(playerHud.UpdateHp());
+        StartCoroutine(playerHud.AnimateTextHp(startHp, endHp));
         yield return StartCoroutine(ShowDamageDetails(damageDetails));
-        yield return StartCoroutine(playerHud.AnimateTextHp(startHp, endHp));
         if (damageDetails.Fainted == true)
         {
             yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.PokemonBase.PokemonName}은(는) 쓰려졌다!");
+            //애니메이션 재생
+
+            yield return new WaitForSeconds(2.0f);
+
+            var nextPokemon = playerParty.GetHealthyPokemon();
+            if (nextPokemon != null)
+            {
+                playerUnit.SetUp(nextPokemon);
+                playerHud.SetHud(nextPokemon);
+                dialogBox.SetSkillNames(nextPokemon.Skills);
+
+                skillCount = nextPokemon.Skills.Count;
+
+                yield return dialogBox.TypeDialog($"가랏! {nextPokemon.PokemonBase.PokemonName}!");
+                PlayerAction();
+            }
+            else
+            {
+                OnBattleOver(false);
+            }
         }
         else
         {

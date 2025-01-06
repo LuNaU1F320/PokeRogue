@@ -7,8 +7,8 @@ using System;
 
 public class BattleUnit : MonoBehaviour
 {
-    [SerializeField] PokemonBase basePokemon;
-    [SerializeField] int level;
+    // [SerializeField] PokemonBase basePokemon;
+    // [SerializeField] int level;
     [SerializeField] bool isPlayerUnit;
 
     //
@@ -20,41 +20,46 @@ public class BattleUnit : MonoBehaviour
     //
 
     public Pokemon BattlePokemon { get; set; }
-
-    void Start()
+    public void SetUp(Pokemon pokemon)
     {
+        if (spriteRenderer != null)
+        {
+            spriteRenderer.sprite = null; // 스프라이트 제거
+        }
+
         spriteRenderer = GetComponent<SpriteRenderer>();
         if (spriteRenderer == null)
         {
             spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
         }
 
-    }
-    public void SetUp()
-    {
-        BattlePokemon = new Pokemon(basePokemon, level);
+        StopAllCoroutines(); // 이전 애니메이션 중단
+        animationFrames.Clear(); // 이전 프레임 리스트 초기화
+
+        // BattlePokemon = new Pokemon(basePokemon, level);
+        BattlePokemon = pokemon;
 
         if (isPlayerUnit)
         {
-            TextAsset json = Resources.Load<TextAsset>($"Image/Pokemon/PokemonSprite_Back/{BattlePokemon.PokemonBase.PokemonIndex}");
-            Texture2D sprite = Resources.Load<Texture2D>($"Image/Pokemon/PokemonSprite_Back/{BattlePokemon.PokemonBase.PokemonIndex}");
+            TextAsset json = Resources.Load<TextAsset>($"Image/Pokemon/PokemonSprite_Back/{pokemon.PokemonBase.PokemonIndex}");
+            Texture2D sprite = Resources.Load<Texture2D>($"Image/Pokemon/PokemonSprite_Back/{pokemon.PokemonBase.PokemonIndex}");
             LoadSprites(json, sprite);
             CreateAnimationFrames();
-            StartCoroutine(PlayAnimation());
-            Debug.Log("P_Mon : " + json.name + ".json" + sprite.name + ".png");
-            // GetComponent<SpriteRenderer>().sprite = BattlePokemon.PokemonBase.BackSprite;
-            // GetComponent<Image>().SetNativeSize();
+            if (animationFrames.Count > 0)
+            {
+                StartCoroutine(PlayAnimation());
+            }
+            // StartCoroutine(PlayAnimation());
+            // Debug.Log("P_Mon : " + json.name + ".json" + sprite.name + ".png");
         }
         else
         {
-            TextAsset json = Resources.Load<TextAsset>($"Image/Pokemon/PokemonSprite_Front/{BattlePokemon.PokemonBase.PokemonIndex}");
-            Texture2D sprite = Resources.Load<Texture2D>($"Image/Pokemon/PokemonSprite_Front/{BattlePokemon.PokemonBase.PokemonIndex}");
+            TextAsset json = Resources.Load<TextAsset>($"Image/Pokemon/PokemonSprite_Front/{pokemon.PokemonBase.PokemonIndex}");
+            Texture2D sprite = Resources.Load<Texture2D>($"Image/Pokemon/PokemonSprite_Front/{pokemon.PokemonBase.PokemonIndex}");
             LoadSprites(json, sprite);
             CreateAnimationFrames();
             StartCoroutine(PlayAnimation());
-            Debug.Log("E_Mon : " + json.name + ".json" + sprite.name + ".png");
-            // GetComponent<Image>().sprite = BattlePokemon.PokemonBase.FrontSprite;
-            // GetComponent<Image>().SetNativeSize();
+            // Debug.Log("E_Mon : " + json.name + ".json" + sprite.name + ".png");
         }
     }
     public void LoadSprites(TextAsset pokIdxjson, Texture2D pokIdxsprite)

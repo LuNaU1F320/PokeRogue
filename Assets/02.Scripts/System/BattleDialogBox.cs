@@ -8,6 +8,11 @@ public class BattleDialogBox : MonoBehaviour
     [SerializeField] Text dialogText;
     [SerializeField] Color highlightedColor;
     [SerializeField] int lettersPerSecond;
+
+    private Coroutine typingCoroutine; // 현재 실행 중인 코루틴
+    private bool isTyping = false;    // 텍스트 출력 상태 플래그
+
+
     [SerializeField] GameObject skillSelector;
     [SerializeField] GameObject actionSelector;
     [SerializeField] GameObject skillDetail;
@@ -25,17 +30,29 @@ public class BattleDialogBox : MonoBehaviour
 
     public void SetDialog(string dialog)
     {
+        if (typingCoroutine != null)
+        {
+            StopCoroutine(typingCoroutine); // 기존 코루틴 중단
+        }
         dialogText.text = dialog;
     }
     public IEnumerator TypeDialog(string dialog)
     {
+        isTyping = true; // 텍스트 출력 시작
         dialogText.text = "";
+
         foreach (var letter in dialog.ToCharArray())
         {
             dialogText.text += letter;
             yield return new WaitForSeconds(1f / lettersPerSecond);
         }
         yield return new WaitForSeconds(1.0f);
+
+        isTyping = false; // 텍스트 출력 완료
+    }
+    public bool IsTyping()
+    {
+        return isTyping;
     }
     public void EnableDialogText(bool enabled)
     {
