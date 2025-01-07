@@ -5,10 +5,15 @@ public enum GameState { FreeRoam, Battle }
 
 public class GameManager : MonoBehaviour
 {
+    GameManager Inst = null;
     [SerializeField] PlayerController playerController;
     [SerializeField] BattleSystem battleSystem;
     GameState state;
 
+    private void Awake()
+    {
+        Inst = this;
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -27,7 +32,7 @@ public class GameManager : MonoBehaviour
         // state = GameState.FreeRoam;
         // battleSystem.gameObject.SetActive(false);
     }
-    void StartBattle()
+    public void StartBattle()
     {
         state = GameState.Battle;
         battleSystem.gameObject.SetActive(true);
