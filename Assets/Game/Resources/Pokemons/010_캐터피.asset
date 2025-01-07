@@ -23,4 +23,14 @@ MonoBehaviour:
   spAttack: 20
   spDefence: 20
   speed: 45
-  learnableSkills: []
+  learnableSkills:
+  - skillBase: {fileID: 11400000, guid: 1899288e010889343aa90ba33072d363, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: 94f07b5b9af1833409a1b8aa0bd10909, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: aa036d222a0c1af40a2578d2f144d3b5, type: 2}
+    level: 7
+  - skillBase: {fileID: 11400000, guid: b59a23f4931f2ba438be103aa99c4060, type: 2}
+    level: 19
+  - skillBase: {fileID: 11400000, guid: aa036d222a0c1af40a2578d2f144d3b5, type: 2}
+    level: 25

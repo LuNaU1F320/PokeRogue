@@ -50,3 +50,6 @@ TagManager:
   - name: UI
     uniqueID: 2152707967
     locked: 0
+  - name: Party
+    uniqueID: 3224888321
+    locked: 0

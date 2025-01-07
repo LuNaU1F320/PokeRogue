@@ -9,7 +9,8 @@ public enum BattleState
     PlayerAction,
     PlayerMove,
     EnemyMove,
-    Busy
+    Busy,
+    PartyScreen
 }
 public class BattleSystem : MonoBehaviour
 {
@@ -19,26 +20,29 @@ public class BattleSystem : MonoBehaviour
     [SerializeField] BattleHud enemyHud;
     [SerializeField] BattleDialogBox dialogBox;
 
+    //Party
+    [SerializeField] PartyScreen partyScreen;
+
     public event Action<bool> OnBattleOver;
 
     BattleState state;
     int currentAction = 0;
     int currentSkill = 0;
+    int currentMember = 0;
     int skillCount = 0;
 
-    // private void Start()
-    // {
-    //     StartCoroutine(SetUpBattle());
-    // }
+
     PokemonParty playerParty;
     Pokemon wildPokemon;
-    public void StartBattle(PokemonParty playerParty, Pokemon wildPokemon)
+    private void Start()
     {
-        this.playerParty = playerParty;
-        this.wildPokemon = wildPokemon;
+        currentAction = 0;
+        playerParty = FindObjectOfType<PokemonParty>().GetComponent<PokemonParty>();
+        wildPokemon = FindObjectOfType<MapArea>().GetComponent<MapArea>().GetRandomWildPokemon();
         StartCoroutine(SetUpBattle());
     }
-    public void HandleUpdate()
+
+    public void Update()
     {
         if (state == BattleState.PlayerAction)
         {
@@ -48,10 +52,13 @@ public class BattleSystem : MonoBehaviour
         {
             HandleSkillSelection();
         }
+        else if (state == BattleState.PartyScreen)
+        {
+            HandlePartyScreenSelection();
+        }
         if (Input.GetKeyDown(KeyCode.G))
         {
-            // Debug.Log(state);
-            // Debug.Log(currentAction);
+            Debug.Log(currentMember);
         }
     }
 
@@ -61,6 +68,8 @@ public class BattleSystem : MonoBehaviour
         enemyUnit.SetUp(wildPokemon);
         playerHud.SetHud(playerUnit.BattlePokemon);
         enemyHud.SetHud(enemyUnit.BattlePokemon);
+
+        partyScreen.Init();
 
         dialogBox.SetSkillNames(playerUnit.BattlePokemon.Skills);
 
@@ -75,8 +84,14 @@ public class BattleSystem : MonoBehaviour
     void PlayerAction()
     {
         state = BattleState.PlayerAction;
-        StartCoroutine(dialogBox.TypeDialog($"{playerUnit.BattlePokemon.PokemonBase.PokemonName}은(는) 무엇을 할까?"));
+        dialogBox.SetDialog($"{playerUnit.BattlePokemon.PokemonBase.PokemonName}은(는) 무엇을 할까?");
         dialogBox.EnableActionSelector(true);
+    }
+    void OpenPartyScreen()
+    {
+        state = BattleState.PartyScreen;
+        partyScreen.SetPartyData(playerParty.Pokemons);
+        partyScreen.gameObject.SetActive(true);
     }
     void PlayerMove()
     {
@@ -142,17 +157,19 @@ public class BattleSystem : MonoBehaviour
             var nextPokemon = playerParty.GetHealthyPokemon();
             if (nextPokemon != null)
             {
-                playerUnit.SetUp(nextPokemon);
-                playerHud.SetHud(nextPokemon);
-                dialogBox.SetSkillNames(nextPokemon.Skills);
+                OpenPartyScreen();
+                // playerUnit.SetUp(nextPokemon);
+                // playerHud.SetHud(nextPokemon);
+                // dialogBox.SetSkillNames(nextPokemon.Skills);
 
-                skillCount = nextPokemon.Skills.Count;
+                // skillCount = nextPokemon.Skills.Count;
 
-                yield return dialogBox.TypeDialog($"가랏! {nextPokemon.PokemonBase.PokemonName}!");
-                PlayerAction();
+                // yield return dialogBox.TypeDialog($"가랏! {nextPokemon.PokemonBase.PokemonName}!");
+                // PlayerAction();
             }
             else
             {
+                //뒤짐
                 OnBattleOver(false);
             }
         }
@@ -223,12 +240,26 @@ public class BattleSystem : MonoBehaviour
                 --currentAction;
             }
         }
+        currentAction = Mathf.Clamp(currentAction, 0, 3);
         dialogBox.UpdateActionSelection(currentAction);
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
         {
             if (currentAction == 0)
-            {//fight
+            {//싸운다
                 PlayerMove();
+            }
+            if (currentAction == 1)
+            {//볼
+                Debug.Log("볼");
+            }
+            if (currentAction == 2)
+            {//포켓몬
+                OpenPartyScreen();
+                // Debug.Log("포켓몬");
+            }
+            if (currentAction == 3)
+            {//도망친다
+                Debug.Log("도망");
             }
         }
     }
@@ -263,6 +294,86 @@ public class BattleSystem : MonoBehaviour
             dialogBox.EnableSkillSelector(false);
             dialogBox.EnableDialogText(true);
             StartCoroutine(PerformPlayerMove());
+        }
+        else if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+            dialogBox.EnableSkillSelector(false);
+            dialogBox.EnableDialogText(true);
+            PlayerAction();
+        }
+    }
+    void HandlePartyScreenSelection()
+    {
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            currentMember++;
+        }
+        if (Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            currentMember++;
+        }
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            currentMember--;
+        }
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            currentMember = 0;
+        }
+        currentMember = Mathf.Clamp(currentMember, 0, playerParty.Pokemons.Count - 1);
+        partyScreen.UpdateMemberSelection(currentMember);
+        if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
+        {
+            //포켓몬 교체
+            var selectedMember = playerParty.Pokemons[currentMember];
+            if (selectedMember.PokemonHp <= 0)
+            {
+                partyScreen.SetMessageText($"{playerParty.Pokemons[currentMember].PokemonBase.PokemonName}은/는 싸울 수 있는 \n기력이 남아 있지 않습니다!");
+                return;
+            }
+            if (selectedMember == playerUnit.BattlePokemon)
+            {
+                //능력치보기, 놓아주기, 그만두기 구현
+                partyScreen.SetMessageText($"이미 전투 중인 포켓몬으로 교체 할 수 없습니다!");
+                return;
+            }
+            partyScreen.gameObject.SetActive(false);
+            state = BattleState.Busy;
+            StartCoroutine(SwitchPokemon(selectedMember));
+        }
+        else if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+            partyScreen.gameObject.SetActive(false);
+            PlayerAction();
+        }
+    }
+    IEnumerator SwitchPokemon(Pokemon newPokemon)
+    {
+        if (playerUnit.BattlePokemon.PokemonHp > 0)
+        {
+            yield return dialogBox.TypeDialog($"돌아와 {playerUnit.BattlePokemon.PokemonBase.PokemonName}!");
+            //사망애니메이션
+            yield return new WaitForSeconds(1.5f);
+
+            playerUnit.SetUp(newPokemon);
+            playerHud.SetHud(newPokemon);
+            dialogBox.SetSkillNames(newPokemon.Skills);
+
+            skillCount = newPokemon.Skills.Count;
+
+            yield return dialogBox.TypeDialog($"가랏! {newPokemon.PokemonBase.PokemonName}!");
+            StartCoroutine(EnemyMove());
+        }
+        else
+        {
+            playerUnit.SetUp(newPokemon);
+            playerHud.SetHud(newPokemon);
+            dialogBox.SetSkillNames(newPokemon.Skills);
+
+            skillCount = newPokemon.Skills.Count;
+
+            yield return dialogBox.TypeDialog($"가랏! {newPokemon.PokemonBase.PokemonName}!");
+            PlayerMove();
         }
     }
 }

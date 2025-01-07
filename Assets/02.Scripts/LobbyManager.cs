@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LobbyManager : MonoBehaviour
@@ -45,7 +46,8 @@ public class LobbyManager : MonoBehaviour
             }
             if (currentSelection == 1)  //NewGame
             {
-                Debug.Log("NewGame");
+                // Debug.Log("NewGame");
+                SceneManager.LoadScene("BattleScene");
             }
             if (currentSelection == 2)  //LoadGame
             {

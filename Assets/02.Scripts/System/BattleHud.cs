@@ -16,6 +16,9 @@ public class BattleHud : MonoBehaviour
 
     public void SetHud(Pokemon SetPokemon)
     {
+        PokemonTypeImg.gameObject.SetActive(false);
+        PokemonDualTypeImg1.gameObject.SetActive(false);
+        PokemonDualTypeImg2.gameObject.SetActive(false);
         _pokemon = SetPokemon;
         nameTxt.text = SetPokemon.PokemonBase.PokemonName;
         levelTxt.text = "" + SetPokemon.PokemonLevel;
@@ -31,40 +34,47 @@ public class BattleHud : MonoBehaviour
         if (_pokemon.Type2 == PokemonType.None)
         {
             Sprite[] pokemonTypeSprites = Resources.LoadAll<Sprite>("Image/PokemonType");
-            PokemonTypeImg.gameObject.SetActive(true);
-            string onlypokType = _pokemon.Type1.ToString();
-            Sprite typeTargetSprite = System.Array.Find(pokemonTypeSprites, sprite => sprite.name == onlypokType);
-            if (typeTargetSprite != null)
+            if (PokemonTypeImg != null)
             {
-                PokemonTypeImg.sprite = typeTargetSprite;
-            }
-            else
-            {
-                Debug.LogError($"스프라이트를 찾을 수 없습니다: {onlypokType}");
-                foreach (var sprite in pokemonTypeSprites)
+                PokemonTypeImg.gameObject.SetActive(true);
+                string onlypokType = _pokemon.Type1.ToString();
+                Sprite typeTargetSprite = System.Array.Find(pokemonTypeSprites, sprite => sprite.name == onlypokType);
+                if (typeTargetSprite != null)
                 {
-                    Debug.Log($"스프라이트 이름: {sprite.name}");
+                    PokemonTypeImg.sprite = typeTargetSprite;
+                }
+                else
+                {
+                    Debug.LogError($"스프라이트를 찾을 수 없습니다: {onlypokType}");
+                    foreach (var sprite in pokemonTypeSprites)
+                    {
+                        Debug.Log($"스프라이트 이름: {sprite.name}");
+                    }
                 }
             }
+
         }
         else
         {
-            Sprite[] pokemonType2Sprites1 = Resources.LoadAll<Sprite>("Image/TypeDual1");
-            Sprite[] pokemonType2Sprites2 = Resources.LoadAll<Sprite>("Image/TypeDual2");
-            PokemonDualTypeImg1.gameObject.SetActive(true);
-            PokemonDualTypeImg2.gameObject.SetActive(true);
-            string pokType1 = _pokemon.Type1.ToString();
-            string pokType2 = _pokemon.Type2.ToString();
-            Sprite type2TargetSprite1 = System.Array.Find(pokemonType2Sprites1, sprite => sprite.name == pokType1);
-            Sprite type2TargetSprite2 = System.Array.Find(pokemonType2Sprites2, sprite => sprite.name == pokType2);
-            if (type2TargetSprite1 != null && type2TargetSprite2 != null)
+            if (PokemonDualTypeImg1 != null && PokemonDualTypeImg2 != null)
             {
-                PokemonDualTypeImg1.sprite = type2TargetSprite1;
-                PokemonDualTypeImg2.sprite = type2TargetSprite2;
-            }
-            else
-            {
-                Debug.LogError("듀얼타입 스프라이트 로딩 실패");
+                Sprite[] pokemonType2Sprites1 = Resources.LoadAll<Sprite>("Image/TypeDual1");
+                Sprite[] pokemonType2Sprites2 = Resources.LoadAll<Sprite>("Image/TypeDual2");
+                PokemonDualTypeImg1.gameObject.SetActive(true);
+                PokemonDualTypeImg2.gameObject.SetActive(true);
+                string pokType1 = _pokemon.Type1.ToString();
+                string pokType2 = _pokemon.Type2.ToString();
+                Sprite type2TargetSprite1 = System.Array.Find(pokemonType2Sprites1, sprite => sprite.name == pokType1);
+                Sprite type2TargetSprite2 = System.Array.Find(pokemonType2Sprites2, sprite => sprite.name == pokType2);
+                if (type2TargetSprite1 != null && type2TargetSprite2 != null)
+                {
+                    PokemonDualTypeImg1.sprite = type2TargetSprite1;
+                    PokemonDualTypeImg2.sprite = type2TargetSprite2;
+                }
+                else
+                {
+                    Debug.LogError("듀얼타입 스프라이트 로딩 실패");
+                }
             }
         }
     }

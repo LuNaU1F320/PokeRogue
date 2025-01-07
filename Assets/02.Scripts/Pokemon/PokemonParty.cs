@@ -6,6 +6,15 @@ using System.Linq;
 public class PokemonParty : MonoBehaviour
 {
     [SerializeField] List<Pokemon> pokemons;
+
+    public List<Pokemon> Pokemons
+    {
+        get
+        {
+            return pokemons;
+
+        }
+    }
     private void Start()
     {
         foreach (var pokemon in pokemons)
