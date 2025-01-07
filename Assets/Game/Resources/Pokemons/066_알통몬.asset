@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 271878df85541a1469db368301d2282b, type: 3}
+  m_Name: "066_\uC54C\uD1B5\uBAAC"
+  m_EditorClassIdentifier: 
+  pokemonIndex: 66
+  pokemonName: "\uC54C\uD1B5\uBAAC"
+  pokemonDescription: 
+  pokemonType1: 7
+  pokemonType2: 0
+  maxHp: 70
+  attack: 80
+  defence: 50
+  spAttack: 35
+  spDefence: 35
+  speed: 35
+  learnableSkills: []

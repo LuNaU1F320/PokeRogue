@@ -23,36 +23,4 @@ MonoBehaviour:
   spAttack: 85
   spDefence: 50
   speed: 115
-  learnableSkills:
-  - skillBase: {fileID: 11400000, guid: 4a1742b656110b940b44711dde4f87d1, type: 2}
-    level: 1
-  - skillBase: {fileID: 11400000, guid: 8815c61227b8d49408ac347e08417475, type: 2}
-    level: 1
-  - skillBase: {fileID: 11400000, guid: 94f07b5b9af1833409a1b8aa0bd10909, type: 2}
-    level: 1
-  - skillBase: {fileID: 11400000, guid: 6a639e817f595c843af85c3f9190446b, type: 2}
-    level: 1
-  - skillBase: {fileID: 11400000, guid: fcb18d41500f8c0458cf920714811df8, type: 2}
-    level: 1
-  - skillBase: {fileID: 11400000, guid: b26eb0eedf94b71458ee4a3bb1ad5913, type: 2}
-    level: 15
-  - skillBase: {fileID: 11400000, guid: c7882090410a3e2488ff12e318c6ac9f, type: 2}
-    level: 18
-  - skillBase: {fileID: 11400000, guid: d600aef63460f9d47893d587c5f3f8ab, type: 2}
-    level: 21
-  - skillBase: {fileID: 11400000, guid: f4cd63694493a8c4fb2e280e1a3ac922, type: 2}
-    level: 24
-  - skillBase: {fileID: 11400000, guid: a8abd184f53cf8e4d972d7a2b42a1d9f, type: 2}
-    level: 29
-  - skillBase: {fileID: 11400000, guid: 0789562ac4aa3b54da2dc4c0594abe71, type: 2}
-    level: 35
-  - skillBase: {fileID: 11400000, guid: b3a168ca0beb230459aff365951171c7, type: 2}
-    level: 41
-  - skillBase: {fileID: 11400000, guid: d074a3171a45ce0459213e0d2742bbde, type: 2}
-    level: 46
-  - skillBase: {fileID: 11400000, guid: 0993254688747a1479eff93fa68ea8fe, type: 2}
-    level: 51
-  - skillBase: {fileID: 11400000, guid: 30bac2e231fb5674eaa1f5962d4cb4d2, type: 2}
-    level: 57
-  - skillBase: {fileID: 11400000, guid: 03428589a1a3f7448be88661fa25302e, type: 2}
-    level: 62
+  learnableSkills: []

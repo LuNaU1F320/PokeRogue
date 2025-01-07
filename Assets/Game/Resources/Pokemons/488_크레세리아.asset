@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 271878df85541a1469db368301d2282b, type: 3}
+  m_Name: "488_\uD06C\uB808\uC138\uB9AC\uC544"
+  m_EditorClassIdentifier: 
+  pokemonIndex: 488
+  pokemonName: "\uD06C\uB808\uC138\uB9AC\uC544"
+  pokemonDescription: 
+  pokemonType1: 12
+  pokemonType2: 0
+  maxHp: 120
+  attack: 70
+  defence: 120
+  spAttack: 75
+  spDefence: 130
+  speed: 85
+  learnableSkills: []

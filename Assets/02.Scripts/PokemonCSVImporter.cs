@@ -52,7 +52,11 @@ public class PokemonCSVImporter : EditorWindow
             pokemon.GetType().GetField("pokemonName", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(pokemon, values[1]);
             pokemon.GetType().GetField("pokemonDescription", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(pokemon, values[2]);
             pokemon.GetType().GetField("pokemonType1", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(pokemon, (PokemonType)System.Enum.Parse(typeof(PokemonType), values[3]));
-            pokemon.GetType().GetField("pokemonType2", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(pokemon, (PokemonType)System.Enum.Parse(typeof(PokemonType), values[4]));
+            // pokemonType2가 비어있거나 지정되지 않았을 때 처리
+            PokemonType type2 = values[4].Trim() == "" ? PokemonType.None : (PokemonType)System.Enum.Parse(typeof(PokemonType), values[4]);
+            pokemon.GetType().GetField("pokemonType2", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(pokemon, type2);
+
+            // pokemon.GetType().GetField("pokemonType2", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(pokemon, (PokemonType)System.Enum.Parse(typeof(PokemonType), values[4]));
             pokemon.GetType().GetField("maxHp", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(pokemon, int.Parse(values[5]));
             pokemon.GetType().GetField("attack", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(pokemon, int.Parse(values[6]));
             pokemon.GetType().GetField("defence", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(pokemon, int.Parse(values[7]));
