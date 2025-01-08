@@ -1222,15 +1222,15 @@ SpriteRenderer:
   m_SortingLayerID: -811261925
   m_SortingLayer: 2
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 357e235ae3c42d346a409395ec0eca36, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 74844bd2d19315349a9e3c22efa67884, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.33, y: 0.32}
+  m_Size: {x: 0.32, y: 0.32}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &240452460
@@ -2902,15 +2902,15 @@ SpriteRenderer:
   m_SortingLayerID: -811261925
   m_SortingLayer: 2
   m_SortingOrder: 1
-  m_Sprite: {fileID: 21300000, guid: 71a2e50e915529e4694814793c286471, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b62677ccf15baf8409972c1d177f0124, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.33, y: 0.32}
+  m_Size: {x: 0.4, y: 0.3}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!114 &638876065
@@ -6699,8 +6699,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wildPokemons:
-  - _base: {fileID: 11400000, guid: f2a8a795850c0194fa340563e0a8cc31, type: 2}
-    level: 7
+  - _base: {fileID: 11400000, guid: a9eb597cec8155d4185b0cc7aad652ef, type: 2}
+    level: 20
 --- !u!1 &1668804233
 GameObject:
   m_ObjectHideFlags: 0

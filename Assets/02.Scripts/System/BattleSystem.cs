@@ -368,7 +368,7 @@ public class BattleSystem : MonoBehaviour
             yield return dialogBox.TypeDialog($"가랏! {newPokemon.PokemonBase.PokemonName}!");
             StartCoroutine(EnemyMove());
         }
-        else
+        else        //포켓몬이 쓰러졌을때
         {
             playerUnit.SetUp(newPokemon);
             playerHud.SetHud(newPokemon, true);
@@ -377,7 +377,7 @@ public class BattleSystem : MonoBehaviour
             skillCount = newPokemon.Skills.Count;
 
             yield return dialogBox.TypeDialog($"가랏! {newPokemon.PokemonBase.PokemonName}!");
-            PlayerMove();
+            PlayerAction();
         }
     }
     //은는이가
