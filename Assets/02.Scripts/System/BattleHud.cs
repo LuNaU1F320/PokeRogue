@@ -8,7 +8,7 @@ public class BattleHud : MonoBehaviour
     [SerializeField] Text nameTxt;
     [SerializeField] Text levelTxt;
     [SerializeField] HpBar hpbar;
-    [SerializeField] Text hpbar_Text;
+    [SerializeField] public Text hpbar_Text;
     [SerializeField] Image PokemonTypeImg;
     [SerializeField] Image PokemonDualTypeImg1;
     [SerializeField] Image PokemonDualTypeImg2;

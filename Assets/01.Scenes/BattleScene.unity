@@ -1246,6 +1246,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayerUnit: 0
+  battlehud: {fileID: 1411901054}
 --- !u!1 &263458329
 GameObject:
   m_ObjectHideFlags: 0
@@ -2926,6 +2927,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isPlayerUnit: 1
+  battlehud: {fileID: 508594854}
 --- !u!1 &641148988
 GameObject:
   m_ObjectHideFlags: 0
@@ -5546,17 +5548,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pokemons:
-  - _base: {fileID: 11400000, guid: f3d15cf58c95c094c9a73d559f002c76, type: 2}
-    level: 10
-  - _base: {fileID: 11400000, guid: 5356862f08463374da1ce30eb50ebe46, type: 2}
-    level: 10
-  - _base: {fileID: 11400000, guid: 43d8008b9cda0054ea0feb5ca4e81dfd, type: 2}
-    level: 10
-  - _base: {fileID: 11400000, guid: e68b872c92c59414597a68a0a59323ec, type: 2}
-    level: 10
-  - _base: {fileID: 11400000, guid: c6fd8e2a2df5a8941912e00b4b91e92b, type: 2}
-    level: 10
-  - _base: {fileID: 11400000, guid: e8b0725b5d93b6648bdc05f4ca820299, type: 2}
+  - _base: {fileID: 11400000, guid: 1ac22d6c1051adb419c7d97c6fe66d7b, type: 2}
     level: 10
 --- !u!4 &1410205262
 Transform:
@@ -6699,7 +6691,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wildPokemons:
-  - _base: {fileID: 11400000, guid: a9eb597cec8155d4185b0cc7aad652ef, type: 2}
+  - _base: {fileID: 11400000, guid: 1ac22d6c1051adb419c7d97c6fe66d7b, type: 2}
     level: 20
 --- !u!1 &1668804233
 GameObject:
@@ -8037,9 +8029,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerUnit: {fileID: 638876065}
-  playerHud: {fileID: 508594854}
   enemyUnit: {fileID: 240452460}
-  enemyHud: {fileID: 1411901054}
   dialogBox: {fileID: 2069456921}
   partyScreen: {fileID: 566295760}
 --- !u!4 &2067398447

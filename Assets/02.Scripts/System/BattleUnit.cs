@@ -7,17 +7,27 @@ using System;
 
 public class BattleUnit : MonoBehaviour
 {
-    // [SerializeField] PokemonBase basePokemon;
-    // [SerializeField] int level;
     [SerializeField] bool isPlayerUnit;
+    public bool IsPlayerUnit
+    {
+        get
+        {
+            return isPlayerUnit;
+        }
+    }
+    [SerializeField] BattleHud battlehud;
+    public BattleHud BattleHud
+    {
+        get
+        {
+            return battlehud;
+        }
+    }
 
-    //
     [HideInInspector] public Dictionary<string, Sprite> sprites = new Dictionary<string, Sprite>();
     [HideInInspector] private SpriteRenderer spriteRenderer;
     [HideInInspector] private List<Sprite> animationFrames = new List<Sprite>();
     [HideInInspector] float frameRate = 0.07f; // 프레임 간격(초)
-
-    //
 
     public Pokemon BattlePokemon { get; set; }
     public void SetUp(Pokemon pokemon)
@@ -51,6 +61,8 @@ public class BattleUnit : MonoBehaviour
             json = Resources.Load<TextAsset>($"Image/Pokemon/PokemonSprite_Front/{pokemon.PokemonBase.PokemonIndex}");
             sprite = Resources.Load<Texture2D>($"Image/Pokemon/PokemonSprite_Front/{pokemon.PokemonBase.PokemonIndex}");
         }
+
+        battlehud.SetHud(pokemon, isPlayerUnit);
 
         LoadSprites(json, sprite);
         CreateAnimationFrames();
