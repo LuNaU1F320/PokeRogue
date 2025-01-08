@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,12 +26,10 @@ public class Pokemon
     public int PokemonHp { get; set; }
 
     public List<Skill> Skills { get; set; }
+    public Dictionary<Stat, int> Stats { get; private set; }
+    public Dictionary<Stat, int> Rankup { get; private set; }
     public void Init()
     {
-        // PokemonBase = pbase;
-        // PokemonLevel = plevel;
-        PokemonHp = MaxHp;
-
         Skills = new List<Skill>();
         foreach (var skill in PokemonBase.LearnableSkills)
         {
@@ -43,31 +42,82 @@ public class Pokemon
                 break;
             }
         }
-
+        CalculateStats();
+        PokemonHp = MaxHp;
+        Rankup = new Dictionary<Stat, int>()
+        {
+            {Stat.Attack , 0},
+            {Stat.Defence , 0},
+            {Stat.SpAttack , 0},
+            {Stat.SpDefence , 0},
+            {Stat.Speed , 0}
+        };
     }
+    void CalculateStats()
+    {
+        Stats = new Dictionary<Stat, int>();
+        Stats.Add(Stat.Attack, Mathf.FloorToInt((PokemonBase.Attack * PokemonLevel) / 100f) + 5);
+        Stats.Add(Stat.Defence, Mathf.FloorToInt((PokemonBase.Defence * PokemonLevel) / 100f) + 5);
+        Stats.Add(Stat.SpAttack, Mathf.FloorToInt((PokemonBase.SpAttack * PokemonLevel) / 100f) + 5);
+        Stats.Add(Stat.SpDefence, Mathf.FloorToInt((PokemonBase.SpDefence * PokemonLevel) / 100f) + 5);
+        Stats.Add(Stat.Speed, Mathf.FloorToInt((PokemonBase.Speed * PokemonLevel) / 100f) + 5);
+
+        MaxHp = Mathf.FloorToInt((PokemonBase.MaxHp * PokemonLevel) / 100f) + 10;
+    }
+    int GetStat(Stat stat)
+    {
+        int statVal = Stats[stat];
+
+        //랭크업
+        int rank = Rankup[stat];
+        var rankValues = new float[] { 1f, 1.5f, 2f, 2.5f, 3f, 3.5f, 4f };
+
+        if (rank >= 0)
+        {
+            statVal = Mathf.FloorToInt(statVal * rankValues[rank]);
+        }
+        else
+        {
+            statVal = Mathf.FloorToInt(statVal * rankValues[-rank]);
+        }
+
+        return statVal;
+    }
+    public void ApplyRankups(List<Rankup> rankUps)
+    {
+        foreach (var rankUp in rankUps)
+        {
+            var stat = rankUp.stat;
+            var rank = rankUp.rank;
+
+            Rankup[stat] = Math.Clamp(Rankup[stat] + rank, -6, 6);
+            Debug.Log($"{stat}랭크업{Rankup[stat]}");
+        }
+    }
+
     public int Attack
     {
-        get { return Mathf.FloorToInt((PokemonBase.Attack * PokemonLevel) / 100f) + 5; }
+        get { return GetStat(Stat.Attack); }
     }
     public int Defence
     {
-        get { return Mathf.FloorToInt((PokemonBase.Defence * PokemonLevel) / 100f) + 5; }
+        get { return GetStat(Stat.Defence); }
     }
     public int SpAttack
     {
-        get { return Mathf.FloorToInt((PokemonBase.SpAttack * PokemonLevel) / 100f) + 5; }
+        get { return GetStat(Stat.SpAttack); }
     }
     public int SpDefence
     {
-        get { return Mathf.FloorToInt((PokemonBase.SpDefence * PokemonLevel) / 100f) + 5; }
+        get { return GetStat(Stat.SpDefence); }
     }
     public int Speed
     {
-        get { return Mathf.FloorToInt((PokemonBase.Speed * PokemonLevel) / 100f) + 5; }
+        get { return GetStat(Stat.Speed); }
     }
     public int MaxHp
     {
-        get { return Mathf.FloorToInt((PokemonBase.MaxHp * PokemonLevel) / 100f) + 10; }
+        get; private set;
     }
     public (int startHp, int endHp, DamageDetails damageDetails) TakeDamage(Skill skill, Pokemon attacker)
     {
@@ -77,7 +127,7 @@ public class Pokemon
             return (PokemonHp, PokemonHp, new DamageDetails { TypeEffectiveness = 1f, Critical = 1f, Fainted = false });
         }
         float critical = 1f;        //급소
-        if (Random.value * 100f < 6.25f)
+        if (UnityEngine.Random.value * 100f < 6.25f)
         {
             critical = 2f;
         }
@@ -118,7 +168,7 @@ public class Pokemon
         }
 
         //float attack = (skill.SkillBase.IsSpecial) ? attacker.SpAttack : attacker.Attack;
-        float modifiers = Random.Range(0.85f, 1.0f) * typeDmgMag * critical;
+        float modifiers = UnityEngine.Random.Range(0.85f, 1.0f) * typeDmgMag * critical;
         float a = (2 * attacker.PokemonLevel + 10) / 250.0f;
         float d = a * skill.SkillBase.SkillPower * ((float)attack / defence) + 2;
         int damage = Mathf.FloorToInt(d * modifiers);
@@ -135,7 +185,7 @@ public class Pokemon
     }
     public Skill GetRandomSkill()
     {
-        int r = Random.Range(0, Skills.Count);
+        int r = UnityEngine.Random.Range(0, Skills.Count);
         return Skills[r];
     }
     public class DamageDetails

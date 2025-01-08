@@ -10,15 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5073655c03dece548bd7c8970b70fa57, type: 3}
-  m_Name: Test_Skill
+  m_Name: Test_Skill 1
   m_EditorClassIdentifier: 
-  skillIndex: 843
-  skillName: "\uD14C\uC2A4\uD2B8\uC6A9"
+  skillIndex: 840
+  skillName: "\uB7AD\uD06C\uC5C5"
   skillDescription: 
   skillType: 7
-  categoryKey: 0
+  categoryKey: 2
   effects:
-    rankups: []
+    rankups:
+    - stat: 0
+      rank: 6
   target: 1
   skillPower: 100
   skillAccuary: 100

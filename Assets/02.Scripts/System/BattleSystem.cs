@@ -240,16 +240,36 @@ public class BattleSystem : MonoBehaviour
 
         //피격 애니메이션
 
-        var (startHp, endHp, damageDetails) = targetUnit.BattlePokemon.TakeDamage(skill, sourceUnit.BattlePokemon);
-
-        StartCoroutine(targetUnit.BattleHud.UpdateHp());
-        // yield return targetUnit.BattleHud.UpdateHp();
-        if (targetUnit.BattleHud.hpbar_Text != null)
+        if (skill.SkillBase.CategoryKey == CategoryKey.Status)
         {
-            StartCoroutine(targetUnit.BattleHud.AnimateTextHp(startHp, endHp));
+            if (skill.SkillBase.Effects.Rankups != null)
+            {
+                if (skill.SkillBase.Target == SkillTarget.Self)
+                {
+                    sourceUnit.BattlePokemon.ApplyRankups(skill.SkillBase.Effects.Rankups);
+                }
+                else
+                {
+                    targetUnit.BattlePokemon.ApplyRankups(skill.SkillBase.Effects.Rankups);
+                }
+            }
         }
-        yield return StartCoroutine(ShowDamageDetails(damageDetails));
-        if (damageDetails.Fainted == true)
+        else
+        {
+            var (startHp, endHp, damageDetails) = targetUnit.BattlePokemon.TakeDamage(skill, sourceUnit.BattlePokemon);
+
+            StartCoroutine(targetUnit.BattleHud.UpdateHp());
+            // yield return targetUnit.BattleHud.UpdateHp();
+            if (targetUnit.BattleHud.hpbar_Text != null)
+            {
+                StartCoroutine(targetUnit.BattleHud.AnimateTextHp(startHp, endHp));
+            }
+            yield return StartCoroutine(ShowDamageDetails(damageDetails));
+
+        }
+
+
+        if (targetUnit.BattlePokemon.PokemonHp <= 0)
         {
             yield return dialogBox.TypeDialog($"{targetUnit.BattlePokemon.PokemonBase.PokemonName}{GetCorrectParticle(targetUnit.BattlePokemon.PokemonBase.PokemonName, false)} 쓰러졌다!");
             //애니메이션 재생

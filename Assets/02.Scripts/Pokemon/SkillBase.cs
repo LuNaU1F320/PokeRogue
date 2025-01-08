@@ -13,6 +13,8 @@ public class SkillBase : ScriptableObject
 
     [SerializeField] PokemonType skillType;
     [SerializeField] CategoryKey categoryKey;
+    [SerializeField] SkillEffects effects;
+    [SerializeField] SkillTarget target;
 
     [SerializeField] int skillPower;
     [SerializeField] int skillAccuary;
@@ -33,6 +35,14 @@ public class SkillBase : ScriptableObject
     public CategoryKey CategoryKey
     {
         get { return categoryKey; }
+    }
+    public SkillEffects Effects
+    {
+        get { return effects; }
+    }
+    public SkillTarget Target
+    {
+        get { return target; }
     }
     public int SkillPower
     {
@@ -62,9 +72,30 @@ public class SkillBase : ScriptableObject
         }
     }*/
 }
+[System.Serializable]
+public class SkillEffects
+{
+    [SerializeField] List<Rankup> rankups;
+
+    public List<Rankup> Rankups
+    {
+        get { return rankups; }
+    }
+}
+[System.Serializable]
+public class Rankup
+{
+    public Stat stat;
+    public int rank;
+}
 public enum CategoryKey
 {
     Physical,
     Special,
     Status
+}
+public enum SkillTarget
+{
+    Foe,
+    Self
 }

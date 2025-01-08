@@ -126,6 +126,14 @@ public enum PokemonType
     Dragon,
     Fairy
 }
+public enum Stat
+{
+    Attack,
+    Defence,
+    SpAttack,
+    SpDefence,
+    Speed
+}
 public class TypeChart
 {
     // 2차원 배열: 공격 타입(행) -> 방어 타입(열)의 상성
