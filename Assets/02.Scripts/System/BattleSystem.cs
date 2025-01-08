@@ -66,8 +66,8 @@ public class BattleSystem : MonoBehaviour
     {
         playerUnit.SetUp(playerParty.GetHealthyPokemon());
         enemyUnit.SetUp(wildPokemon);
-        playerHud.SetHud(playerUnit.BattlePokemon);
-        enemyHud.SetHud(enemyUnit.BattlePokemon);
+        playerHud.SetHud(playerUnit.BattlePokemon, true);
+        enemyHud.SetHud(enemyUnit.BattlePokemon, false);
 
         partyScreen.Init();
 
@@ -75,7 +75,9 @@ public class BattleSystem : MonoBehaviour
 
         skillCount = playerUnit.BattlePokemon.Skills.Count;
 
-        yield return dialogBox.TypeDialog($"앗! 야생 {enemyUnit.BattlePokemon.PokemonBase.PokemonName}가 \n튀어나왔다!");
+        yield return dialogBox.TypeDialog($"앗! 야생 {enemyUnit.BattlePokemon.PokemonBase.PokemonName}{GetCorrectParticle(enemyUnit.BattlePokemon.PokemonBase.PokemonName, true)} \n튀어나왔다!");
+
+        // yield return dialogBox.TypeDialog($"앗! 야생 {enemyUnit.BattlePokemon.PokemonBase.PokemonName}가 \n튀어나왔다!");
         // yield return new WaitForSeconds(1f);
 
         PlayerAction();
@@ -84,7 +86,7 @@ public class BattleSystem : MonoBehaviour
     void PlayerAction()
     {
         state = BattleState.PlayerAction;
-        dialogBox.SetDialog($"{playerUnit.BattlePokemon.PokemonBase.PokemonName}은(는) 무엇을 할까?");
+        dialogBox.SetDialog($"{playerUnit.BattlePokemon.PokemonBase.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.PokemonBase.PokemonName, false)} 무엇을 할까?");
         dialogBox.EnableActionSelector(true);
     }
     void OpenPartyScreen()
@@ -122,7 +124,8 @@ public class BattleSystem : MonoBehaviour
         // yield return enemyHud.AnimateTextHp();
         if (damageDetails.Fainted == true)
         {
-            yield return dialogBox.TypeDialog($"{enemyUnit.BattlePokemon.PokemonBase.PokemonName}은(는) 쓰려졌다!");
+            yield return dialogBox.TypeDialog($"{enemyUnit.BattlePokemon.PokemonBase.PokemonName}{GetCorrectParticle(enemyUnit.BattlePokemon.PokemonBase.PokemonName, false)} 쓰러졌다!");
+            // yield return dialogBox.TypeDialog($"{enemyUnit.BattlePokemon.PokemonBase.PokemonName}은(는) 쓰려졌다!");
             //애니메이션 재생
 
             //플레이어 승리 (다음스테이지로)
@@ -149,7 +152,8 @@ public class BattleSystem : MonoBehaviour
         yield return StartCoroutine(ShowDamageDetails(damageDetails));
         if (damageDetails.Fainted == true)
         {
-            yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.PokemonBase.PokemonName}은(는) 쓰려졌다!");
+            yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.PokemonBase.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.PokemonBase.PokemonName, false)} 쓰러졌다!");
+            // yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.PokemonBase.PokemonName}은(는) 쓰려졌다!");
             //애니메이션 재생
 
             yield return new WaitForSeconds(2.0f);
@@ -328,7 +332,7 @@ public class BattleSystem : MonoBehaviour
             var selectedMember = playerParty.Pokemons[currentMember];
             if (selectedMember.PokemonHp <= 0)
             {
-                partyScreen.SetMessageText($"{playerParty.Pokemons[currentMember].PokemonBase.PokemonName}은/는 싸울 수 있는 \n기력이 남아 있지 않습니다!");
+                partyScreen.SetMessageText($"{playerParty.Pokemons[currentMember].PokemonBase.PokemonName}{GetCorrectParticle(playerParty.Pokemons[currentMember].PokemonBase.PokemonName, false)} 싸울 수 있는 \n기력이 남아 있지 않습니다!");
                 return;
             }
             if (selectedMember == playerUnit.BattlePokemon)
@@ -356,7 +360,7 @@ public class BattleSystem : MonoBehaviour
             yield return new WaitForSeconds(1.5f);
 
             playerUnit.SetUp(newPokemon);
-            playerHud.SetHud(newPokemon);
+            playerHud.SetHud(newPokemon, true);
             dialogBox.SetSkillNames(newPokemon.Skills);
 
             skillCount = newPokemon.Skills.Count;
@@ -367,13 +371,30 @@ public class BattleSystem : MonoBehaviour
         else
         {
             playerUnit.SetUp(newPokemon);
-            playerHud.SetHud(newPokemon);
+            playerHud.SetHud(newPokemon, true);
             dialogBox.SetSkillNames(newPokemon.Skills);
 
             skillCount = newPokemon.Skills.Count;
 
             yield return dialogBox.TypeDialog($"가랏! {newPokemon.PokemonBase.PokemonName}!");
             PlayerMove();
+        }
+    }
+    //은는이가
+    string GetCorrectParticle(string name, bool subject)
+    {
+        char lastChar = name[name.Length - 1];
+        int unicode = (int)lastChar;
+        bool endsWithConsonant = (unicode - 44032) % 28 != 0; // 44032는 '가'의 유니코드, 28는 받침의 수
+
+
+        if (subject)
+        {
+            return endsWithConsonant ? "이" : "가";
+        }
+        else
+        {
+            return endsWithConsonant ? "은" : "는";
         }
     }
 }

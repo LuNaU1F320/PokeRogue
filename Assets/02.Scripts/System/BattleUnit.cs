@@ -15,7 +15,7 @@ public class BattleUnit : MonoBehaviour
     [HideInInspector] public Dictionary<string, Sprite> sprites = new Dictionary<string, Sprite>();
     [HideInInspector] private SpriteRenderer spriteRenderer;
     [HideInInspector] private List<Sprite> animationFrames = new List<Sprite>();
-    [HideInInspector] float frameRate = 0.1f; // 프레임 간격(초)
+    [HideInInspector] float frameRate = 0.07f; // 프레임 간격(초)
 
     //
 

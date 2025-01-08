@@ -14,7 +14,7 @@ public class BattleHud : MonoBehaviour
     [SerializeField] Image PokemonDualTypeImg2;
     Pokemon _pokemon;
 
-    public void SetHud(Pokemon SetPokemon)
+    public void SetHud(Pokemon SetPokemon, bool isPlayerUnit)
     {
         PokemonTypeImg.gameObject.SetActive(false);
         PokemonDualTypeImg1.gameObject.SetActive(false);
@@ -27,57 +27,108 @@ public class BattleHud : MonoBehaviour
         {
             hpbar_Text.text = $"{SetPokemon.PokemonHp}/{SetPokemon.MaxHp}";
         }
-        SetPokemonType();
+        SetPokemonType(isPlayerUnit);
     }
-    void SetPokemonType()
+    void SetPokemonType(bool isPlayerUnit)
     {
-        if (_pokemon.Type2 == PokemonType.None)
+        if (isPlayerUnit)
         {
-            Sprite[] pokemonTypeSprites = Resources.LoadAll<Sprite>("Image/PokemonType");
-            if (PokemonTypeImg != null)
+            if (_pokemon.Type2 == PokemonType.None)
             {
-                PokemonTypeImg.gameObject.SetActive(true);
-                string onlypokType = _pokemon.Type1.ToString();
-                Sprite typeTargetSprite = System.Array.Find(pokemonTypeSprites, sprite => sprite.name == onlypokType);
-                if (typeTargetSprite != null)
+                Sprite[] pokemonTypeSprites = Resources.LoadAll<Sprite>("Image/pbinfo_player_type");
+                if (PokemonTypeImg != null)
                 {
-                    PokemonTypeImg.sprite = typeTargetSprite;
-                }
-                else
-                {
-                    Debug.LogError($"스프라이트를 찾을 수 없습니다: {onlypokType}");
-                    foreach (var sprite in pokemonTypeSprites)
+                    PokemonTypeImg.gameObject.SetActive(true);
+                    string onlypokType = _pokemon.Type1.ToString();
+                    Sprite typeTargetSprite = System.Array.Find(pokemonTypeSprites, sprite => sprite.name == onlypokType);
+                    if (typeTargetSprite != null)
                     {
-                        Debug.Log($"스프라이트 이름: {sprite.name}");
+                        PokemonTypeImg.sprite = typeTargetSprite;
+                    }
+                    else
+                    {
+                        Debug.LogError($"스프라이트를 찾을 수 없습니다: {onlypokType}");
+                        foreach (var sprite in pokemonTypeSprites)
+                        {
+                            Debug.Log($"스프라이트 이름: {sprite.name}");
+                        }
                     }
                 }
             }
-
+            else
+            {
+                if (PokemonDualTypeImg1 != null && PokemonDualTypeImg2 != null)
+                {
+                    Sprite[] pokemonType2Sprites1 = Resources.LoadAll<Sprite>("Image/pbinfo_player_type1");
+                    Sprite[] pokemonType2Sprites2 = Resources.LoadAll<Sprite>("Image/pbinfo_player_type2");
+                    PokemonDualTypeImg1.gameObject.SetActive(true);
+                    PokemonDualTypeImg2.gameObject.SetActive(true);
+                    string pokType1 = _pokemon.Type1.ToString();
+                    string pokType2 = _pokemon.Type2.ToString();
+                    Sprite type2TargetSprite1 = System.Array.Find(pokemonType2Sprites1, sprite => sprite.name == pokType1);
+                    Sprite type2TargetSprite2 = System.Array.Find(pokemonType2Sprites2, sprite => sprite.name == pokType2);
+                    if (type2TargetSprite1 != null && type2TargetSprite2 != null)
+                    {
+                        PokemonDualTypeImg1.sprite = type2TargetSprite1;
+                        PokemonDualTypeImg2.sprite = type2TargetSprite2;
+                    }
+                    else
+                    {
+                        Debug.LogError("듀얼타입 스프라이트 로딩 실패");
+                    }
+                }
+            }
         }
         else
         {
-            if (PokemonDualTypeImg1 != null && PokemonDualTypeImg2 != null)
+            if (_pokemon.Type2 == PokemonType.None)
             {
-                Sprite[] pokemonType2Sprites1 = Resources.LoadAll<Sprite>("Image/TypeDual1");
-                Sprite[] pokemonType2Sprites2 = Resources.LoadAll<Sprite>("Image/TypeDual2");
-                PokemonDualTypeImg1.gameObject.SetActive(true);
-                PokemonDualTypeImg2.gameObject.SetActive(true);
-                string pokType1 = _pokemon.Type1.ToString();
-                string pokType2 = _pokemon.Type2.ToString();
-                Sprite type2TargetSprite1 = System.Array.Find(pokemonType2Sprites1, sprite => sprite.name == pokType1);
-                Sprite type2TargetSprite2 = System.Array.Find(pokemonType2Sprites2, sprite => sprite.name == pokType2);
-                if (type2TargetSprite1 != null && type2TargetSprite2 != null)
+                Sprite[] pokemonTypeSprites = Resources.LoadAll<Sprite>("Image/pbinfo_enemy_type");
+                if (PokemonTypeImg != null)
                 {
-                    PokemonDualTypeImg1.sprite = type2TargetSprite1;
-                    PokemonDualTypeImg2.sprite = type2TargetSprite2;
+                    PokemonTypeImg.gameObject.SetActive(true);
+                    string onlypokType = _pokemon.Type1.ToString();
+                    Sprite typeTargetSprite = System.Array.Find(pokemonTypeSprites, sprite => sprite.name == onlypokType);
+                    if (typeTargetSprite != null)
+                    {
+                        PokemonTypeImg.sprite = typeTargetSprite;
+                    }
+                    else
+                    {
+                        Debug.LogError($"스프라이트를 찾을 수 없습니다: {onlypokType}");
+                        foreach (var sprite in pokemonTypeSprites)
+                        {
+                            Debug.Log($"스프라이트 이름: {sprite.name}");
+                        }
+                    }
                 }
-                else
+            }
+            else
+            {
+                if (PokemonDualTypeImg1 != null && PokemonDualTypeImg2 != null)
                 {
-                    Debug.LogError("듀얼타입 스프라이트 로딩 실패");
+                    Sprite[] pokemonType2Sprites1 = Resources.LoadAll<Sprite>("Image/pbinfo_enemy_type1");
+                    Sprite[] pokemonType2Sprites2 = Resources.LoadAll<Sprite>("Image/pbinfo_enemy_type2");
+                    PokemonDualTypeImg1.gameObject.SetActive(true);
+                    PokemonDualTypeImg2.gameObject.SetActive(true);
+                    string pokType1 = _pokemon.Type1.ToString();
+                    string pokType2 = _pokemon.Type2.ToString();
+                    Sprite type2TargetSprite1 = System.Array.Find(pokemonType2Sprites1, sprite => sprite.name == pokType1);
+                    Sprite type2TargetSprite2 = System.Array.Find(pokemonType2Sprites2, sprite => sprite.name == pokType2);
+                    if (type2TargetSprite1 != null && type2TargetSprite2 != null)
+                    {
+                        PokemonDualTypeImg1.sprite = type2TargetSprite1;
+                        PokemonDualTypeImg2.sprite = type2TargetSprite2;
+                    }
+                    else
+                    {
+                        Debug.LogError("듀얼타입 스프라이트 로딩 실패");
+                    }
                 }
             }
         }
     }
+
     public IEnumerator UpdateHp()
     {
         yield return hpbar.SetHpSmooth((float)_pokemon.PokemonHp / _pokemon.MaxHp);
