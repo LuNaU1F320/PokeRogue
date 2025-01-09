@@ -80,11 +80,23 @@ public class SkillCSVImporter : EditorWindow
             skill.GetType().GetField("skillPP", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
                 .SetValue(skill, int.Parse(values[6]));
 
+            // // effects와 target 설정
+            // skill.GetType().GetField("effects", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+            //     .SetValue(skill, string.IsNullOrEmpty(values[7]) ? null : values[7]); // effects 설정
+
+            SkillTarget target = string.IsNullOrEmpty(values[7].Trim())
+                ? SkillTarget.Foe  // 빈 문자열일 경우 기본값 Foe 설정
+                : (SkillTarget)System.Enum.Parse(typeof(SkillTarget), values[7]);
+
+            skill.GetType().GetField("target", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance)
+                .SetValue(skill, target);
+
+
 
             string fileName = $"{values[1]}_Skill.asset";
             string assetPath = Path.Combine(folderPath, fileName);
             AssetDatabase.CreateAsset(skill, assetPath);
-            skillsImported++; // Increment counter
+            skillsImported++;
         }
 
         AssetDatabase.SaveAssets();

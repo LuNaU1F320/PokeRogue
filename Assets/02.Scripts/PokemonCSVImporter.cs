@@ -56,7 +56,6 @@ public class PokemonCSVImporter : EditorWindow
             PokemonType type2 = values[4].Trim() == "" ? PokemonType.None : (PokemonType)System.Enum.Parse(typeof(PokemonType), values[4]);
             pokemon.GetType().GetField("pokemonType2", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(pokemon, type2);
 
-            // pokemon.GetType().GetField("pokemonType2", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(pokemon, (PokemonType)System.Enum.Parse(typeof(PokemonType), values[4]));
             pokemon.GetType().GetField("maxHp", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(pokemon, int.Parse(values[5]));
             pokemon.GetType().GetField("attack", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(pokemon, int.Parse(values[6]));
             pokemon.GetType().GetField("defence", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance).SetValue(pokemon, int.Parse(values[7]));
@@ -100,6 +99,42 @@ public class PokemonCSVImporter : EditorWindow
             string trimmedEntry = entry.Trim();
             if (string.IsNullOrEmpty(trimmedEntry)) continue;
 
+            // '1:몸통박치기' 형식으로 나누기
+            string[] parts = trimmedEntry.Split(':');
+
+            if (parts.Length == 2)
+            {
+                int level = int.Parse(parts[0].Trim());
+                string skillName = parts[1].Trim();
+
+                // 해당 스킬을 SkillBase로 로드
+                SkillBase skillBase = Resources.Load<SkillBase>($"Skills/{skillName}_Skill");
+                if (skillBase != null)
+                {
+                    skills.Add(new LearnableSkill(skillBase, level));
+                }
+                else
+                {
+                    Debug.LogWarning($"SkillBase not found at path: Skills/{skillName}_Skill");
+                }
+            }
+        }
+        return skills;
+    }
+    /*
+    private List<LearnableSkill> ParseLearnableSkills(string skillData)
+    {
+        List<LearnableSkill> skills = new List<LearnableSkill>();
+
+        // |로 스킬을 나누기
+        string[] skillEntries = skillData.Split('|');
+
+        foreach (string entry in skillEntries)
+        {
+            // 공백 제거 후 항목 처리
+            string trimmedEntry = entry.Trim();
+            if (string.IsNullOrEmpty(trimmedEntry)) continue;
+
             // '몸통박치기:1' 형식으로 나누기
             string[] parts = trimmedEntry.Split(':');
 
@@ -122,4 +157,5 @@ public class PokemonCSVImporter : EditorWindow
         }
         return skills;
     }
+    */
 }

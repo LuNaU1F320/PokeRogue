@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 271878df85541a1469db368301d2282b, type: 3}
+  m_Name: "038_\uB098\uC778\uD14C\uC77C"
+  m_EditorClassIdentifier: 
+  pokemonIndex: 38
+  pokemonName: "\uB098\uC778\uD14C\uC77C"
+  pokemonDescription: 
+  pokemonType1: 2
+  pokemonType2: 0
+  maxHp: 73
+  attack: 76
+  defence: 75
+  spAttack: 81
+  spDefence: 100
+  speed: 100
+  learnableSkills:
+  - skillBase: {fileID: 11400000, guid: 4759a73369ae93c40810f9ab114de7ce, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: 335454bd52461824b928207ba24172eb, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: 0ed45979e3d6f9347acc97ba93a1dd74, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: ed8e0c0ac3e20224e9351f100479ba76, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: 94a5444af7a08844298551f82ddb2bfa, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: 1417427ca1c409148a55af441dc24bc4, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: 88032efd501c3af4292f93016647dd93, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: 7303058af7a49674da9c5ed878661ec1, type: 2}
+    level: 1

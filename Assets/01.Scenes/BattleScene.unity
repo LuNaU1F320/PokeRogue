@@ -5548,7 +5548,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pokemons:
-  - _base: {fileID: 11400000, guid: 1ac22d6c1051adb419c7d97c6fe66d7b, type: 2}
+  - _base: {fileID: 11400000, guid: 3e8fa8bd651132c44ac468c7d55dcd24, type: 2}
+    level: 50
+  - _base: {fileID: 11400000, guid: 3788839124132c8458830fc139eef418, type: 2}
+    level: 50
+  - _base: {fileID: 11400000, guid: bd10962efee14604ba73e5276c5067dc, type: 2}
+    level: 50
+  - _base: {fileID: 11400000, guid: b6caa1a07114089418d347341f7455d2, type: 2}
+    level: 50
+  - _base: {fileID: 11400000, guid: 44c3500c1fcd0c044b41e9a6b767a5c5, type: 2}
+    level: 50
+  - _base: {fileID: 11400000, guid: e9983cbe7babb63459be353f85c8b385, type: 2}
     level: 50
 --- !u!4 &1410205262
 Transform:
