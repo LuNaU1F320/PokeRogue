@@ -13,13 +13,13 @@ MonoBehaviour:
   m_Name: Test_Skill
   m_EditorClassIdentifier: 
   skillIndex: 843
-  skillName: "\uD14C\uC2A4\uD2B8\uC6A9"
+  skillName: "\uD14C\uC2A4\uD2B8 \uACF5"
   skillDescription: 
-  skillType: 7
+  skillType: 1
   categoryKey: 0
-  effects:
-    rankups: []
-  target: 1
   skillPower: 100
   skillAccuary: 100
   skillPP: 10
+  effects:
+    rankup: []
+  target: 1
