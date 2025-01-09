@@ -5549,7 +5549,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pokemons:
   - _base: {fileID: 11400000, guid: 1ac22d6c1051adb419c7d97c6fe66d7b, type: 2}
-    level: 10
+    level: 50
 --- !u!4 &1410205262
 Transform:
   m_ObjectHideFlags: 0
@@ -6692,7 +6692,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   wildPokemons:
   - _base: {fileID: 11400000, guid: 1ac22d6c1051adb419c7d97c6fe66d7b, type: 2}
-    level: 20
+    level: 50
 --- !u!1 &1668804233
 GameObject:
   m_ObjectHideFlags: 0

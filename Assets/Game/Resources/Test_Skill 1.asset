@@ -17,11 +17,11 @@ MonoBehaviour:
   skillDescription: 
   skillType: 7
   categoryKey: 2
-  effects:
-    rankups:
-    - stat: 0
-      rank: 6
-  target: 1
   skillPower: 100
   skillAccuary: 100
   skillPP: 10
+  effects:
+    rankup:
+    - stat: 0
+      rank: 6
+  target: 1

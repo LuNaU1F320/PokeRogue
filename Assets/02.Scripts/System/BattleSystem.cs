@@ -17,8 +17,6 @@ public class BattleSystem : MonoBehaviour
 {
     [SerializeField] BattleUnit playerUnit;
     [SerializeField] BattleUnit enemyUnit;
-    // [SerializeField] BattleHud playerHud;
-    // [SerializeField] BattleHud enemyHud;
     [SerializeField] BattleDialogBox dialogBox;
 
     //Party
@@ -60,6 +58,12 @@ public class BattleSystem : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.G))
         {
             Debug.Log(currentMember);
+        }
+        if (Input.GetKeyDown(KeyCode.F))
+        {
+            // Debug.Log(playerUnit.BattlePokemon.PokemonBase.PokemonName);
+            // Debug.Log(playerUnit.BattlePokemon.Attack);
+            // Debug.Log(playerUnit.BattlePokemon.Rankup[0]);
         }
     }
     public IEnumerator SetUpBattle()
@@ -242,15 +246,15 @@ public class BattleSystem : MonoBehaviour
 
         if (skill.SkillBase.CategoryKey == CategoryKey.Status)
         {
-            if (skill.SkillBase.Effects.Rankups != null)
+            if (skill.SkillBase.Effects.Rankup != null)
             {
                 if (skill.SkillBase.Target == SkillTarget.Self)
                 {
-                    sourceUnit.BattlePokemon.ApplyRankups(skill.SkillBase.Effects.Rankups);
+                    sourceUnit.BattlePokemon.ApplyRankups(skill.SkillBase.Effects.Rankup);
                 }
                 else
                 {
-                    targetUnit.BattlePokemon.ApplyRankups(skill.SkillBase.Effects.Rankups);
+                    targetUnit.BattlePokemon.ApplyRankups(skill.SkillBase.Effects.Rankup);
                 }
             }
         }

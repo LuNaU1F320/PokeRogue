@@ -13,12 +13,12 @@ public class SkillBase : ScriptableObject
 
     [SerializeField] PokemonType skillType;
     [SerializeField] CategoryKey categoryKey;
-    [SerializeField] SkillEffects effects;
-    [SerializeField] SkillTarget target;
 
     [SerializeField] int skillPower;
     [SerializeField] int skillAccuary;
     [SerializeField] int skillPP;
+    [SerializeField] SkillEffects effects;
+    [SerializeField] SkillTarget target;
 
     public string SkillName
     {
@@ -56,30 +56,15 @@ public class SkillBase : ScriptableObject
     {
         get { return skillPP; }
     }
-    /*
-    public bool IsSpecial
-    {
-        get
-        {
-            if (skillType == PokemonType.Fire || skillType == PokemonType.Water)
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-    }*/
 }
 [System.Serializable]
 public class SkillEffects
 {
-    [SerializeField] List<Rankup> rankups;
+    [SerializeField] List<Rankup> rankup;
 
-    public List<Rankup> Rankups
+    public List<Rankup> Rankup
     {
-        get { return rankups; }
+        get { return rankup; }
     }
 }
 [System.Serializable]

@@ -55,12 +55,14 @@ public class Pokemon
     }
     void CalculateStats()
     {
-        Stats = new Dictionary<Stat, int>();
-        Stats.Add(Stat.Attack, Mathf.FloorToInt((PokemonBase.Attack * PokemonLevel) / 100f) + 5);
-        Stats.Add(Stat.Defence, Mathf.FloorToInt((PokemonBase.Defence * PokemonLevel) / 100f) + 5);
-        Stats.Add(Stat.SpAttack, Mathf.FloorToInt((PokemonBase.SpAttack * PokemonLevel) / 100f) + 5);
-        Stats.Add(Stat.SpDefence, Mathf.FloorToInt((PokemonBase.SpDefence * PokemonLevel) / 100f) + 5);
-        Stats.Add(Stat.Speed, Mathf.FloorToInt((PokemonBase.Speed * PokemonLevel) / 100f) + 5);
+        Stats = new Dictionary<Stat, int>
+        {
+            { Stat.Attack, Mathf.FloorToInt((PokemonBase.Attack * PokemonLevel) / 100f) + 5 },
+            { Stat.Defence, Mathf.FloorToInt((PokemonBase.Defence * PokemonLevel) / 100f) + 5 },
+            { Stat.SpAttack, Mathf.FloorToInt((PokemonBase.SpAttack * PokemonLevel) / 100f) + 5 },
+            { Stat.SpDefence, Mathf.FloorToInt((PokemonBase.SpDefence * PokemonLevel) / 100f) + 5 },
+            { Stat.Speed, Mathf.FloorToInt((PokemonBase.Speed * PokemonLevel) / 100f) + 5 }
+        };
 
         MaxHp = Mathf.FloorToInt((PokemonBase.MaxHp * PokemonLevel) / 100f) + 10;
     }
@@ -91,7 +93,6 @@ public class Pokemon
             var rank = rankUp.rank;
 
             Rankup[stat] = Math.Clamp(Rankup[stat] + rank, -6, 6);
-            Debug.Log($"{stat}랭크업{Rankup[stat]}");
         }
     }
 
