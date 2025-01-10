@@ -5548,7 +5548,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pokemons:
-  - _base: {fileID: 11400000, guid: 3c668f116c649964980009b4c9ac0acc, type: 2}
+  - _base: {fileID: 11400000, guid: 1ac22d6c1051adb419c7d97c6fe66d7b, type: 2}
     level: 50
   - _base: {fileID: 11400000, guid: b4c01b85f40563842998661b030c3976, type: 2}
     level: 50
@@ -5790,8 +5790,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -340, y: 0}
-  m_SizeDelta: {x: 1100, y: 180}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1790, y: 180}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1488754159
 MonoBehaviour:

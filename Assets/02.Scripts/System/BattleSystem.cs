@@ -61,9 +61,9 @@ public class BattleSystem : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.F))
         {
-            // Debug.Log(playerUnit.BattlePokemon.PokemonBase.PokemonName);
-            // Debug.Log(playerUnit.BattlePokemon.Attack);
-            // Debug.Log(playerUnit.BattlePokemon.Rankup[0]);
+            Debug.Log(playerUnit.BattlePokemon.PokemonBase.PokemonName);
+            Debug.Log(playerUnit.BattlePokemon.Attack);
+            Debug.Log(playerUnit.BattlePokemon.Rankup[0]);
         }
     }
     public IEnumerator SetUpBattle()
@@ -82,11 +82,23 @@ public class BattleSystem : MonoBehaviour
         // yield return dialogBox.TypeDialog($"앗! 야생 {enemyUnit.BattlePokemon.PokemonBase.PokemonName}가 \n튀어나왔다!");
         // yield return new WaitForSeconds(1f);
 
-        ActionSelection();
+        ChooseFirstTurn();
+    }
+    void ChooseFirstTurn()
+    {
+        if (playerUnit.BattlePokemon.Speed >= enemyUnit.BattlePokemon.Speed)
+        {
+            ActionSelection();
+        }
+        else
+        {
+            StartCoroutine(EnemyMove());
+        }
     }
     void BattleOver(bool won)
     {
         state = BattleState.BattleOver;
+        playerParty.Pokemons.ForEach(pok => pok.OnBattleOver());
         OnBattleOver(won);
     }
     void ActionSelection()
@@ -114,98 +126,24 @@ public class BattleSystem : MonoBehaviour
 
         var skill = playerUnit.BattlePokemon.Skills[currentSkill];
 
-        yield return RunMove(playerUnit, enemyUnit, skill);
+        yield return RunSkill(playerUnit, enemyUnit, skill);
         if (state == BattleState.PerformMove)
         {
             StartCoroutine(EnemyMove());
         }
-        /*
-        if (skill.SkillPP <= 0)
-        {
-            skill.SkillPP--;
-        }
-        while (dialogBox.IsTyping())
-        {
-            yield return null; // 이전 텍스트 출력이 끝날 때까지 대기
-        }
-        yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.PokemonBase.PokemonName}의 {skill.SkillBase.SkillName}!");
-        // yield return new WaitForSeconds(1.0f);
-
-        var (startHp, endHp, damageDetails) = enemyUnit.BattlePokemon.TakeDamage(skill, playerUnit.BattlePokemon);
-        yield return enemyHud.UpdateHp();
-        yield return StartCoroutine(ShowDamageDetails(damageDetails));
-        // yield return enemyHud.AnimateTextHp();
-        if (damageDetails.Fainted == true)
-        {
-            yield return dialogBox.TypeDialog($"{enemyUnit.BattlePokemon.PokemonBase.PokemonName}{GetCorrectParticle(enemyUnit.BattlePokemon.PokemonBase.PokemonName, false)} 쓰러졌다!");
-            // yield return dialogBox.TypeDialog($"{enemyUnit.BattlePokemon.PokemonBase.PokemonName}은(는) 쓰려졌다!");
-            //애니메이션 재생
-
-            //플레이어 승리 (다음스테이지로)
-            yield return new WaitForSeconds(2.0f);
-            OnBattleOver(true);
-        }
-        else
-        {
-            StartCoroutine(EnemyMove());
-        }
-        */
     }
     IEnumerator EnemyMove()
     {
         state = BattleState.PerformMove;
         var skill = enemyUnit.BattlePokemon.GetRandomSkill();
 
-        yield return RunMove(enemyUnit, playerUnit, skill);
+        yield return RunSkill(enemyUnit, playerUnit, skill);
         if (state == BattleState.PerformMove)
         {
             ActionSelection();
         }
-        /*
-        skill.SkillPP--;
-        yield return dialogBox.TypeDialog($"{enemyUnit.BattlePokemon.PokemonBase.PokemonName}의 {skill.SkillBase.SkillName}!");
-        // yield return new WaitForSeconds(1.0f);
-
-        var (startHp, endHp, damageDetails) = playerUnit.BattlePokemon.TakeDamage(skill, playerUnit.BattlePokemon);
-        // yield return playerHud.UpdateHp();
-        StartCoroutine(playerHud.UpdateHp());
-        StartCoroutine(playerHud.AnimateTextHp(startHp, endHp));
-        yield return StartCoroutine(ShowDamageDetails(damageDetails));
-        if (damageDetails.Fainted == true)
-        {
-            yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.PokemonBase.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.PokemonBase.PokemonName, false)} 쓰러졌다!");
-            // yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.PokemonBase.PokemonName}은(는) 쓰려졌다!");
-            //애니메이션 재생
-
-            yield return new WaitForSeconds(2.0f);
-
-            var nextPokemon = playerParty.GetHealthyPokemon();
-            if (nextPokemon != null)
-            {
-                OpenPartyScreen();
-                // playerUnit.SetUp(nextPokemon);
-                // playerHud.SetHud(nextPokemon);
-                // dialogBox.SetSkillNames(nextPokemon.Skills);
-
-                // skillCount = nextPokemon.Skills.Count;
-
-                // yield return dialogBox.TypeDialog($"가랏! {nextPokemon.PokemonBase.PokemonName}!");
-                // PlayerAction();
-            }
-            
-            else
-            {
-                //뒤짐
-                OnBattleOver(false);
-            }
-        }
-        else
-        {
-            ActionSelection();
-        }
-        */
     }
-    IEnumerator RunMove(BattleUnit sourceUnit, BattleUnit targetUnit, Skill skill)
+    IEnumerator RunSkill(BattleUnit sourceUnit, BattleUnit targetUnit, Skill skill)
     {
         /*
         // 모든 스킬의 PP가 0인지 확인
@@ -246,17 +184,7 @@ public class BattleSystem : MonoBehaviour
 
         if (skill.SkillBase.CategoryKey == CategoryKey.Status)
         {
-            if (skill.SkillBase.Effects.Rankup != null)
-            {
-                if (skill.SkillBase.Target == SkillTarget.Self)
-                {
-                    sourceUnit.BattlePokemon.ApplyRankups(skill.SkillBase.Effects.Rankup);
-                }
-                else
-                {
-                    targetUnit.BattlePokemon.ApplyRankups(skill.SkillBase.Effects.Rankup);
-                }
-            }
+            yield return RunSkillEffects(skill, sourceUnit.BattlePokemon, targetUnit.BattlePokemon);
         }
         else
         {
@@ -268,10 +196,9 @@ public class BattleSystem : MonoBehaviour
             {
                 StartCoroutine(targetUnit.BattleHud.AnimateTextHp(startHp, endHp));
             }
-            yield return StartCoroutine(ShowDamageDetails(damageDetails));
+            StartCoroutine(ShowDamageDetails(damageDetails));
 
         }
-
 
         if (targetUnit.BattlePokemon.PokemonHp <= 0)
         {
@@ -283,6 +210,33 @@ public class BattleSystem : MonoBehaviour
             CheckForBattleOver(targetUnit);
         }
     }
+
+    IEnumerator RunSkillEffects(Skill skill, Pokemon sourceUnit, Pokemon targetUnit)
+    {
+        if (skill.SkillBase.Effects.Rankup != null)
+        {
+            if (skill.SkillBase.Target == SkillTarget.Self)
+            {
+                sourceUnit.ApplyRankups(skill.SkillBase.Effects.Rankup);
+            }
+            else
+            {
+                targetUnit.ApplyRankups(skill.SkillBase.Effects.Rankup);
+            }
+            yield return ShowStatusChanges(sourceUnit);
+            yield return ShowStatusChanges(targetUnit);
+        }
+    }
+
+    IEnumerator ShowStatusChanges(Pokemon pokemon)
+    {
+        while (pokemon.StatusChanges.Count > 0)
+        {
+            string message = pokemon.StatusChanges.Dequeue();
+            yield return dialogBox.TypeDialog(message);
+        }
+    }
+
     void CheckForBattleOver(BattleUnit faintedUnit)
     {
         if (faintedUnit.IsPlayerUnit)
@@ -470,6 +424,7 @@ public class BattleSystem : MonoBehaviour
             playerParty.Pokemons[currentMember] = currentBattlePokemon;
 
             StartCoroutine(SwitchPokemon(selectedMember));
+            selectedMember.ResetRankup();
         }
         else if (Input.GetKeyDown(KeyCode.Backspace))
         {
@@ -479,8 +434,10 @@ public class BattleSystem : MonoBehaviour
     }
     IEnumerator SwitchPokemon(Pokemon newPokemon)
     {
+        // bool isFainted = true;
         if (playerUnit.BattlePokemon.PokemonHp > 0)
         {
+            // isFainted = false;
             yield return dialogBox.TypeDialog($"돌아와 {playerUnit.BattlePokemon.PokemonBase.PokemonName}!");
             //사망애니메이션
             yield return new WaitForSeconds(1.5f);

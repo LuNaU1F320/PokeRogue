@@ -48,6 +48,7 @@ public class BattleDialogBox : MonoBehaviour
         }
         yield return new WaitForSeconds(1.0f);
 
+        dialogText.text = string.Empty;
         isTyping = false; // 텍스트 출력 완료
     }
     public bool IsTyping()

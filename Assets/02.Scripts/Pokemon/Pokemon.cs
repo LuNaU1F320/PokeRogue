@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -28,6 +27,7 @@ public class Pokemon
     public List<Skill> Skills { get; set; }
     public Dictionary<Stat, int> Stats { get; private set; }
     public Dictionary<Stat, int> Rankup { get; private set; }
+    public Queue<string> StatusChanges { get; private set; } = new Queue<string>();
     public void Init()
     {
         Skills = new List<Skill>();
@@ -44,28 +44,35 @@ public class Pokemon
         }
         CalculateStats();
         PokemonHp = MaxHp;
-        Rankup = new Dictionary<Stat, int>()
-        {
-            {Stat.Attack , 0},
-            {Stat.Defence , 0},
-            {Stat.SpAttack , 0},
-            {Stat.SpDefence , 0},
-            {Stat.Speed , 0}
-        };
+
+        ResetRankup();
     }
     void CalculateStats()
     {
         Stats = new Dictionary<Stat, int>
         {
-            { Stat.Attack, Mathf.FloorToInt((PokemonBase.Attack * PokemonLevel) / 100f) + 5 },
-            { Stat.Defence, Mathf.FloorToInt((PokemonBase.Defence * PokemonLevel) / 100f) + 5 },
-            { Stat.SpAttack, Mathf.FloorToInt((PokemonBase.SpAttack * PokemonLevel) / 100f) + 5 },
-            { Stat.SpDefence, Mathf.FloorToInt((PokemonBase.SpDefence * PokemonLevel) / 100f) + 5 },
-            { Stat.Speed, Mathf.FloorToInt((PokemonBase.Speed * PokemonLevel) / 100f) + 5 }
+            { Stat.공격, Mathf.FloorToInt((PokemonBase.Attack * PokemonLevel) / 100f) + 5 },
+            { Stat.방어, Mathf.FloorToInt((PokemonBase.Defence * PokemonLevel) / 100f) + 5 },
+            { Stat.특수공격, Mathf.FloorToInt((PokemonBase.SpAttack * PokemonLevel) / 100f) + 5 },
+            { Stat.특수방어, Mathf.FloorToInt((PokemonBase.SpDefence * PokemonLevel) / 100f) + 5 },
+            { Stat.스피드, Mathf.FloorToInt((PokemonBase.Speed * PokemonLevel) / 100f) + 5 }
         };
 
         MaxHp = Mathf.FloorToInt((PokemonBase.MaxHp * PokemonLevel) / 100f) + 10;
     }
+
+    public void ResetRankup()
+    {
+        Rankup = new Dictionary<Stat, int>()
+        {
+            {Stat.공격 , 0},
+            {Stat.방어 , 0},
+            {Stat.특수공격 , 0},
+            {Stat.특수방어 , 0},
+            {Stat.스피드 , 0}
+        };
+    }
+
     int GetStat(Stat stat)
     {
         int statVal = Stats[stat];
@@ -90,31 +97,82 @@ public class Pokemon
         foreach (var rankUp in rankUps)
         {
             var stat = rankUp.stat;
-            var rank = rankUp.rank;
+            // var rank = rankUp.rank;
 
-            Rankup[stat] = Math.Clamp(Rankup[stat] + rank, -6, 6);
+            var newRank = rankUp.rank; // 현재 랭크를 가져옴
+            var oldRank = Rankup[stat]; // 기존 랭크를 가져옴
+
+            // 새로운 랭크로 업데이트
+            Rankup[stat] = Math.Clamp(newRank, -6, 6);
+
+            // Rankup[stat] = Math.Clamp(Rankup[stat] + rank, -6, 6);
+
+            // 메시지 생성 (랭크 변화량 계산)
+            var rankChange = newRank - oldRank;
+
+            // 최대/최소 랭크 확인
+            bool isMaxRank = Rankup[stat] == 6;
+            bool isMinRank = Rankup[stat] == -6;
+
+            // 메시지 처리
+            if (isMaxRank)
+            {
+                if (rankChange > 0)
+                {
+                    StatusChanges.Enqueue($"{_base.PokemonName}의 {stat}이 크게 올라갔다!");
+                }
+                StatusChanges.Enqueue($"{_base.PokemonName}의 {stat}은 더 올라가지 않는다!");
+            }
+            else if (isMinRank)
+            {
+                if (rankChange < 0)
+                {
+                    StatusChanges.Enqueue($"{_base.PokemonName}의 {stat}이 크게 떨어졌다!");
+                }
+                StatusChanges.Enqueue($"{_base.PokemonName}의 {stat}은 더 떨어지지 않는다!");
+            }
+            else
+            {
+                // 일반적인 랭크 변화 메시지 처리
+                if (rankChange >= 2)
+                {
+                    StatusChanges.Enqueue($"{_base.PokemonName}의 {stat}이 크게 올라갔다!");
+                }
+                else if (rankChange > 0)
+                {
+                    StatusChanges.Enqueue($"{_base.PokemonName}의 {stat}이 올라갔다!");
+                }
+                else if (rankChange <= -2)
+                {
+                    StatusChanges.Enqueue($"{_base.PokemonName}의 {stat}이 크게 떨어졌다!");
+                }
+                else if (rankChange < 0)
+                {
+                    StatusChanges.Enqueue($"{_base.PokemonName}의 {stat}이 떨어졌다!");
+                }
+            }
         }
     }
 
     public int Attack
     {
-        get { return GetStat(Stat.Attack); }
+        get { return GetStat(Stat.공격); }
     }
     public int Defence
     {
-        get { return GetStat(Stat.Defence); }
+        get { return GetStat(Stat.방어); }
     }
     public int SpAttack
     {
-        get { return GetStat(Stat.SpAttack); }
+        get { return GetStat(Stat.특수공격); }
     }
     public int SpDefence
     {
-        get { return GetStat(Stat.SpDefence); }
+        get { return GetStat(Stat.특수방어); }
     }
     public int Speed
     {
-        get { return GetStat(Stat.Speed); }
+        get { return GetStat(Stat.스피드); }
     }
     public int MaxHp
     {
@@ -189,6 +247,12 @@ public class Pokemon
         int r = UnityEngine.Random.Range(0, Skills.Count);
         return Skills[r];
     }
+
+    public void OnBattleOver()
+    {
+        ResetRankup();
+    }
+
     public class DamageDetails
     {
         public bool Fainted { get; set; }

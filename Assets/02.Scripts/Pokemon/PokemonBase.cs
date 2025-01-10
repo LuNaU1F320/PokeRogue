@@ -128,11 +128,11 @@ public enum PokemonType
 }
 public enum Stat
 {
-    Attack,
-    Defence,
-    SpAttack,
-    SpDefence,
-    Speed
+    공격,
+    방어,
+    특수공격,
+    특수방어,
+    스피드
 }
 public class TypeChart
 {
