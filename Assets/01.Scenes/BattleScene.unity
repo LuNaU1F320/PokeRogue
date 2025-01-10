@@ -5289,8 +5289,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 352.3052, y: -117.77475}
-  m_SizeDelta: {x: -492.3946, y: 13.1663}
+  m_AnchoredPosition: {x: 357, y: -117}
+  m_SizeDelta: {x: -497, y: 9.5}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!114 &1150569030
 MonoBehaviour:
@@ -5548,17 +5548,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pokemons:
-  - _base: {fileID: 11400000, guid: 3e8fa8bd651132c44ac468c7d55dcd24, type: 2}
+  - _base: {fileID: 11400000, guid: 3c668f116c649964980009b4c9ac0acc, type: 2}
     level: 50
-  - _base: {fileID: 11400000, guid: 3788839124132c8458830fc139eef418, type: 2}
+  - _base: {fileID: 11400000, guid: b4c01b85f40563842998661b030c3976, type: 2}
     level: 50
-  - _base: {fileID: 11400000, guid: bd10962efee14604ba73e5276c5067dc, type: 2}
+  - _base: {fileID: 11400000, guid: 9a4e86cdda1f45542bdd5ed82020358f, type: 2}
     level: 50
-  - _base: {fileID: 11400000, guid: b6caa1a07114089418d347341f7455d2, type: 2}
+  - _base: {fileID: 11400000, guid: 4be32f720d34fff41839ac7c9ee8b835, type: 2}
     level: 50
-  - _base: {fileID: 11400000, guid: 44c3500c1fcd0c044b41e9a6b767a5c5, type: 2}
+  - _base: {fileID: 11400000, guid: e0dbc829cc7653548b9901cf8b9aa935, type: 2}
     level: 50
-  - _base: {fileID: 11400000, guid: e9983cbe7babb63459be353f85c8b385, type: 2}
+  - _base: {fileID: 11400000, guid: 8bbe4d8fb818f594ba0243af84babfa7, type: 2}
     level: 50
 --- !u!4 &1410205262
 Transform:
@@ -6701,7 +6701,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wildPokemons:
-  - _base: {fileID: 11400000, guid: 1ac22d6c1051adb419c7d97c6fe66d7b, type: 2}
+  - _base: {fileID: 11400000, guid: 1844567f79591574ab12b309cea111e0, type: 2}
+    level: 50
+  - _base: {fileID: 11400000, guid: f045739729135d2418b61d9f7f45ab54, type: 2}
+    level: 50
+  - _base: {fileID: 11400000, guid: f14eaff23ba3cf940b0c8e669ef320a3, type: 2}
+    level: 50
+  - _base: {fileID: 11400000, guid: 026d95ff6e56c484b92c6213075812f5, type: 2}
+    level: 50
+  - _base: {fileID: 11400000, guid: d01bfda84ddeb224f8870682c53a9dae, type: 2}
     level: 50
 --- !u!1 &1668804233
 GameObject:

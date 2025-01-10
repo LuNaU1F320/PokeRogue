@@ -21,5 +21,7 @@ MonoBehaviour:
   skillAccuary: 0
   skillPP: 20
   effects:
-    rankup: []
+    rankup:
+    - stat: 0
+      rank: 2
   target: 1

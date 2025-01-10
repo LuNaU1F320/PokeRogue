@@ -461,6 +461,14 @@ public class BattleSystem : MonoBehaviour
             }
             partyScreen.gameObject.SetActive(false);
             state = BattleState.Busy;
+
+            // 현재 전투 중인 포켓몬 (인덱스 0에 있는 포켓몬)
+            var currentBattlePokemon = playerParty.Pokemons[0];
+
+            // 교체 작업: 교체할 포켓몬을 0번 인덱스로, 나가있는 포켓몬을 교체할 포켓몬의 인덱스로 이동
+            playerParty.Pokemons[0] = selectedMember;
+            playerParty.Pokemons[currentMember] = currentBattlePokemon;
+
             StartCoroutine(SwitchPokemon(selectedMember));
         }
         else if (Input.GetKeyDown(KeyCode.Backspace))
