@@ -209,11 +209,32 @@ public class BattleSystem : MonoBehaviour
             yield return new WaitForSeconds(2.0f);
             CheckForBattleOver(targetUnit);
         }
+
+        //상태이상 처리
+        sourceUnit.BattlePokemon.OnAfterTurn();
+        yield return ShowStatusChanges(sourceUnit.BattlePokemon);
+        yield return StartCoroutine(sourceUnit.BattleHud.UpdateHp());
+        // yield return targetUnit.BattleHud.UpdateHp();
+        // if (sourceUnit.BattleHud.hpbar_Text != null)
+        // {
+        //     StartCoroutine(sourceUnit.BattleHud.AnimateTextHp(startHp, endHp));
+        // }
+        if (sourceUnit.BattlePokemon.PokemonHp <= 0)
+        {
+            yield return dialogBox.TypeDialog($"{sourceUnit.BattlePokemon.PokemonBase.PokemonName}{GetCorrectParticle(sourceUnit.BattlePokemon.PokemonBase.PokemonName, false)} 쓰러졌다!");
+            //애니메이션 재생
+
+            //플레이어 승리 (다음스테이지로)
+            yield return new WaitForSeconds(2.0f);
+            CheckForBattleOver(sourceUnit);
+        }
     }
 
     IEnumerator RunSkillEffects(Skill skill, Pokemon sourceUnit, Pokemon targetUnit)
     {
-        if (skill.SkillBase.Effects.Rankup != null)
+        var effects = skill.SkillBase.Effects;
+        //RankUp
+        if (effects.Rankup != null)
         {
             if (skill.SkillBase.Target == SkillTarget.Self)
             {
@@ -223,16 +244,22 @@ public class BattleSystem : MonoBehaviour
             {
                 targetUnit.ApplyRankups(skill.SkillBase.Effects.Rankup);
             }
-            yield return ShowStatusChanges(sourceUnit);
-            yield return ShowStatusChanges(targetUnit);
         }
+        //상태이상
+        if (effects.Status != ConditionID.None)
+        {
+            targetUnit.SetStatus(effects.Status);
+        }
+
+        yield return ShowStatusChanges(sourceUnit);
+        yield return ShowStatusChanges(targetUnit);
     }
 
     IEnumerator ShowStatusChanges(Pokemon pokemon)
     {
-        while (pokemon.StatusChanges.Count > 0)
+        while (pokemon.StatusCngMsg.Count > 0)
         {
-            string message = pokemon.StatusChanges.Dequeue();
+            string message = pokemon.StatusCngMsg.Dequeue();
             yield return dialogBox.TypeDialog(message);
         }
     }

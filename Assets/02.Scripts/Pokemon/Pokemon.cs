@@ -27,7 +27,9 @@ public class Pokemon
     public List<Skill> Skills { get; set; }
     public Dictionary<Stat, int> Stats { get; private set; }
     public Dictionary<Stat, int> Rankup { get; private set; }
-    public Queue<string> StatusChanges { get; private set; } = new Queue<string>();
+    public PokemonCondition Status { get; private set; }
+    public Queue<string> StatusCngMsg { get; private set; } = new Queue<string>();
+    public bool IsHpChanged { get; set; }
     public void Init()
     {
         Skills = new List<Skill>();
@@ -119,36 +121,36 @@ public class Pokemon
             {
                 if (rankChange > 0)
                 {
-                    StatusChanges.Enqueue($"{_base.PokemonName}의 {stat}이 크게 올라갔다!");
+                    StatusCngMsg.Enqueue($"{_base.PokemonName}의 {stat}이 크게 올라갔다!");
                 }
-                StatusChanges.Enqueue($"{_base.PokemonName}의 {stat}은 더 올라가지 않는다!");
+                StatusCngMsg.Enqueue($"{_base.PokemonName}의 {stat}은 더 올라가지 않는다!");
             }
             else if (isMinRank)
             {
                 if (rankChange < 0)
                 {
-                    StatusChanges.Enqueue($"{_base.PokemonName}의 {stat}이 크게 떨어졌다!");
+                    StatusCngMsg.Enqueue($"{_base.PokemonName}의 {stat}이 크게 떨어졌다!");
                 }
-                StatusChanges.Enqueue($"{_base.PokemonName}의 {stat}은 더 떨어지지 않는다!");
+                StatusCngMsg.Enqueue($"{_base.PokemonName}의 {stat}은 더 떨어지지 않는다!");
             }
             else
             {
                 // 일반적인 랭크 변화 메시지 처리
                 if (rankChange >= 2)
                 {
-                    StatusChanges.Enqueue($"{_base.PokemonName}의 {stat}이 크게 올라갔다!");
+                    StatusCngMsg.Enqueue($"{_base.PokemonName}의 {stat}이 크게 올라갔다!");
                 }
                 else if (rankChange > 0)
                 {
-                    StatusChanges.Enqueue($"{_base.PokemonName}의 {stat}이 올라갔다!");
+                    StatusCngMsg.Enqueue($"{_base.PokemonName}의 {stat}이 올라갔다!");
                 }
                 else if (rankChange <= -2)
                 {
-                    StatusChanges.Enqueue($"{_base.PokemonName}의 {stat}이 크게 떨어졌다!");
+                    StatusCngMsg.Enqueue($"{_base.PokemonName}의 {stat}이 크게 떨어졌다!");
                 }
                 else if (rankChange < 0)
                 {
-                    StatusChanges.Enqueue($"{_base.PokemonName}의 {stat}이 떨어졌다!");
+                    StatusCngMsg.Enqueue($"{_base.PokemonName}의 {stat}이 떨어졌다!");
                 }
             }
         }
@@ -231,17 +233,41 @@ public class Pokemon
         float a = (2 * attacker.PokemonLevel + 10) / 250.0f;
         float d = a * skill.SkillBase.SkillPower * ((float)attack / defence) + 2;
         int damage = Mathf.FloorToInt(d * modifiers);
-        // Debug.Log(damage);
+
         int startHp = PokemonHp;
-        PokemonHp -= damage;
-        if (PokemonHp <= 0)
-        {
-            PokemonHp = 0;
-            damageDetails.Fainted = true;
-            return (startHp, 0, damageDetails);
-        }
+        // PokemonHp -= damage;
+        // if (PokemonHp <= 0)
+        // {
+        //     PokemonHp = 0;
+        //     damageDetails.Fainted = true;
+        //     return (startHp, 0, damageDetails);
+        // }
+        UpdateHp(damage);
         return (startHp, PokemonHp, damageDetails);
     }
+
+    public void SetStatus(ConditionID conditionID)
+    {
+        string GetCorrectParticle(string name, bool subject)    //은는이가
+        {
+            char lastChar = name[name.Length - 1];
+            int unicode = (int)lastChar;
+            bool endsWithConsonant = (unicode - 44032) % 28 != 0; // 44032는 '가'의 유니코드, 28는 받침의 수
+
+
+            if (subject)
+            {
+                return endsWithConsonant ? "이" : "가";
+            }
+            else
+            {
+                return endsWithConsonant ? "은" : "는";
+            }
+        }
+        Status = ConditionsDB.Conditions[conditionID];
+        StatusCngMsg.Enqueue($"{_base.PokemonName}{GetCorrectParticle(_base.PokemonName, false)} {Status.StartMessage}");
+    }
+
     public Skill GetRandomSkill()
     {
         int r = UnityEngine.Random.Range(0, Skills.Count);
@@ -258,6 +284,20 @@ public class Pokemon
         public bool Fainted { get; set; }
         public float Critical { get; set; }
         public float TypeEffectiveness { get; set; }
+    }
+
+    public (int startHp, int endHp) UpdateHp(int damage)
+    {
+        int startHp = PokemonHp;
+        PokemonHp = Mathf.Clamp(PokemonHp - damage, 0, MaxHp);
+        IsHpChanged = true;
+
+        return (startHp, PokemonHp);
+    }
+
+    public void OnAfterTurn()
+    {
+        Status?.OnAfterTurn?.Invoke(this);
     }
     public PokemonType Type1
     {

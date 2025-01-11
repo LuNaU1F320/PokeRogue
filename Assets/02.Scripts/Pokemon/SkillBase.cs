@@ -61,11 +61,18 @@ public class SkillBase : ScriptableObject
 public class SkillEffects
 {
     [SerializeField] List<Rankup> rankup;
+    [SerializeField] ConditionID status;
 
     public List<Rankup> Rankup
     {
         get { return rankup; }
     }
+
+    public ConditionID Status
+    {
+        get { return status; }
+    }
+
 }
 [System.Serializable]
 public class Rankup

@@ -131,7 +131,11 @@ public class BattleHud : MonoBehaviour
 
     public IEnumerator UpdateHp()
     {
-        yield return hpbar.SetHpSmooth((float)_pokemon.PokemonHp / _pokemon.MaxHp);
+        if (_pokemon.IsHpChanged)
+        {
+            yield return hpbar.SetHpSmooth((float)_pokemon.PokemonHp / _pokemon.MaxHp);
+            _pokemon.IsHpChanged = false;
+        }
     }
 
     public IEnumerator AnimateTextHp(int startNumber, int endNumber, float animationDuration = 1f /*, Text TextObject = null, string numType = ""*/)
