@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5073655c03dece548bd7c8970b70fa57, type: 3}
-  m_Name: "\uC804\uAE30\uC790\uC11D\uD30C_Skill"
+  m_Name: Test_FRZ
   m_EditorClassIdentifier: 
-  skillIndex: 86
-  skillName: "\uC804\uAE30\uC790\uC11D\uD30C"
+  skillIndex: 843
+  skillName: "\uC5BC\uC74C"
   skillDescription: 
-  skillType: 4
+  skillType: 6
   categoryKey: 2
   skillPower: 0
-  skillAccuary: 90
-  skillPP: 20
+  skillAccuary: 100
+  skillPP: 10
   effects:
     rankup: []
-    status: 3
+    status: 4
   target: 0

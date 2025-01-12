@@ -15,7 +15,7 @@ MonoBehaviour:
   skillIndex: 840
   skillName: "\uB3C5\uB3C5\uB3C5"
   skillDescription: 
-  skillType: 7
+  skillType: 8
   categoryKey: 2
   skillPower: 0
   skillAccuary: 100

@@ -33,6 +33,12 @@ public class BattleSystem : MonoBehaviour
 
     PokemonParty playerParty;
     Pokemon wildPokemon;
+
+    private void Awake()
+    {
+        ConditionsDB.Init();
+    }
+
     private void Start()
     {
         currentAction = 0;
@@ -145,6 +151,14 @@ public class BattleSystem : MonoBehaviour
     }
     IEnumerator RunSkill(BattleUnit sourceUnit, BattleUnit targetUnit, Skill skill)
     {
+        bool canRunSkill = sourceUnit.BattlePokemon.OnBeforeSkill();
+        if (canRunSkill == false)
+        {
+            yield return ShowStatusChanges(sourceUnit.BattlePokemon);
+            yield return sourceUnit.BattleHud.UpdateHp();
+            yield break;
+        }
+        yield return ShowStatusChanges(sourceUnit.BattlePokemon);
         /*
         // 모든 스킬의 PP가 0인지 확인
         if (sourceUnit.BattlePokemon.Skills.TrueForAll(s => s.SkillPP <= 0))
@@ -249,6 +263,11 @@ public class BattleSystem : MonoBehaviour
         if (effects.Status != ConditionID.None)
         {
             targetUnit.SetStatus(effects.Status);
+        }
+        //일시 상태이상
+        if (effects.VolatileStatus != ConditionID.None)
+        {
+            targetUnit.SetVolatileStatus(effects.VolatileStatus);
         }
 
         yield return ShowStatusChanges(sourceUnit);

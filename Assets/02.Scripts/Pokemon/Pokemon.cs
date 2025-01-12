@@ -28,8 +28,12 @@ public class Pokemon
     public Dictionary<Stat, int> Stats { get; private set; }
     public Dictionary<Stat, int> Rankup { get; private set; }
     public PokemonCondition Status { get; private set; }
+    public int StatusTime { get; set; }
+    public PokemonCondition VolatileStatus { get; private set; }
+    public int VolatileStatusTime { get; set; }
     public Queue<string> StatusCngMsg { get; private set; } = new Queue<string>();
     public bool IsHpChanged { get; set; }
+    public event System.Action OnStatusChanged;
     public void Init()
     {
         Skills = new List<Skill>();
@@ -48,6 +52,8 @@ public class Pokemon
         PokemonHp = MaxHp;
 
         ResetRankup();
+        Status = null;
+        VolatileStatus = null;
     }
     void CalculateStats()
     {
@@ -60,7 +66,7 @@ public class Pokemon
             { Stat.스피드, Mathf.FloorToInt((PokemonBase.Speed * PokemonLevel) / 100f) + 5 }
         };
 
-        MaxHp = Mathf.FloorToInt((PokemonBase.MaxHp * PokemonLevel) / 100f) + 10;
+        MaxHp = Mathf.FloorToInt((PokemonBase.MaxHp * PokemonLevel) / 100f) + 10 + PokemonLevel;
     }
 
     public void ResetRankup()
@@ -245,37 +251,68 @@ public class Pokemon
         UpdateHp(damage);
         return (startHp, PokemonHp, damageDetails);
     }
-
-    public void SetStatus(ConditionID conditionID)
-    {
-        string GetCorrectParticle(string name, bool subject)    //은는이가
-        {
-            char lastChar = name[name.Length - 1];
-            int unicode = (int)lastChar;
-            bool endsWithConsonant = (unicode - 44032) % 28 != 0; // 44032는 '가'의 유니코드, 28는 받침의 수
-
-
-            if (subject)
-            {
-                return endsWithConsonant ? "이" : "가";
-            }
-            else
-            {
-                return endsWithConsonant ? "은" : "는";
-            }
-        }
-        Status = ConditionsDB.Conditions[conditionID];
-        StatusCngMsg.Enqueue($"{_base.PokemonName}{GetCorrectParticle(_base.PokemonName, false)} {Status.StartMessage}");
-    }
-
     public Skill GetRandomSkill()
     {
         int r = UnityEngine.Random.Range(0, Skills.Count);
         return Skills[r];
     }
 
+    string GetCorrectParticle(string name, bool subject)    //은는이가
+    {
+        char lastChar = name[name.Length - 1];
+        int unicode = (int)lastChar;
+        bool endsWithConsonant = (unicode - 44032) % 28 != 0; // 44032는 '가'의 유니코드, 28는 받침의 수
+
+
+        if (subject)
+        {
+            return endsWithConsonant ? "이" : "가";
+        }
+        else
+        {
+            return endsWithConsonant ? "은" : "는";
+        }
+    }
+
+    public void SetStatus(ConditionID conditionID)
+    {
+        if (Status != null)
+        {
+            return;
+        }
+
+        Status = ConditionsDB.Conditions[conditionID];
+        Status?.OnStart?.Invoke(this);
+        StatusCngMsg.Enqueue($"{_base.PokemonName}{GetCorrectParticle(_base.PokemonName, false)} {Status.StartMessage}");
+        OnStatusChanged?.Invoke();
+    }
+
+    public void CureStatus()
+    {
+        Status = null;
+        OnStatusChanged?.Invoke();
+    }
+
+    public void SetVolatileStatus(ConditionID conditionID)
+    {
+        if (VolatileStatus != null)
+        {
+            return;
+        }
+
+        VolatileStatus = ConditionsDB.Conditions[conditionID];
+        VolatileStatus?.OnStart?.Invoke(this);
+        StatusCngMsg.Enqueue($"{_base.PokemonName}{GetCorrectParticle(_base.PokemonName, false)} {Status.StartMessage}");
+    }
+
+    public void CureVolatileStatus()
+    {
+        Status = null;
+    }
+
     public void OnBattleOver()
     {
+        VolatileStatus = null;
         ResetRankup();
     }
 
@@ -295,9 +332,31 @@ public class Pokemon
         return (startHp, PokemonHp);
     }
 
+    public bool OnBeforeSkill()
+    {
+        bool canPerformSkill = true;
+        if (Status?.OnBeforeSkill != null)
+        //Status != null && Status.OnBeforeMove != null
+        {
+            if (Status.OnBeforeSkill(this) == false)
+            {
+                canPerformSkill = false;
+            }
+        }
+        if (VolatileStatus?.OnBeforeSkill != null)
+        {
+            if (VolatileStatus.OnBeforeSkill(this) == false)
+            {
+                canPerformSkill = false;
+            }
+        }
+        return canPerformSkill;
+    }
+
     public void OnAfterTurn()
     {
         Status?.OnAfterTurn?.Invoke(this);
+        VolatileStatus?.OnAfterTurn?.Invoke(this);
     }
     public PokemonType Type1
     {

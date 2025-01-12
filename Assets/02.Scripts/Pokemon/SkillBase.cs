@@ -62,6 +62,7 @@ public class SkillEffects
 {
     [SerializeField] List<Rankup> rankup;
     [SerializeField] ConditionID status;
+    [SerializeField] ConditionID volatileStatus;
 
     public List<Rankup> Rankup
     {
@@ -71,6 +72,10 @@ public class SkillEffects
     public ConditionID Status
     {
         get { return status; }
+    }
+    public ConditionID VolatileStatus
+    {
+        get { return volatileStatus; }
     }
 
 }

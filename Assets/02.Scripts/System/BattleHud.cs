@@ -12,6 +12,7 @@ public class BattleHud : MonoBehaviour
     [SerializeField] Image PokemonTypeImg;
     [SerializeField] Image PokemonDualTypeImg1;
     [SerializeField] Image PokemonDualTypeImg2;
+    [SerializeField] Image Status_Img;
     Pokemon _pokemon;
 
     public void SetHud(Pokemon SetPokemon, bool isPlayerUnit)
@@ -19,6 +20,7 @@ public class BattleHud : MonoBehaviour
         PokemonTypeImg.gameObject.SetActive(false);
         PokemonDualTypeImg1.gameObject.SetActive(false);
         PokemonDualTypeImg2.gameObject.SetActive(false);
+        Status_Img.gameObject.SetActive(false);
         _pokemon = SetPokemon;
         nameTxt.text = SetPokemon.PokemonBase.PokemonName;
         levelTxt.text = "" + SetPokemon.PokemonLevel;
@@ -28,6 +30,7 @@ public class BattleHud : MonoBehaviour
             hpbar_Text.text = $"{SetPokemon.PokemonHp}/{SetPokemon.MaxHp}";
         }
         SetPokemonType(isPlayerUnit);
+        _pokemon.OnStatusChanged += SetStatusIMG;
     }
     void SetPokemonType(bool isPlayerUnit)
     {
@@ -128,6 +131,21 @@ public class BattleHud : MonoBehaviour
             }
         }
     }
+
+
+    void SetStatusIMG()
+    {
+        if (_pokemon.Stats == null)
+        {
+            Status_Img.gameObject.SetActive(false);
+        }
+        else
+        {
+            Status_Img.gameObject.SetActive(true);
+            Status_Img.sprite = Resources.Load<Sprite>($"Image/UI/statuses/{_pokemon.Status.Id.ToString().ToUpper()}");
+        }
+    }
+
 
     public IEnumerator UpdateHp()
     {
