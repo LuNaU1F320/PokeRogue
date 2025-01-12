@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 [System.Serializable]
@@ -100,6 +100,13 @@ public class Pokemon
 
         return statVal;
     }
+    public void SetStat(Stat stat, int value)
+    {
+        if (Stats.ContainsKey(stat))
+        {
+            Stats[stat] = value;
+        }
+    }
     public void ApplyRankups(List<Rankup> rankUps)
     {
         foreach (var rankUp in rankUps)
@@ -111,7 +118,7 @@ public class Pokemon
             var oldRank = Rankup[stat]; // 기존 랭크를 가져옴
 
             // 새로운 랭크로 업데이트
-            Rankup[stat] = Math.Clamp(newRank, -6, 6);
+            Rankup[stat] = Mathf.Clamp(newRank, -6, 6);
 
             // Rankup[stat] = Math.Clamp(Rankup[stat] + rank, -6, 6);
 
@@ -253,7 +260,9 @@ public class Pokemon
     }
     public Skill GetRandomSkill()
     {
-        int r = UnityEngine.Random.Range(0, Skills.Count);
+        var skillWithPP = Skills.Where(x => x.SkillPP > 0).ToList();
+
+        int r = Random.Range(0, skillWithPP.Count);
         return Skills[r];
     }
 

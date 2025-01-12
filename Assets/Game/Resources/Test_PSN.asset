@@ -19,8 +19,10 @@ MonoBehaviour:
   categoryKey: 2
   skillPower: 0
   skillAccuary: 100
-  skillPP: 10
+  skillPP: 1
+  priority: 0
   effects:
     rankup: []
     status: 1
+    volatileStatus: 0
   target: 0

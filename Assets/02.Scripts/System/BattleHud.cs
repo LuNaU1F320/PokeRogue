@@ -135,9 +135,10 @@ public class BattleHud : MonoBehaviour
 
     void SetStatusIMG()
     {
-        if (_pokemon.Stats == null)
+        if (_pokemon.Status == null)
         {
             Status_Img.gameObject.SetActive(false);
+            return;
         }
         else
         {

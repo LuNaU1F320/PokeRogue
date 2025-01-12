@@ -413,6 +413,12 @@ public class BattleSystem : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
         {
+            var skill = playerUnit.BattlePokemon.Skills[currentSkill];
+            if (skill.SkillPP == 0)
+            {
+                // return;
+            }
+
             dialogBox.EnableSkillSelector(false);
             dialogBox.EnableDialogText(true);
             StartCoroutine(PlayerMove());

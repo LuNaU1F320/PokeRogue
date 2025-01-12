@@ -49,6 +49,7 @@ public class ConditionsDB
                 OnAfterTurn = (Pokemon pokemon) =>
                 {
                     pokemon.UpdateHp(pokemon.MaxHp / 16);
+                    pokemon.SetStat(Stat.공격, pokemon.Stats[Stat.공격] /2);
                     pokemon.StatusCngMsg.Enqueue($"{pokemon.PokemonBase.PokemonName}은 화상 데미지를 입었다!");
                 }
             }

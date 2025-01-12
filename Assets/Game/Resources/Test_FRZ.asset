@@ -13,14 +13,16 @@ MonoBehaviour:
   m_Name: Test_FRZ
   m_EditorClassIdentifier: 
   skillIndex: 843
-  skillName: "\uC5BC\uC74C"
+  skillName: "\uD654\uC0C1"
   skillDescription: 
-  skillType: 6
+  skillType: 2
   categoryKey: 2
   skillPower: 0
   skillAccuary: 100
   skillPP: 10
+  priority: 0
   effects:
     rankup: []
-    status: 4
+    status: 2
+    volatileStatus: 0
   target: 0

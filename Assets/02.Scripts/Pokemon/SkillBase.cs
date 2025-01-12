@@ -17,6 +17,7 @@ public class SkillBase : ScriptableObject
     [SerializeField] int skillPower;
     [SerializeField] int skillAccuary;
     [SerializeField] int skillPP;
+    [SerializeField] int priority;
     [SerializeField] SkillEffects effects;
     [SerializeField] SkillTarget target;
 
@@ -55,6 +56,10 @@ public class SkillBase : ScriptableObject
     public int SkillPP
     {
         get { return skillPP; }
+    }
+    public int Priority
+    {
+        get { return priority; }
     }
 }
 [System.Serializable]

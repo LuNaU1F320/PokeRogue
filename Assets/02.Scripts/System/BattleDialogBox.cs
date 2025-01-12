@@ -100,6 +100,15 @@ public class BattleDialogBox : MonoBehaviour
         // PP 텍스트 설정
         ppText.text = $"{skill.SkillPP}/{skill.SkillBase.SkillPP}";
 
+        if (skill.SkillPP == 0)
+        {
+            ppText.color = Color.red;
+        }
+        else
+        {
+            ppText.color = Color.white;
+        }
+
         Sprite[] skillTypeSprites = Resources.LoadAll<Sprite>("Image/SkillType");
         string skillTypeName = skill.SkillBase.SkillType.ToString();
         Sprite typeTargetSprite = System.Array.Find(skillTypeSprites, sprite => sprite.name == skillTypeName);
