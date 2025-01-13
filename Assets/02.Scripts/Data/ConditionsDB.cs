@@ -46,10 +46,13 @@ public class ConditionsDB
             {
                 ConditionName = "화상",
                 StartMessage = "화상을 입었다!",
+                OnStart = (Pokemon pokemon) =>
+                {
+                    // pokemon.SetStat(Stat.Attack, 2);
+                },
                 OnAfterTurn = (Pokemon pokemon) =>
                 {
                     pokemon.UpdateHp(pokemon.MaxHp / 16);
-                    pokemon.SetStat(Stat.공격, pokemon.Stats[Stat.공격] /2);
                     pokemon.StatusCngMsg.Enqueue($"{pokemon.PokemonBase.PokemonName}은 화상 데미지를 입었다!");
                 }
             }
@@ -60,6 +63,10 @@ public class ConditionsDB
             {
                 ConditionName = "마비",
                 StartMessage = "마비되어 기술이 나오기 어려워졌다!",
+                OnStart = (Pokemon pokemon) =>
+                {
+                    // pokemon.SetStat(Stat.Speed, 2);
+                },
                 OnBeforeSkill = (Pokemon pokemon) =>
                 {
                     if( Random.Range(1,5) == 1)

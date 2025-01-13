@@ -10,25 +10,21 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 271878df85541a1469db368301d2282b, type: 3}
-  m_Name: Test_Poke
+  m_Name: Test_Poke FOE
   m_EditorClassIdentifier: 
-  pokemonIndex: 148
-  pokemonName: "\uD14C\uC2A4\uD2B8\uC6A9"
+  pokemonIndex: 151
+  pokemonName: "\uC801"
   pokemonDescription: 
-  pokemonType1: 6
-  pokemonType2: 11
+  pokemonType1: 1
+  pokemonType2: 0
   maxHp: 100
   attack: 100
   defence: 100
   spAttack: 100
   spDefence: 100
-  speed: 101
+  speed: 100
   learnableSkills:
-  - skillBase: {fileID: 11400000, guid: 47dfdb937b0276a4193afb2c95b60bf4, type: 2}
-    level: 1
-  - skillBase: {fileID: 11400000, guid: 8929b825376c8e8459093f50e52e9160, type: 2}
+  - skillBase: {fileID: 11400000, guid: ef535e4650f408743b78b452a8532068, type: 2}
     level: 1
   - skillBase: {fileID: 11400000, guid: 141a52a9c86ed024d932223ab5694737, type: 2}
-    level: 1
-  - skillBase: {fileID: 11400000, guid: 590412b35ec3401448cb2e6c8b2edbb2, type: 2}
     level: 1

@@ -6780,7 +6780,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wildPokemons:
-  - _base: {fileID: 11400000, guid: b60558a9e241cff448b72e1eefcc372c, type: 2}
+  - _base: {fileID: 11400000, guid: d4870b9d81b5ae140b34d012be999648, type: 2}
     level: 50
 --- !u!1 &1668804233
 GameObject:

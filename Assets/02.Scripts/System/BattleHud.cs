@@ -152,7 +152,13 @@ public class BattleHud : MonoBehaviour
     {
         if (_pokemon.IsHpChanged)
         {
-            yield return hpbar.SetHpSmooth((float)_pokemon.PokemonHp / _pokemon.MaxHp);
+
+            StartCoroutine(hpbar.SetHpSmooth((float)_pokemon.PokemonHp / _pokemon.MaxHp));
+            if (hpbar_Text != null)
+            {
+                StartCoroutine(AnimateTextHp(_pokemon.startHp, _pokemon.PokemonHp));
+            }
+            yield return null;
             _pokemon.IsHpChanged = false;
         }
     }

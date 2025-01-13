@@ -184,10 +184,6 @@ public class BattleSystem : MonoBehaviour
             }
             yield break; // 현재 실행 종료
         }
-        // while (dialogBox.IsTyping())
-        // {
-        //     yield return null; // 이전 텍스트 출력이 끝날 때까지 대기
-        // }
 
         skill.SkillPP--;
 
@@ -205,13 +201,7 @@ public class BattleSystem : MonoBehaviour
             var (startHp, endHp, damageDetails) = targetUnit.BattlePokemon.TakeDamage(skill, sourceUnit.BattlePokemon);
 
             StartCoroutine(targetUnit.BattleHud.UpdateHp());
-            // yield return targetUnit.BattleHud.UpdateHp();
-            if (targetUnit.BattleHud.hpbar_Text != null)
-            {
-                StartCoroutine(targetUnit.BattleHud.AnimateTextHp(startHp, endHp));
-            }
-            StartCoroutine(ShowDamageDetails(damageDetails));
-
+            yield return ShowDamageDetails(damageDetails);
         }
 
         if (targetUnit.BattlePokemon.PokemonHp <= 0)
@@ -224,21 +214,18 @@ public class BattleSystem : MonoBehaviour
             CheckForBattleOver(targetUnit);
         }
 
+
+        new WaitForSeconds(1.0f);
         //상태이상 처리
         sourceUnit.BattlePokemon.OnAfterTurn();
+        StartCoroutine(sourceUnit.BattleHud.UpdateHp());
         yield return ShowStatusChanges(sourceUnit.BattlePokemon);
-        yield return StartCoroutine(sourceUnit.BattleHud.UpdateHp());
-        // yield return targetUnit.BattleHud.UpdateHp();
-        // if (sourceUnit.BattleHud.hpbar_Text != null)
-        // {
-        //     StartCoroutine(sourceUnit.BattleHud.AnimateTextHp(startHp, endHp));
-        // }
         if (sourceUnit.BattlePokemon.PokemonHp <= 0)
         {
             yield return dialogBox.TypeDialog($"{sourceUnit.BattlePokemon.PokemonBase.PokemonName}{GetCorrectParticle(sourceUnit.BattlePokemon.PokemonBase.PokemonName, false)} 쓰러졌다!");
             //애니메이션 재생
 
-            //플레이어 승리 (다음스테이지로)
+            //플레이어 패배
             yield return new WaitForSeconds(2.0f);
             CheckForBattleOver(sourceUnit);
         }
@@ -486,6 +473,7 @@ public class BattleSystem : MonoBehaviour
     }
     IEnumerator SwitchPokemon(Pokemon newPokemon)
     {
+        playerUnit.BattlePokemon.CureVolatileStatus();
         // bool isFainted = true;
         if (playerUnit.BattlePokemon.PokemonHp > 0)
         {
