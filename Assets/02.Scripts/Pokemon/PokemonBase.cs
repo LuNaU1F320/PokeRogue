@@ -11,9 +11,6 @@ public class PokemonBase : ScriptableObject
     [TextArea]
     [SerializeField] string pokemonDescription;
 
-    // [SerializeField] Sprite frontSprite;
-    // [SerializeField] Sprite backSprite;
-
     [SerializeField] PokemonType pokemonType1;
     [SerializeField] PokemonType pokemonType2;
 
@@ -38,14 +35,6 @@ public class PokemonBase : ScriptableObject
     {
         get { return pokemonDescription; }
     }
-    // public Sprite FrontSprite
-    // {
-    //     get { return frontSprite; }
-    // }
-    // public Sprite BackSprite
-    // {
-    //     get { return backSprite; }
-    // }
     public PokemonType Type1
     {
         get { return pokemonType1; }
@@ -132,7 +121,10 @@ public enum Stat
     Defence,
     SpAttack,
     SpDefence,
-    Speed
+    Speed,
+
+    Accuracy,
+    Evasion
 }
 public class TypeChart
 {

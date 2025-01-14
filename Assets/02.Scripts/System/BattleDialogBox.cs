@@ -9,8 +9,8 @@ public class BattleDialogBox : MonoBehaviour
     [SerializeField] Color highlightedColor;
     [SerializeField] int lettersPerSecond;
 
-    private Coroutine typingCoroutine; // 현재 실행 중인 코루틴
-    private bool isTyping = false;    // 텍스트 출력 상태 플래그
+    // private Coroutine typingCoroutine; // 현재 실행 중인 코루틴
+    // private bool isTyping = false;    // 텍스트 출력 상태 플래그
 
 
     [SerializeField] GameObject skillSelector;
@@ -30,15 +30,15 @@ public class BattleDialogBox : MonoBehaviour
 
     public void SetDialog(string dialog)
     {
-        if (typingCoroutine != null)
-        {
-            StopCoroutine(typingCoroutine); // 기존 코루틴 중단
-        }
+        // if (typingCoroutine != null)
+        // {
+        //     StopCoroutine(typingCoroutine); // 기존 코루틴 중단
+        // }
         dialogText.text = dialog;
     }
     public IEnumerator TypeDialog(string dialog)
     {
-        isTyping = true; // 텍스트 출력 시작
+        // isTyping = true; // 텍스트 출력 시작
         dialogText.text = "";
 
         foreach (var letter in dialog.ToCharArray())
@@ -49,12 +49,12 @@ public class BattleDialogBox : MonoBehaviour
         yield return new WaitForSeconds(1.0f);
 
         dialogText.text = string.Empty;
-        isTyping = false; // 텍스트 출력 완료
+        // isTyping = false; // 텍스트 출력 완료
     }
-    public bool IsTyping()
-    {
-        return isTyping;
-    }
+    // public bool IsTyping()
+    // {
+    //     return isTyping;
+    // }
     public void EnableDialogText(bool enabled)
     {
         dialogText.enabled = enabled;
@@ -143,7 +143,7 @@ public class BattleDialogBox : MonoBehaviour
                 Debug.Log($"스프라이트 이름: {sprite.name}");
             }
         }
-        skillDetailText.text = $"{(skill.SkillBase.SkillPower == 0 ? "-" : skill.SkillBase.SkillPower.ToString())}\n{(skill.SkillBase.SkillAccuary == 0 ? "-" : skill.SkillBase.SkillAccuary.ToString())}";
+        skillDetailText.text = $"{(skill.SkillBase.SkillPower == 0 ? "-" : skill.SkillBase.SkillPower.ToString())}\n{(skill.SkillBase.SkillAccuracy == 0 ? "-" : skill.SkillBase.SkillAccuracy.ToString())}";
     }
     /*
     // public void UpdateSkillSelection(int selectedSkill, Skill skill)

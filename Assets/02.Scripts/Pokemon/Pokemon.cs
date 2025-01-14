@@ -78,7 +78,9 @@ public class Pokemon
             {Stat.Defence , 0},
             {Stat.SpAttack , 0},
             {Stat.SpDefence , 0},
-            {Stat.Speed , 0}
+            {Stat.Speed , 0},
+            {Stat.Accuracy , 0},
+            {Stat.Evasion , 0}
         };
     }
 
@@ -88,29 +90,20 @@ public class Pokemon
 
         //랭크업
         int rank = Rankup[stat];
-        var rankValues = new float[] { 1f, 1.5f, 2f, 2.5f, 3f, 3.5f, 4f };
+        var rankupValues = new float[] { 1f, 1.5f, 2f, 2.5f, 3f, 3.5f, 4f };
 
         if (rank >= 0)
         {
-            statVal = Mathf.FloorToInt(statVal * rankValues[rank]);
+            statVal = Mathf.FloorToInt(statVal * rankupValues[rank]);
         }
         else
         {
-            statVal = Mathf.FloorToInt(statVal * rankValues[-rank]);
+            statVal = Mathf.FloorToInt(statVal * rankupValues[-rank]);
         }
 
         return statVal;
     }
-    public void SetStat(Stat stat, int value)
-    {
-        if (Stats.ContainsKey(stat))
-        {
-            // 현재 랭크업 적용된 값을 가져옵니다.
-            int currentStat = GetStat(stat);
-            float CalculateStats = currentStat * value;
-            Stats[stat] = (int)CalculateStats;
-        }
-    }
+
     public void ApplyRankups(List<Rankup> rankUps)
     {
         foreach (var rankUp in rankUps)
@@ -218,6 +211,7 @@ public class Pokemon
     {
         get; private set;
     }
+
     public (int startHp, int endHp, DamageDetails damageDetails) TakeDamage(Skill skill, Pokemon attacker)
     {
         if (skill.SkillBase.CategoryKey == CategoryKey.Status)
@@ -246,7 +240,14 @@ public class Pokemon
         }
         else if (skill.SkillBase.CategoryKey == CategoryKey.Physical)
         {
-            attack = attacker.Attack;
+            if (attacker.Status == ConditionsDB.Conditions[ConditionID.BRN])
+            {
+                attack = attacker.Attack / 2;
+            }
+            else
+            {
+                attack = attacker.Attack;
+            }
         }
         else
         {
@@ -272,13 +273,7 @@ public class Pokemon
         int damage = Mathf.FloorToInt(d * modifiers);
 
         int startHp = PokemonHp;
-        // PokemonHp -= damage;
-        // if (PokemonHp <= 0)
-        // {
-        //     PokemonHp = 0;
-        //     damageDetails.Fainted = true;
-        //     return (startHp, 0, damageDetails);
-        // }
+
         UpdateHp(damage);
         return (startHp, PokemonHp, damageDetails);
     }

@@ -71,6 +71,10 @@ public class BattleSystem : MonoBehaviour
             Debug.Log(playerUnit.BattlePokemon.Attack);
             Debug.Log(playerUnit.BattlePokemon.Rankup[0]);
         }
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            Debug.Log(enemyUnit.BattlePokemon.Attack);
+        }
     }
     public IEnumerator SetUpBattle()
     {
@@ -188,34 +192,66 @@ public class BattleSystem : MonoBehaviour
         skill.SkillPP--;
 
         yield return dialogBox.TypeDialog($"{sourceUnit.BattlePokemon.PokemonBase.PokemonName}의 {skill.SkillBase.SkillName}!");
+
         //공격 애니메이션
 
         //피격 애니메이션
 
-        if (skill.SkillBase.CategoryKey == CategoryKey.Status)
+        if (CheckSkillHits(skill, sourceUnit.BattlePokemon, targetUnit.BattlePokemon))
         {
-            yield return RunSkillEffects(skill, sourceUnit.BattlePokemon, targetUnit.BattlePokemon);
+            if (skill.SkillBase.CategoryKey == CategoryKey.Status)
+            {
+                if (targetUnit.BattlePokemon.Status != null)
+                {
+                    yield return dialogBox.TypeDialog("효과가 없는 것 같다...");
+                }
+                else
+                {
+                    yield return RunSkillEffects(skill.SkillBase.Effects, sourceUnit.BattlePokemon, targetUnit.BattlePokemon, skill.SkillBase.Target);
+                }
+            }
+            else
+            {
+                var (startHp, endHp, damageDetails) = targetUnit.BattlePokemon.TakeDamage(skill, sourceUnit.BattlePokemon);
+
+                StartCoroutine(targetUnit.BattleHud.UpdateHp());
+                yield return ShowDamageDetails(damageDetails);
+            }
+            if (skill.SkillBase.SecondaryEffects != null && skill.SkillBase.SecondaryEffects.Count > 0 && targetUnit.BattlePokemon.PokemonHp > 0)
+            {
+                foreach (var secondary in skill.SkillBase.SecondaryEffects)
+                {
+                    var rnd = UnityEngine.Random.Range(1, 101);
+                    if (rnd <= secondary.Chance)
+                    {
+                        yield return RunSkillEffects(secondary, sourceUnit.BattlePokemon, targetUnit.BattlePokemon, secondary.Target);
+                    }
+                }
+            }
+
+            if (targetUnit.BattlePokemon.PokemonHp <= 0)
+            {
+                yield return dialogBox.TypeDialog($"{targetUnit.BattlePokemon.PokemonBase.PokemonName}{GetCorrectParticle(targetUnit.BattlePokemon.PokemonBase.PokemonName, false)} 쓰러졌다!");
+                //애니메이션 재생
+
+                //플레이어 승리 (다음스테이지로)
+                yield return new WaitForSeconds(2.0f);
+                CheckForBattleOver(targetUnit);
+            }
         }
         else
         {
-            var (startHp, endHp, damageDetails) = targetUnit.BattlePokemon.TakeDamage(skill, sourceUnit.BattlePokemon);
-
-            StartCoroutine(targetUnit.BattleHud.UpdateHp());
-            yield return ShowDamageDetails(damageDetails);
+            if (sourceUnit.IsPlayerUnit)
+            {
+                yield return dialogBox.TypeDialog($"상대 {targetUnit.BattlePokemon.PokemonBase.PokemonName}에게는 \n맞지 않았다!");
+            }
+            else
+            {
+                yield return dialogBox.TypeDialog($"{targetUnit.BattlePokemon.PokemonBase.PokemonName}에게는 맞지 않았다!");
+            }
         }
 
-        if (targetUnit.BattlePokemon.PokemonHp <= 0)
-        {
-            yield return dialogBox.TypeDialog($"{targetUnit.BattlePokemon.PokemonBase.PokemonName}{GetCorrectParticle(targetUnit.BattlePokemon.PokemonBase.PokemonName, false)} 쓰러졌다!");
-            //애니메이션 재생
-
-            //플레이어 승리 (다음스테이지로)
-            yield return new WaitForSeconds(2.0f);
-            CheckForBattleOver(targetUnit);
-        }
-
-
-        new WaitForSeconds(1.0f);
+        new WaitForSeconds(2.0f);
         //상태이상 처리
         sourceUnit.BattlePokemon.OnAfterTurn();
         StartCoroutine(sourceUnit.BattleHud.UpdateHp());
@@ -231,19 +267,18 @@ public class BattleSystem : MonoBehaviour
         }
     }
 
-    IEnumerator RunSkillEffects(Skill skill, Pokemon sourceUnit, Pokemon targetUnit)
+    IEnumerator RunSkillEffects(SkillEffects effects, Pokemon sourceUnit, Pokemon targetUnit, SkillTarget skillTarget)
     {
-        var effects = skill.SkillBase.Effects;
         //RankUp
         if (effects.Rankup != null)
         {
-            if (skill.SkillBase.Target == SkillTarget.Self)
+            if (skillTarget == SkillTarget.Self)
             {
-                sourceUnit.ApplyRankups(skill.SkillBase.Effects.Rankup);
+                sourceUnit.ApplyRankups(effects.Rankup);
             }
             else
             {
-                targetUnit.ApplyRankups(skill.SkillBase.Effects.Rankup);
+                targetUnit.ApplyRankups(effects.Rankup);
             }
         }
         //상태이상
@@ -259,6 +294,39 @@ public class BattleSystem : MonoBehaviour
 
         yield return ShowStatusChanges(sourceUnit);
         yield return ShowStatusChanges(targetUnit);
+    }
+
+    bool CheckSkillHits(Skill skill, Pokemon source, Pokemon target)
+    {
+        if (skill.SkillBase.AlwaysHits)
+        {
+            return true;
+        }
+        float SkillAccuracy = skill.SkillBase.SkillAccuracy;
+        int accuracy = source.Rankup[Stat.Accuracy];
+        int evasion = target.Rankup[Stat.Evasion];
+
+        var rankupValues = new float[] { 1f, 1.5f, 2f, 2.5f, 3f, 3.5f, 4f };
+
+        if (accuracy > 0)
+        {
+            SkillAccuracy *= rankupValues[accuracy];
+        }
+        else
+        {
+            SkillAccuracy /= rankupValues[-accuracy];
+        }
+        if (evasion > 0)
+        {
+            SkillAccuracy /= rankupValues[evasion];
+        }
+        else
+        {
+            SkillAccuracy *= rankupValues[-evasion];
+        }
+
+
+        return UnityEngine.Random.Range(1, 101) <= SkillAccuracy;
     }
 
     IEnumerator ShowStatusChanges(Pokemon pokemon)

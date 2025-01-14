@@ -15,10 +15,12 @@ public class SkillBase : ScriptableObject
     [SerializeField] CategoryKey categoryKey;
 
     [SerializeField] int skillPower;
-    [SerializeField] int skillAccuary;
+    [SerializeField] int skillAccuracy;
+    [SerializeField] bool alwaysHits;
     [SerializeField] int skillPP;
     [SerializeField] int priority;
     [SerializeField] SkillEffects effects;
+    [SerializeField] List<SecondaryEffects> secondaryEffects;
     [SerializeField] SkillTarget target;
 
     public string SkillName
@@ -41,6 +43,10 @@ public class SkillBase : ScriptableObject
     {
         get { return effects; }
     }
+    public List<SecondaryEffects> SecondaryEffects
+    {
+        get { return secondaryEffects; }
+    }
     public SkillTarget Target
     {
         get { return target; }
@@ -49,9 +55,13 @@ public class SkillBase : ScriptableObject
     {
         get { return skillPower; }
     }
-    public int SkillAccuary
+    public int SkillAccuracy
     {
-        get { return skillAccuary; }
+        get { return skillAccuracy; }
+    }
+    public bool AlwaysHits
+    {
+        get { return alwaysHits; }
     }
     public int SkillPP
     {
@@ -62,6 +72,7 @@ public class SkillBase : ScriptableObject
         get { return priority; }
     }
 }
+
 [System.Serializable]
 public class SkillEffects
 {
@@ -83,7 +94,23 @@ public class SkillEffects
         get { return volatileStatus; }
     }
 
+
 }
+[System.Serializable]
+public class SecondaryEffects : SkillEffects
+{
+    [SerializeField] int chance;
+    [SerializeField] SkillTarget target;
+    public int Chance
+    {
+        get { return chance; }
+    }
+    public SkillTarget Target
+    {
+        get { return target; }
+    }
+}
+
 [System.Serializable]
 public class Rankup
 {

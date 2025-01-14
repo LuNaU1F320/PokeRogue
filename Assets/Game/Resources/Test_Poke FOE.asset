@@ -24,7 +24,5 @@ MonoBehaviour:
   spDefence: 100
   speed: 100
   learnableSkills:
-  - skillBase: {fileID: 11400000, guid: ef535e4650f408743b78b452a8532068, type: 2}
-    level: 1
-  - skillBase: {fileID: 11400000, guid: 141a52a9c86ed024d932223ab5694737, type: 2}
+  - skillBase: {fileID: 11400000, guid: 322380722b15f7747b5595fc18e69dba, type: 2}
     level: 1

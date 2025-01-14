@@ -5627,16 +5627,6 @@ MonoBehaviour:
   pokemons:
   - _base: {fileID: 11400000, guid: 1ac22d6c1051adb419c7d97c6fe66d7b, type: 2}
     level: 50
-  - _base: {fileID: 11400000, guid: b4c01b85f40563842998661b030c3976, type: 2}
-    level: 50
-  - _base: {fileID: 11400000, guid: 9a4e86cdda1f45542bdd5ed82020358f, type: 2}
-    level: 50
-  - _base: {fileID: 11400000, guid: 4be32f720d34fff41839ac7c9ee8b835, type: 2}
-    level: 50
-  - _base: {fileID: 11400000, guid: e0dbc829cc7653548b9901cf8b9aa935, type: 2}
-    level: 50
-  - _base: {fileID: 11400000, guid: 8bbe4d8fb818f594ba0243af84babfa7, type: 2}
-    level: 50
 --- !u!4 &1410205262
 Transform:
   m_ObjectHideFlags: 0
