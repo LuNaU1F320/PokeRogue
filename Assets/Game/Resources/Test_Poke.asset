@@ -15,8 +15,8 @@ MonoBehaviour:
   pokemonIndex: 148
   pokemonName: "\uD14C\uC2A4\uD2B8\uC6A9"
   pokemonDescription: 
-  pokemonType1: 6
-  pokemonType2: 11
+  pokemonType1: 1
+  pokemonType2: 18
   maxHp: 100
   attack: 100
   defence: 100
@@ -25,4 +25,8 @@ MonoBehaviour:
   speed: 101
   learnableSkills:
   - skillBase: {fileID: 11400000, guid: 322380722b15f7747b5595fc18e69dba, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: c6fa7254e099e7d4c828d3dd72c9c105, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: 33e6700730d61a84f905d9fb21113815, type: 2}
     level: 1

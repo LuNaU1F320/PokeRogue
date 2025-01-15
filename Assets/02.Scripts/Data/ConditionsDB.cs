@@ -46,10 +46,6 @@ public class ConditionsDB
             {
                 ConditionName = "화상",
                 StartMessage = "화상을 입었다!",
-                OnStart = (Pokemon pokemon) =>
-                {
-                    // pokemon.SetStat(Stat.Attack, 2);
-                },
                 OnAfterTurn = (Pokemon pokemon) =>
                 {
                     pokemon.UpdateHp(pokemon.MaxHp / 16);

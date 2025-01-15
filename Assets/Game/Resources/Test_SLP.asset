@@ -18,9 +18,13 @@ MonoBehaviour:
   skillType: 1
   categoryKey: 2
   skillPower: 0
-  skillAccuary: 100
+  skillAccuracy: 100
+  alwaysHits: 0
   skillPP: 10
+  priority: 0
   effects:
     rankup: []
     status: 5
+    volatileStatus: 0
+  secondaryEffects: []
   target: 0

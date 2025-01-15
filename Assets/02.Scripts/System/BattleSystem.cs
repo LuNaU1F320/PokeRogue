@@ -67,13 +67,8 @@ public class BattleSystem : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.F))
         {
-            Debug.Log(playerUnit.BattlePokemon.PokemonBase.PokemonName);
             Debug.Log(playerUnit.BattlePokemon.Attack);
             Debug.Log(playerUnit.BattlePokemon.Rankup[0]);
-        }
-        if (Input.GetKeyDown(KeyCode.V))
-        {
-            Debug.Log(enemyUnit.BattlePokemon.Attack);
         }
     }
     public IEnumerator SetUpBattle()
@@ -88,9 +83,6 @@ public class BattleSystem : MonoBehaviour
         skillCount = playerUnit.BattlePokemon.Skills.Count;
 
         yield return dialogBox.TypeDialog($"앗! 야생 {enemyUnit.BattlePokemon.PokemonBase.PokemonName}{GetCorrectParticle(enemyUnit.BattlePokemon.PokemonBase.PokemonName, true)} \n튀어나왔다!");
-
-        // yield return dialogBox.TypeDialog($"앗! 야생 {enemyUnit.BattlePokemon.PokemonBase.PokemonName}가 \n튀어나왔다!");
-        // yield return new WaitForSeconds(1f);
 
         ChooseFirstTurn();
     }

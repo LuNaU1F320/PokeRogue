@@ -120,10 +120,6 @@ public class BattleDialogBox : MonoBehaviour
         else
         {
             Debug.LogError($"스프라이트를 찾을 수 없습니다: {skillTypeName}");
-            foreach (var sprite in skillTypeSprites)
-            {
-                Debug.Log($"스프라이트 이름: {sprite.name}");
-            }
         }
 
         // 공격타입 설정
@@ -138,50 +134,9 @@ public class BattleDialogBox : MonoBehaviour
         else
         {
             Debug.LogError($"스프라이트를 찾을 수 없습니다: {categoryName}");
-            foreach (var sprite in categorySprites)
-            {
-                Debug.Log($"스프라이트 이름: {sprite.name}");
-            }
         }
         skillDetailText.text = $"{(skill.SkillBase.SkillPower == 0 ? "-" : skill.SkillBase.SkillPower.ToString())}\n{(skill.SkillBase.SkillAccuracy == 0 ? "-" : skill.SkillBase.SkillAccuracy.ToString())}";
     }
-    /*
-    // public void UpdateSkillSelection(int selectedSkill, Skill skill)
-    // {
-    //     for (int i = 0; i < skillTexts.Count; i++)
-    //     {
-    //         if (i == selectedSkill)
-    //         {
-    //             skillTexts[i].color = highlightedColor;
-    //         }
-    //         else
-    //         {
-    //             skillTexts[i].color = Color.white;
-    //         }
-    //     }
-
-    //     ppText.text = $"{skill.SkillPP}/{skill.SkillBase.SkillPP}";
-    //     // typeText.text = skill.SkillBase.SkillType.ToString();
-
-    //     Sprite[] sprites = Resources.LoadAll<Sprite>("Image/CategoryKey");
-
-    //     // CategoryKey에 해당하는 이름으로 스프라이트 검색
-    //     string categoryName = skill.SkillBase.CategoryKey.ToString();
-    //     Sprite targetSprite = System.Array.Find(sprites, sprite => sprite.name == categoryName);
-
-    //     if (targetSprite != null)
-    //     {
-    //         typeImg.sprite = targetSprite;
-    //     }
-    //     else
-    //     {
-    //         Debug.LogError($"스프라이트를 찾을 수 없습니다: {categoryName}");
-    //     }
-
-    //     // typeImg.sprite = Resources.Load<Sprite>($"Image/{skill.SkillBase.CategoryKey.ToString()}");
-    //     skillDetailText.text = $"{skill.SkillBase.SkillPower}\n{skill.SkillBase.SkillAccuary}";
-    // }
-    */
 
     public void SetSkillNames(List<Skill> skills)
     {

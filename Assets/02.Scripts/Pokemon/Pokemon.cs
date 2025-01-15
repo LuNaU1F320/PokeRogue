@@ -117,8 +117,6 @@ public class Pokemon
             // 새로운 랭크로 업데이트
             Rankup[stat] = Mathf.Clamp(newRank, -6, 6);
 
-            // Rankup[stat] = Math.Clamp(Rankup[stat] + rank, -6, 6);
-
             // 메시지 생성 (랭크 변화량 계산)
             var rankChange = newRank - oldRank;
 
