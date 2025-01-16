@@ -7,11 +7,18 @@ public enum BattleState
 {
     Start,
     ActionSelection,
-    MoveSelection,
-    PerformMove,
+    SkillSelection,
+    RunningTurn,
     Busy,
     PartyScreen,
     BattleOver
+}
+public enum BattleAction
+{
+    Skill,
+    SwitchPokemon,
+    UseItem,
+    Run
 }
 public class BattleSystem : MonoBehaviour
 {
@@ -25,6 +32,7 @@ public class BattleSystem : MonoBehaviour
     public event Action<bool> OnBattleOver;
 
     BattleState state;
+    BattleState? preState;
     int currentAction = 0;
     int currentSkill = 0;
     int currentMember = 0;
@@ -38,22 +46,21 @@ public class BattleSystem : MonoBehaviour
     {
         ConditionsDB.Init();
     }
-
     private void Start()
     {
+        state = BattleState.Start;
         currentAction = 0;
         playerParty = FindObjectOfType<PokemonParty>().GetComponent<PokemonParty>();
         wildPokemon = FindObjectOfType<MapArea>().GetComponent<MapArea>().GetRandomWildPokemon();
         StartCoroutine(SetUpBattle());
     }
-
     public void Update()
     {
         if (state == BattleState.ActionSelection)
         {
             HandleActionSelection();
         }
-        else if (state == BattleState.MoveSelection)
+        else if (state == BattleState.SkillSelection)
         {
             HandleSkillSelection();
         }
@@ -71,6 +78,7 @@ public class BattleSystem : MonoBehaviour
             Debug.Log(playerUnit.BattlePokemon.Rankup[0]);
         }
     }
+
     public IEnumerator SetUpBattle()
     {
         playerUnit.SetUp(playerParty.GetHealthyPokemon());
@@ -83,19 +91,7 @@ public class BattleSystem : MonoBehaviour
         skillCount = playerUnit.BattlePokemon.Skills.Count;
 
         yield return dialogBox.TypeDialog($"앗! 야생 {enemyUnit.BattlePokemon.PokemonBase.PokemonName}{GetCorrectParticle(enemyUnit.BattlePokemon.PokemonBase.PokemonName, true)} \n튀어나왔다!");
-
-        ChooseFirstTurn();
-    }
-    void ChooseFirstTurn()
-    {
-        if (playerUnit.BattlePokemon.Speed >= enemyUnit.BattlePokemon.Speed)
-        {
-            ActionSelection();
-        }
-        else
-        {
-            StartCoroutine(EnemyMove());
-        }
+        ActionSelection();
     }
     void BattleOver(bool won)
     {
@@ -117,30 +113,69 @@ public class BattleSystem : MonoBehaviour
     }
     void SkillSelection()
     {
-        state = BattleState.MoveSelection;
+        state = BattleState.SkillSelection;
         dialogBox.EnableActionSelector(false);
         dialogBox.EnableDialogText(false);
         dialogBox.EnableSkillSelector(true);
     }
-    IEnumerator PlayerMove()
+    IEnumerator RunningTurns(BattleAction playerAction)
     {
-        state = BattleState.PerformMove;
-
-        var skill = playerUnit.BattlePokemon.Skills[currentSkill];
-
-        yield return RunSkill(playerUnit, enemyUnit, skill);
-        if (state == BattleState.PerformMove)
+        state = BattleState.RunningTurn;
+        if (playerAction == BattleAction.Skill)
         {
-            StartCoroutine(EnemyMove());
-        }
-    }
-    IEnumerator EnemyMove()
-    {
-        state = BattleState.PerformMove;
-        var skill = enemyUnit.BattlePokemon.GetRandomSkill();
+            playerUnit.BattlePokemon.CurrentSkill = playerUnit.BattlePokemon.Skills[currentSkill];
+            enemyUnit.BattlePokemon.CurrentSkill = enemyUnit.BattlePokemon.GetRandomSkill();
 
-        yield return RunSkill(enemyUnit, playerUnit, skill);
-        if (state == BattleState.PerformMove)
+            // 스피드 체크
+            bool playerTurnFirst = playerUnit.BattlePokemon.Speed > enemyUnit.BattlePokemon.Speed;
+
+            if (playerUnit.BattlePokemon.Speed == enemyUnit.BattlePokemon.Speed)
+            {
+                playerTurnFirst = UnityEngine.Random.Range(0, 2) == 0;
+            }
+
+            var firstUnit = playerTurnFirst ? playerUnit : enemyUnit;
+            var secondUnit = playerTurnFirst ? enemyUnit : playerUnit;
+
+
+            var secondPokemon = secondUnit.BattlePokemon;
+
+            //선턴
+            yield return RunSkill(firstUnit, secondUnit, firstUnit.BattlePokemon.CurrentSkill);
+            yield return RunAfterTrun(firstUnit);
+            if (state == BattleState.BattleOver)
+            {
+                yield break;
+            }
+            if (secondPokemon.PokemonHp > 0)
+            {
+                //후턴
+                yield return RunSkill(secondUnit, firstUnit, secondUnit.BattlePokemon.CurrentSkill);
+                yield return RunAfterTrun(secondUnit);
+                if (state == BattleState.BattleOver)
+                {
+                    yield break;
+                }
+            }
+        }
+        else
+        {
+            if (playerAction == BattleAction.SwitchPokemon)
+            {
+                var selectedPokemon = playerParty.Pokemons[currentMember];
+                state = BattleState.Busy;
+                yield return SwitchPokemon(selectedPokemon);
+            }
+            var enemySkill = enemyUnit.BattlePokemon.GetRandomSkill();
+            yield return RunSkill(enemyUnit, playerUnit, enemySkill);
+            yield return RunAfterTrun(enemyUnit);
+            if (state == BattleState.BattleOver)
+            {
+                yield break;
+            }
+        }
+
+        if (state != BattleState.BattleOver)
         {
             ActionSelection();
         }
@@ -164,22 +199,18 @@ public class BattleSystem : MonoBehaviour
             skill = struggleSkill; // 발버둥 기술로 대체
         }
         */
-        if (skill.SkillPP <= 0)
-        {
-            // 스킬 사용 불가 메시지 출력
-            yield return dialogBox.TypeDialog($"기술의 남은 포인트가 없다!");
 
-            // 행동 선택 상태로 복귀
-            if (sourceUnit.IsPlayerUnit)
-            {
-                ActionSelection();
-            }
-            else
-            {
-                StartCoroutine(EnemyMove());
-            }
-            yield break; // 현재 실행 종료
-        }
+        // if (skill.SkillPP <= 0)
+        // {
+        //     // 행동 선택 상태로 복귀
+        //     if (sourceUnit.IsPlayerUnit)
+        //     {
+        //         // 스킬 사용 불가 메시지 출력
+        //         yield return dialogBox.TypeDialog($"기술의 남은 포인트가 없다!");
+        //         ActionSelection();
+        //     }
+        //     yield break; // 현재 실행 종료
+        // }
 
         skill.SkillPP--;
 
@@ -227,7 +258,7 @@ public class BattleSystem : MonoBehaviour
                 //애니메이션 재생
 
                 //플레이어 승리 (다음스테이지로)
-                yield return new WaitForSeconds(2.0f);
+                yield return new WaitForSeconds(1.5f);
                 CheckForBattleOver(targetUnit);
             }
         }
@@ -242,23 +273,31 @@ public class BattleSystem : MonoBehaviour
                 yield return dialogBox.TypeDialog($"{targetUnit.BattlePokemon.PokemonBase.PokemonName}에게는 맞지 않았다!");
             }
         }
-
-        new WaitForSeconds(2.0f);
+    }
+    IEnumerator RunAfterTrun(BattleUnit sourceUnit)
+    {
+        if (state == BattleState.BattleOver)
+        {
+            yield break;
+        }
+        yield return new WaitUntil(() => state == BattleState.RunningTurn);
+        yield return new WaitForSeconds(1.2f);
         //상태이상 처리
         sourceUnit.BattlePokemon.OnAfterTurn();
-        StartCoroutine(sourceUnit.BattleHud.UpdateHp());
         yield return ShowStatusChanges(sourceUnit.BattlePokemon);
+        yield return sourceUnit.BattleHud.UpdateHp();
         if (sourceUnit.BattlePokemon.PokemonHp <= 0)
         {
             yield return dialogBox.TypeDialog($"{sourceUnit.BattlePokemon.PokemonBase.PokemonName}{GetCorrectParticle(sourceUnit.BattlePokemon.PokemonBase.PokemonName, false)} 쓰러졌다!");
-            //애니메이션 재생
+            /*
+            사망 애니메이션 재생
 
-            //플레이어 패배
+            */
+
             yield return new WaitForSeconds(2.0f);
             CheckForBattleOver(sourceUnit);
         }
     }
-
     IEnumerator RunSkillEffects(SkillEffects effects, Pokemon sourceUnit, Pokemon targetUnit, SkillTarget skillTarget)
     {
         //RankUp
@@ -287,7 +326,6 @@ public class BattleSystem : MonoBehaviour
         yield return ShowStatusChanges(sourceUnit);
         yield return ShowStatusChanges(targetUnit);
     }
-
     bool CheckSkillHits(Skill skill, Pokemon source, Pokemon target)
     {
         if (skill.SkillBase.AlwaysHits)
@@ -320,7 +358,6 @@ public class BattleSystem : MonoBehaviour
 
         return UnityEngine.Random.Range(1, 101) <= SkillAccuracy;
     }
-
     IEnumerator ShowStatusChanges(Pokemon pokemon)
     {
         while (pokemon.StatusCngMsg.Count > 0)
@@ -329,7 +366,6 @@ public class BattleSystem : MonoBehaviour
             yield return dialogBox.TypeDialog(message);
         }
     }
-
     void CheckForBattleOver(BattleUnit faintedUnit)
     {
         if (faintedUnit.IsPlayerUnit)
@@ -423,6 +459,7 @@ public class BattleSystem : MonoBehaviour
             }
             if (currentAction == 2)
             {//포켓몬
+                preState = state;
                 OpenPartyScreen();
                 // Debug.Log("포켓몬");
             }
@@ -463,12 +500,17 @@ public class BattleSystem : MonoBehaviour
             var skill = playerUnit.BattlePokemon.Skills[currentSkill];
             if (skill.SkillPP == 0)
             {
-                // return;
+                // 스킬 사용 불가 메시지 출력
+                dialogBox.EnableSkillSelector(false);
+                dialogBox.EnableDialogText(true);
+                StartCoroutine(dialogBox.TypeDialog($"기술의 남은 포인트가 없다!"));
+                ActionSelection();
+                return;
             }
 
             dialogBox.EnableSkillSelector(false);
             dialogBox.EnableDialogText(true);
-            StartCoroutine(PlayerMove());
+            StartCoroutine(RunningTurns(BattleAction.Skill));
         }
         else if (Input.GetKeyDown(KeyCode.Backspace))
         {
@@ -512,18 +554,21 @@ public class BattleSystem : MonoBehaviour
                 partyScreen.SetMessageText($"이미 전투 중인 포켓몬으로 교체 할 수 없습니다!");
                 return;
             }
+
             partyScreen.gameObject.SetActive(false);
-            state = BattleState.Busy;
 
-            // 현재 전투 중인 포켓몬 (인덱스 0에 있는 포켓몬)
-            var currentBattlePokemon = playerParty.Pokemons[0];
-
-            // 교체 작업: 교체할 포켓몬을 0번 인덱스로, 나가있는 포켓몬을 교체할 포켓몬의 인덱스로 이동
-            playerParty.Pokemons[0] = selectedMember;
-            playerParty.Pokemons[currentMember] = currentBattlePokemon;
-
-            StartCoroutine(SwitchPokemon(selectedMember));
-            selectedMember.ResetRankup();
+            if (preState == BattleState.ActionSelection)
+            {
+                preState = null;
+                StartCoroutine(RunningTurns(BattleAction.SwitchPokemon));
+                dialogBox.EnableActionSelector(false);
+            }
+            //포켓몬이 쓰러졌을때
+            else
+            {
+                state = BattleState.Busy;
+                StartCoroutine(SwitchPokemon(selectedMember));
+            }
         }
         else if (Input.GetKeyDown(KeyCode.Backspace))
         {
@@ -534,32 +579,26 @@ public class BattleSystem : MonoBehaviour
     IEnumerator SwitchPokemon(Pokemon newPokemon)
     {
         playerUnit.BattlePokemon.CureVolatileStatus();
-        // bool isFainted = true;
-        if (playerUnit.BattlePokemon.PokemonHp > 0)
-        {
-            // isFainted = false;
-            yield return dialogBox.TypeDialog($"돌아와 {playerUnit.BattlePokemon.PokemonBase.PokemonName}!");
-            //사망애니메이션
-            yield return new WaitForSeconds(1.5f);
+        playerUnit.BattlePokemon.ResetRankup();
 
-            playerUnit.SetUp(newPokemon);
-            dialogBox.SetSkillNames(newPokemon.Skills);
+        yield return dialogBox.TypeDialog($"돌아와 {playerUnit.BattlePokemon.PokemonBase.PokemonName}!");
+        //사망애니메이션
+        yield return new WaitForSeconds(1.5f);
 
-            skillCount = newPokemon.Skills.Count;
+        // 현재 전투 중인 포켓몬 (인덱스 0에 있는 포켓몬)
+        var currentBattlePokemon = playerParty.Pokemons[0];
 
-            yield return dialogBox.TypeDialog($"가랏! {newPokemon.PokemonBase.PokemonName}!");
-            StartCoroutine(EnemyMove());
-        }
-        else        //포켓몬이 쓰러졌을때
-        {
-            playerUnit.SetUp(newPokemon);
-            dialogBox.SetSkillNames(newPokemon.Skills);
+        // 교체 작업: 교체할 포켓몬을 0번 인덱스로, 나가있는 포켓몬을 교체할 포켓몬의 인덱스로 이동
+        playerParty.Pokemons[0] = newPokemon;
+        playerParty.Pokemons[currentMember] = currentBattlePokemon;
 
-            skillCount = newPokemon.Skills.Count;
+        playerUnit.SetUp(newPokemon);
+        dialogBox.SetSkillNames(newPokemon.Skills);
 
-            yield return dialogBox.TypeDialog($"가랏! {newPokemon.PokemonBase.PokemonName}!");
-            ActionSelection();
-        }
+        skillCount = newPokemon.Skills.Count;
+
+        yield return dialogBox.TypeDialog($"가랏! {newPokemon.PokemonBase.PokemonName}!");
+        state = BattleState.RunningTurn;
     }
     string GetCorrectParticle(string name, bool subject)    //은는이가
     {

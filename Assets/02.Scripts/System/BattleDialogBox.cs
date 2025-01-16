@@ -22,23 +22,15 @@ public class BattleDialogBox : MonoBehaviour
 
     [SerializeField] Image typeImg;
     [SerializeField] Image categoryKeyImg;
-
-    // [SerializeField] Text typeText;
-    // [SerializeField] Text categoryKeyText;
     [SerializeField] Text ppText;
     [SerializeField] Text skillDetailText;
 
     public void SetDialog(string dialog)
     {
-        // if (typingCoroutine != null)
-        // {
-        //     StopCoroutine(typingCoroutine); // 기존 코루틴 중단
-        // }
         dialogText.text = dialog;
     }
     public IEnumerator TypeDialog(string dialog)
     {
-        // isTyping = true; // 텍스트 출력 시작
         dialogText.text = "";
 
         foreach (var letter in dialog.ToCharArray())
@@ -49,12 +41,7 @@ public class BattleDialogBox : MonoBehaviour
         yield return new WaitForSeconds(1.0f);
 
         dialogText.text = string.Empty;
-        // isTyping = false; // 텍스트 출력 완료
     }
-    // public bool IsTyping()
-    // {
-    //     return isTyping;
-    // }
     public void EnableDialogText(bool enabled)
     {
         dialogText.enabled = enabled;

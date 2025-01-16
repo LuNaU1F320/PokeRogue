@@ -5625,11 +5625,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pokemons:
-  - _base: {fileID: 11400000, guid: 1ac22d6c1051adb419c7d97c6fe66d7b, type: 2}
+  - _base: {fileID: 11400000, guid: 8c9a87392c34c2f47b5005e3675774c9, type: 2}
     level: 50
   - _base: {fileID: 11400000, guid: 1ac22d6c1051adb419c7d97c6fe66d7b, type: 2}
     level: 50
-  - _base: {fileID: 11400000, guid: 1ac22d6c1051adb419c7d97c6fe66d7b, type: 2}
+  - _base: {fileID: 11400000, guid: d4870b9d81b5ae140b34d012be999648, type: 2}
     level: 50
   - _base: {fileID: 11400000, guid: 1ac22d6c1051adb419c7d97c6fe66d7b, type: 2}
     level: 50

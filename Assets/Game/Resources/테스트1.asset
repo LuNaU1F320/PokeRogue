@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 271878df85541a1469db368301d2282b, type: 3}
-  m_Name: Test_Poke
+  m_Name: "\uD14C\uC2A4\uD2B81"
   m_EditorClassIdentifier: 
   pokemonIndex: 148
-  pokemonName: "\uD14C\uC2A4\uD2B8\uC6A9"
+  pokemonName: "\uD14C\uC2A4\uD2B81"
   pokemonDescription: 
   pokemonType1: 1
   pokemonType2: 18
