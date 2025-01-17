@@ -118,7 +118,7 @@ public class BattleSystem : MonoBehaviour
         dialogBox.EnableDialogText(false);
         dialogBox.EnableSkillSelector(true);
     }
-    IEnumerator RunningTurns(BattleAction playerAction)
+    IEnumerator RunTurns(BattleAction playerAction)
     {
         state = BattleState.RunningTurn;
         if (playerAction == BattleAction.Skill)
@@ -126,12 +126,24 @@ public class BattleSystem : MonoBehaviour
             playerUnit.BattlePokemon.CurrentSkill = playerUnit.BattlePokemon.Skills[currentSkill];
             enemyUnit.BattlePokemon.CurrentSkill = enemyUnit.BattlePokemon.GetRandomSkill();
 
-            // 스피드 체크
-            bool playerTurnFirst = playerUnit.BattlePokemon.Speed > enemyUnit.BattlePokemon.Speed;
+            int playerPriority = playerUnit.BattlePokemon.CurrentSkill.SkillBase.Priority;
+            int enemyPriority = enemyUnit.BattlePokemon.CurrentSkill.SkillBase.Priority;
 
-            if (playerUnit.BattlePokemon.Speed == enemyUnit.BattlePokemon.Speed)
+
+            // 스피드 체크
+            bool playerTurnFirst = true;
+            //우선도 체크
+            if (enemyPriority > playerPriority)
             {
-                playerTurnFirst = UnityEngine.Random.Range(0, 2) == 0;
+                playerTurnFirst = false;
+            }
+            else if (playerPriority == enemyPriority)
+            {
+                if (playerUnit.BattlePokemon.Speed == enemyUnit.BattlePokemon.Speed)
+                {
+                    playerTurnFirst = UnityEngine.Random.Range(0, 2) == 0;
+                }
+                playerTurnFirst = playerUnit.BattlePokemon.Speed > enemyUnit.BattlePokemon.Speed;
             }
 
             var firstUnit = playerTurnFirst ? playerUnit : enemyUnit;
@@ -510,7 +522,7 @@ public class BattleSystem : MonoBehaviour
 
             dialogBox.EnableSkillSelector(false);
             dialogBox.EnableDialogText(true);
-            StartCoroutine(RunningTurns(BattleAction.Skill));
+            StartCoroutine(RunTurns(BattleAction.Skill));
         }
         else if (Input.GetKeyDown(KeyCode.Backspace))
         {
@@ -560,7 +572,7 @@ public class BattleSystem : MonoBehaviour
             if (preState == BattleState.ActionSelection)
             {
                 preState = null;
-                StartCoroutine(RunningTurns(BattleAction.SwitchPokemon));
+                StartCoroutine(RunTurns(BattleAction.SwitchPokemon));
                 dialogBox.EnableActionSelector(false);
             }
             //포켓몬이 쓰러졌을때
