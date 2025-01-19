@@ -153,4 +153,22 @@ public class ConditionsDB
             }
         },
     };
+    public static float GetStatusBonus(PokemonCondition condition)
+    {
+        if (condition == null)
+        {
+            return 1f;
+        }
+        else if (condition.Id == ConditionID.SLP || condition.Id == ConditionID.FRZ)
+        {
+            return 2f;
+        }
+        else if (condition.Id == ConditionID.PAR || condition.Id == ConditionID.PSN || condition.Id == ConditionID.BRN)
+        {
+            return 1.5f;
+        }
+
+        return 1f;
+    }
+
 }

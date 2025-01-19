@@ -25,6 +25,10 @@ public class BattleSystem : MonoBehaviour
     [SerializeField] BattleUnit playerUnit;
     [SerializeField] BattleUnit enemyUnit;
     [SerializeField] BattleDialogBox dialogBox;
+    [SerializeField] GameObject Pokeball;
+
+    [SerializeField] SpriteRenderer PlayerSprite;
+    [SerializeField] SpriteRenderer TrainerSprite;
 
     //Party
     [SerializeField] PartyScreen partyScreen;
@@ -40,18 +44,48 @@ public class BattleSystem : MonoBehaviour
 
 
     PokemonParty playerParty;
+    PokemonParty trainerParty;
     Pokemon wildPokemon;
+    bool isTrainerBattle = false;
 
-    private void Awake()
-    {
-        ConditionsDB.Init();
-    }
+    PlayerCtrl player;
+    TrainerCtrl trainer;
+
+    // private void Awake()
+    // {
+    //     ConditionsDB.Init();
+    // }
     private void Start()
     {
         state = BattleState.Start;
         currentAction = 0;
-        playerParty = FindObjectOfType<PokemonParty>().GetComponent<PokemonParty>();
-        wildPokemon = FindObjectOfType<MapArea>().GetComponent<MapArea>().GetRandomWildPokemon();
+        // playerParty = FindObjectOfType<PokemonParty>().GetComponent<PokemonParty>();
+        // wildPokemon = FindObjectOfType<MapArea>().GetComponent<MapArea>().GetRandomWildPokemon();
+        // StartCoroutine(SetUpBattle());
+    }
+    public void StartBattle(PokemonParty playerParty, Pokemon wildPokemon)
+    {
+        if (playerParty == null || wildPokemon == null)
+        {
+            Debug.Log("로딩실패");
+            return;
+        }
+        this.playerParty = playerParty;
+        this.wildPokemon = wildPokemon;
+        StartCoroutine(SetUpBattle());
+
+    }
+    public void StartTrainerBattle(PokemonParty playerParty, PokemonParty trainerParty)
+    {
+        this.playerParty = playerParty;
+        this.trainerParty = trainerParty;
+
+        isTrainerBattle = true;
+
+        player = trainerParty.GetComponent<PlayerCtrl>();
+        trainer = trainerParty.GetComponent<TrainerCtrl>();
+
+
         StartCoroutine(SetUpBattle());
     }
     public void Update()
@@ -77,26 +111,51 @@ public class BattleSystem : MonoBehaviour
             Debug.Log(playerUnit.BattlePokemon.Attack);
             Debug.Log(playerUnit.BattlePokemon.Rankup[0]);
         }
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            StartCoroutine(ThrowPokeball());
+        }
     }
 
     public IEnumerator SetUpBattle()
     {
-        playerUnit.SetUp(playerParty.GetHealthyPokemon());
-        enemyUnit.SetUp(wildPokemon);
+        if (playerParty == null || wildPokemon == null)
+        {
+            Debug.LogError("SetUpBattle: playerParty 또는 wildPokemon이 null입니다!");
+            yield break;
+        }
 
+        if (isTrainerBattle == false)
+        {
+            playerUnit.SetUp(playerParty.GetHealthyPokemon());
+            enemyUnit.SetUp(wildPokemon);
+
+            dialogBox.SetSkillNames(playerUnit.BattlePokemon.Skills);
+
+            skillCount = playerUnit.BattlePokemon.Skills.Count;
+
+            yield return dialogBox.TypeDialog($"앗! 야생 {enemyUnit.BattlePokemon.PokemonBase.PokemonName}{GetCorrectParticle(enemyUnit.BattlePokemon.PokemonBase.PokemonName, true)} \n튀어나왔다!");
+        }
+        else
+        {
+            playerUnit.gameObject.SetActive(false);
+            enemyUnit.gameObject.SetActive(false);
+
+            PlayerSprite.gameObject.SetActive(true);
+            TrainerSprite.gameObject.SetActive(true);
+
+            PlayerSprite.sprite = player.TrainerSprite;
+            TrainerSprite.sprite = trainer.TrainerSprite;
+
+            yield return dialogBox.TypeDialog($"{trainer.TrainerName}이 배틀을 걸어왔다!");
+        }
         partyScreen.Init();
-
-        dialogBox.SetSkillNames(playerUnit.BattlePokemon.Skills);
-
-        skillCount = playerUnit.BattlePokemon.Skills.Count;
-
-        yield return dialogBox.TypeDialog($"앗! 야생 {enemyUnit.BattlePokemon.PokemonBase.PokemonName}{GetCorrectParticle(enemyUnit.BattlePokemon.PokemonBase.PokemonName, true)} \n튀어나왔다!");
         ActionSelection();
     }
     void BattleOver(bool won)
     {
         state = BattleState.BattleOver;
-        playerParty.Pokemons.ForEach(pok => pok.OnBattleOver());
+        playerParty.Party.ForEach(pok => pok.OnBattleOver());
         OnBattleOver(won);
     }
     void ActionSelection()
@@ -108,7 +167,7 @@ public class BattleSystem : MonoBehaviour
     void OpenPartyScreen()
     {
         state = BattleState.PartyScreen;
-        partyScreen.SetPartyData(playerParty.Pokemons);
+        partyScreen.SetPartyData(playerParty.Party);
         partyScreen.gameObject.SetActive(true);
     }
     void SkillSelection()
@@ -174,10 +233,16 @@ public class BattleSystem : MonoBehaviour
         {
             if (playerAction == BattleAction.SwitchPokemon)
             {
-                var selectedPokemon = playerParty.Pokemons[currentMember];
+                var selectedPokemon = playerParty.Party[currentMember];
                 state = BattleState.Busy;
                 yield return SwitchPokemon(selectedPokemon);
             }
+            else if (playerAction == BattleAction.UseItem)
+            {
+                dialogBox.EnableActionSelector(false);
+                yield return ThrowPokeball();
+            }
+
             var enemySkill = enemyUnit.BattlePokemon.GetRandomSkill();
             yield return RunSkill(enemyUnit, playerUnit, enemySkill);
             yield return RunAfterTrun(enemyUnit);
@@ -465,17 +530,17 @@ public class BattleSystem : MonoBehaviour
             {//싸운다
                 SkillSelection();
             }
-            if (currentAction == 1)
+            else if (currentAction == 1)
             {//볼
-                Debug.Log("볼");
+                StartCoroutine(RunTurns(BattleAction.UseItem));
             }
-            if (currentAction == 2)
+            else if (currentAction == 2)
             {//포켓몬
                 preState = state;
                 OpenPartyScreen();
                 // Debug.Log("포켓몬");
             }
-            if (currentAction == 3)
+            else if (currentAction == 3)
             {//도망친다
                 Debug.Log("도망");
             }
@@ -549,15 +614,15 @@ public class BattleSystem : MonoBehaviour
         {
             currentMember = 0;
         }
-        currentMember = Mathf.Clamp(currentMember, 0, playerParty.Pokemons.Count - 1);
+        currentMember = Mathf.Clamp(currentMember, 0, playerParty.Party.Count - 1);
         partyScreen.UpdateMemberSelection(currentMember);
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
         {
             //포켓몬 교체
-            var selectedMember = playerParty.Pokemons[currentMember];
+            var selectedMember = playerParty.Party[currentMember];
             if (selectedMember.PokemonHp <= 0)
             {
-                partyScreen.SetMessageText($"{playerParty.Pokemons[currentMember].PokemonBase.PokemonName}{GetCorrectParticle(playerParty.Pokemons[currentMember].PokemonBase.PokemonName, false)} 싸울 수 있는 \n기력이 남아 있지 않습니다!");
+                partyScreen.SetMessageText($"{playerParty.Party[currentMember].PokemonBase.PokemonName}{GetCorrectParticle(playerParty.Party[currentMember].PokemonBase.PokemonName, false)} 싸울 수 있는 \n기력이 남아 있지 않습니다!");
                 return;
             }
             if (selectedMember == playerUnit.BattlePokemon)
@@ -598,11 +663,11 @@ public class BattleSystem : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
 
         // 현재 전투 중인 포켓몬 (인덱스 0에 있는 포켓몬)
-        var currentBattlePokemon = playerParty.Pokemons[0];
+        var currentBattlePokemon = playerParty.Party[0];
 
         // 교체 작업: 교체할 포켓몬을 0번 인덱스로, 나가있는 포켓몬을 교체할 포켓몬의 인덱스로 이동
-        playerParty.Pokemons[0] = newPokemon;
-        playerParty.Pokemons[currentMember] = currentBattlePokemon;
+        playerParty.Party[0] = newPokemon;
+        playerParty.Party[currentMember] = currentBattlePokemon;
 
         playerUnit.SetUp(newPokemon);
         dialogBox.SetSkillNames(newPokemon.Skills);
@@ -627,5 +692,69 @@ public class BattleSystem : MonoBehaviour
         {
             return endsWithConsonant ? "은" : "는";
         }
+    }
+    IEnumerator ThrowPokeball()
+    {
+        state = BattleState.Busy;
+
+        // if( isTrainerBattle)    
+        // {
+        //     state = BattleState.RunningTurn;
+        //     yield break;
+        // }
+
+        yield return dialogBox.TypeDialog("");
+        var pokeballObj = Instantiate(Pokeball, playerUnit.transform.position, Quaternion.identity);
+        var pokeball = pokeballObj.GetComponent<SpriteRenderer>();
+
+        //#34 1254
+        //pokeball.transform.DoMove
+
+        int shakeCount = TryToCatchPokemon(enemyUnit.BattlePokemon);
+        for (int i = 0; i < Math.Min(shakeCount, 3); ++i)
+        {
+            yield return new WaitForSeconds(0.5f);
+            //흔들기 애니메이션
+            Debug.Log(shakeCount);
+
+        }
+        if (shakeCount == 4)
+        {
+            //잡힘
+            dialogBox.TypeDialog($"신난다-!\n 야생 {enemyUnit.BattlePokemon.PokemonBase.PokemonName}을 잡았다!");
+
+            playerParty.AddPokemon(enemyUnit.BattlePokemon);
+
+            Destroy(pokeball);
+            BattleOver(true);
+        }
+        else
+        {
+            Destroy(pokeball);
+            state = BattleState.RunningTurn;
+        }
+    }
+    int TryToCatchPokemon(Pokemon pokemon)
+    {
+        float a = (3 * pokemon.MaxHp - 2 * pokemon.PokemonHp) * pokemon.PokemonBase.CatchRate * ConditionsDB.GetStatusBonus(pokemon.Status) / (3 * pokemon.MaxHp);
+
+        if (a >= 255)
+        {
+            //흔들린 횟수
+            return 4;
+        }
+
+        float b = 1048560 / Mathf.Sqrt(Mathf.Sqrt(16711680 / a));
+
+        int shakeCount = 0;
+        while (shakeCount < 4)
+        {
+            if (UnityEngine.Random.Range(0, 65535) >= b)
+            {
+                break;
+            }
+            ++shakeCount;
+        }
+        return shakeCount;
     }
 }

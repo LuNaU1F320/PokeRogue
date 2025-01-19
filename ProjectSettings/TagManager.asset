@@ -12,7 +12,7 @@ TagManager:
   - Water
   - UI
   - 
-  - 
+  - Battle
   - 
   - 
   - 
@@ -49,6 +49,12 @@ TagManager:
     locked: 0
   - name: UI
     uniqueID: 2152707967
+    locked: 0
+  - name: Battle
+    uniqueID: 3355896695
+    locked: 0
+  - name: Dialog
+    uniqueID: 2721052949
     locked: 0
   - name: Party
     uniqueID: 3224888321

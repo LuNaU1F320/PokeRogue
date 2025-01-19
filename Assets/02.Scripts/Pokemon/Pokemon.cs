@@ -33,9 +33,17 @@ public class Pokemon
     public int StatusTime { get; set; }
     public PokemonCondition VolatileStatus { get; private set; }
     public int VolatileStatusTime { get; set; }
-    public Queue<string> StatusCngMsg { get; private set; } = new Queue<string>();
+    public Queue<string> StatusCngMsg { get; private set; }
     public bool IsHpChanged { get; set; }
     public event System.Action OnStatusChanged;
+
+    public Pokemon(PokemonBase pBase, int pLevel)
+    {
+        _base = pBase;
+        level = pLevel;
+
+        Init();
+    }
     public void Init()
     {
         Skills = new List<Skill>();
@@ -53,6 +61,7 @@ public class Pokemon
         CalculateStats();
         PokemonHp = MaxHp;
 
+        StatusCngMsg = new Queue<string>();
         ResetRankup();
         Status = null;
         VolatileStatus = null;
