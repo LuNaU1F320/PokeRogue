@@ -343,7 +343,7 @@ public class Pokemon
 
     public void CureVolatileStatus()
     {
-        Status = null;
+        VolatileStatus = null;
     }
 
     public void OnBattleOver()

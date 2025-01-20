@@ -30,6 +30,7 @@ public class BattleHud : MonoBehaviour
             hpbar_Text.text = $"{SetPokemon.PokemonHp}/{SetPokemon.MaxHp}";
         }
         SetPokemonType(isPlayerUnit);
+        SetStatusIMG();
         _pokemon.OnStatusChanged += SetStatusIMG;
     }
     void SetPokemonType(bool isPlayerUnit)
@@ -131,8 +132,6 @@ public class BattleHud : MonoBehaviour
             }
         }
     }
-
-
     void SetStatusIMG()
     {
         if (_pokemon.Status == null)
@@ -146,8 +145,6 @@ public class BattleHud : MonoBehaviour
             Status_Img.sprite = Resources.Load<Sprite>($"Image/UI/statuses/{_pokemon.Status.Id.ToString().ToUpper()}");
         }
     }
-
-
     public IEnumerator UpdateHp()
     {
         if (_pokemon.IsHpChanged)

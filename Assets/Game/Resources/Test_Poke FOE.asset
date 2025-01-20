@@ -25,5 +25,5 @@ MonoBehaviour:
   speed: 100
   catchRate: 255
   learnableSkills:
-  - skillBase: {fileID: 11400000, guid: 322380722b15f7747b5595fc18e69dba, type: 2}
+  - skillBase: {fileID: 11400000, guid: 33e6700730d61a84f905d9fb21113815, type: 2}
     level: 1

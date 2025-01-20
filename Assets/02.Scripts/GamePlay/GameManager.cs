@@ -58,9 +58,9 @@ public class GameManager : MonoBehaviour
 
         var wildPokemon = mapArea.GetRandomWildPokemon();
 
-        // var refWildPokemon = new Pokemon(wildPokemon.PokemonBase, wildPokemon.PokemonLevel);
+        var refWildPokemon = new Pokemon(wildPokemon.PokemonBase, wildPokemon.PokemonLevel);
 
-        battleSystem.StartBattle(PlayerParty, wildPokemon);
+        battleSystem.StartBattle(PlayerParty, refWildPokemon);
     }
     public void StartTrainerBattle(TrainerCtrl trainer)
     {

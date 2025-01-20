@@ -70,6 +70,7 @@ public class BattleSystem : MonoBehaviour
         //     Debug.Log("로딩실패");
         //     return;
         // }
+        state = BattleState.Start;
         this.playerParty = playerParty;
         this.wildPokemon = wildPokemon;
         StartCoroutine(SetUpBattle());
@@ -113,11 +114,7 @@ public class BattleSystem : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.T))
         {
-            Debug.Log($"Count : {playerParty.Party.Count}");
-            foreach (var pokemon in playerParty.Party)
-            {
-                Debug.Log(pokemon.PokemonBase.PokemonName);
-            }
+            Debug.Log($"state {state}");
         }
     }
 
@@ -701,8 +698,6 @@ public class BattleSystem : MonoBehaviour
         //     state = BattleState.RunningTurn;
         //     yield break;
         // }
-
-        yield return dialogBox.TypeDialog("");
         var pokeballObj = Instantiate(Pokeball, playerUnit.transform.position, Quaternion.identity);
         var pokeball = pokeballObj.GetComponent<SpriteRenderer>();
 
@@ -714,24 +709,24 @@ public class BattleSystem : MonoBehaviour
         {
             yield return new WaitForSeconds(0.5f);
             //흔들기 애니메이션
-            Debug.Log(shakeCount);
-
         }
+        Debug.Log(shakeCount);
         if (shakeCount == 4)
         {
             //잡힘
-            dialogBox.TypeDialog($"신난다-!\n 야생 {enemyUnit.BattlePokemon.PokemonBase.PokemonName}을 잡았다!");
 
             playerParty.AddPokemon(enemyUnit.BattlePokemon);
-
             Destroy(pokeball);
+            yield return dialogBox.TypeDialog($"신난다-!\n야생 {enemyUnit.BattlePokemon.PokemonBase.PokemonName}을 잡았다!");
             BattleOver(true);
         }
         else
         {
+            yield return dialogBox.TypeDialog($"씨발!");
             Destroy(pokeball);
             state = BattleState.RunningTurn;
         }
+        yield return new WaitForSeconds(1.0f);
     }
     int TryToCatchPokemon(Pokemon pokemon)
     {
