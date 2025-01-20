@@ -29,6 +29,7 @@ public class GameManager : MonoBehaviour
     {
         Inst = this;
         ConditionsDB.Init();
+        // Time.timeScale = 5.0f;
     }
 
     void Start()
