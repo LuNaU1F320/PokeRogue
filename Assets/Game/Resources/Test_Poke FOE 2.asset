@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Test_Poke FOE 2
   m_EditorClassIdentifier: 
   pokemonIndex: 3
-  pokemonName: "\uD14C\uC2A4\uD2B8\uC801"
+  pokemonName: "\uC8012"
   pokemonDescription: 
-  pokemonType1: 1
+  pokemonType1: 14
   pokemonType2: 0
   maxHp: 100
   attack: 100

@@ -65,11 +65,11 @@ public class BattleSystem : MonoBehaviour
     }
     public void StartBattle(PokemonParty playerParty, Pokemon wildPokemon)
     {
-        if (playerParty == null || wildPokemon == null)
-        {
-            Debug.Log("로딩실패");
-            return;
-        }
+        // if (playerParty == null || wildPokemon == null)
+        // {
+        //     Debug.Log("로딩실패");
+        //     return;
+        // }
         this.playerParty = playerParty;
         this.wildPokemon = wildPokemon;
         StartCoroutine(SetUpBattle());
@@ -113,18 +113,16 @@ public class BattleSystem : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.T))
         {
-            StartCoroutine(ThrowPokeball());
+            Debug.Log($"Count : {playerParty.Party.Count}");
+            foreach (var pokemon in playerParty.Party)
+            {
+                Debug.Log(pokemon.PokemonBase.PokemonName);
+            }
         }
     }
 
     public IEnumerator SetUpBattle()
     {
-        if (playerParty == null || wildPokemon == null)
-        {
-            Debug.LogError("SetUpBattle: playerParty 또는 wildPokemon이 null입니다!");
-            yield break;
-        }
-
         if (isTrainerBattle == false)
         {
             playerUnit.SetUp(playerParty.GetHealthyPokemon());
@@ -167,6 +165,7 @@ public class BattleSystem : MonoBehaviour
     void OpenPartyScreen()
     {
         state = BattleState.PartyScreen;
+        partyScreen.Init();
         partyScreen.SetPartyData(playerParty.Party);
         partyScreen.gameObject.SetActive(true);
     }

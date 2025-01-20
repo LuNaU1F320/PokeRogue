@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 271878df85541a1469db368301d2282b, type: 3}
   m_Name: Test_Poke FOE 1
   m_EditorClassIdentifier: 
-  pokemonIndex: 54
-  pokemonName: "\uD14C\uC2A4\uD2B8\uC801"
+  pokemonIndex: 256
+  pokemonName: "\uC8011"
   pokemonDescription: 
-  pokemonType1: 1
+  pokemonType1: 8
   pokemonType2: 0
   maxHp: 100
   attack: 100
