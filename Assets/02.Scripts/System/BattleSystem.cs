@@ -33,7 +33,7 @@ public class BattleSystem : MonoBehaviour
     //Party
     [SerializeField] PartyScreen partyScreen;
 
-    public event Action<bool> OnBattleOver;
+    // public event Action<bool> OnBattleOver;
 
     BattleState state;
     BattleState? preState;
@@ -150,8 +150,10 @@ public class BattleSystem : MonoBehaviour
     void BattleOver(bool won)
     {
         state = BattleState.BattleOver;
-        playerParty.Party.ForEach(pok => pok.OnBattleOver());
-        OnBattleOver(won);
+        // playerParty.Party.ForEach(pok => pok.OnBattleOver());
+        // OnBattleOver(won);
+        StopAllCoroutines();
+        GameManager.Inst.EndBattle(won);
     }
     void ActionSelection()
     {
@@ -710,11 +712,9 @@ public class BattleSystem : MonoBehaviour
             yield return new WaitForSeconds(0.5f);
             //흔들기 애니메이션
         }
-        Debug.Log(shakeCount);
         if (shakeCount == 4)
         {
             //잡힘
-
             playerParty.AddPokemon(enemyUnit.BattlePokemon);
             Destroy(pokeball);
             yield return dialogBox.TypeDialog($"신난다-!\n야생 {enemyUnit.BattlePokemon.PokemonBase.PokemonName}을 잡았다!");

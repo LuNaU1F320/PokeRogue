@@ -346,11 +346,11 @@ public class Pokemon
         VolatileStatus = null;
     }
 
-    public void OnBattleOver()
-    {
-        VolatileStatus = null;
-        ResetRankup();
-    }
+    // public void OnBattleOver()
+    // {
+    //     VolatileStatus = null;
+    //     ResetRankup();
+    // }
 
     public class DamageDetails
     {

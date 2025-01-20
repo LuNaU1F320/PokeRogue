@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour
         StageCount = 1;
         Stage_Text.text = "마을 - 1";
         // OnEncountered += StartBattle;
-        battleSystem.OnBattleOver += EndBattle;
+        // battleSystem.OnBattleOver += EndBattle;
     }
 
     // Update is called once per frame
@@ -71,10 +71,11 @@ public class GameManager : MonoBehaviour
 
         battleSystem.StartTrainerBattle(playerParty, trainerParty);
     }
-    void EndBattle(bool won)
+    public void EndBattle(bool won)
     {
         if (won)
         {
+            StopAllCoroutines();
             StageCount++;
             Stage_Text.text = $"마을 - {StageCount}";
             StartBattle();
