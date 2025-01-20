@@ -194,7 +194,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: pbinfo_enemy_type1_Electric
+      name: Electric
       rect:
         serializedVersion: 2
         x: 0
@@ -543,6 +543,7 @@ TextureImporter:
       Bug: -72927898
       Dark: -2035241090
       Dragon: -1564485448
+      Electric: 472292099
       Fairy: 311330807
       Fighting: 457507955
       Fire: 1852257348
@@ -559,7 +560,6 @@ TextureImporter:
       Steel: -477604629
       Water: 618073964
       pbinfo_enemy_type1_19: -349812724
-      pbinfo_enemy_type1_Electric: 472292099
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
