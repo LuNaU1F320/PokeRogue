@@ -20,7 +20,7 @@ MonoBehaviour:
   skillPower: 0
   skillAccuracy: 100
   alwaysHits: 0
-  skillPP: 1
+  skillPP: 10
   priority: 0
   effects:
     rankup: []

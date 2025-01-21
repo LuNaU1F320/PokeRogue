@@ -20,6 +20,7 @@ public class PokemonParty : MonoBehaviour
     }
     private void Awake()
     {
+        DontDestroyOnLoad(this.gameObject);
         foreach (var pokemon in party)
         {
             pokemon.Init();
