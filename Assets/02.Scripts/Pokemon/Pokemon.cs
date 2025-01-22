@@ -8,6 +8,8 @@ public class Pokemon
 {
     [SerializeField] PokemonBase _base;
     [SerializeField] int level;
+    int pokemonGen;
+    [SerializeField] bool isShiny;
 
     public PokemonBase PokemonBase
     {
@@ -21,6 +23,13 @@ public class Pokemon
         get
         {
             return level;
+        }
+    }
+    public int PokemonGen
+    {
+        get
+        {
+            return pokemonGen;
         }
     }
     public int PokemonHp { get; set; }
@@ -61,10 +70,53 @@ public class Pokemon
         CalculateStats();
         PokemonHp = MaxHp;
 
+        SetGeneration();
+
+
         StatusCngMsg = new Queue<string>();
         ResetRankup();
         Status = null;
         VolatileStatus = null;
+    }
+    private void SetGeneration()
+    {
+        int index = _base.PokemonIndex;
+        if (index <= 151) // 1세대: 1 ~ 151
+        {
+            pokemonGen = 1;
+        }
+        else if (index <= 251) // 2세대: 152 ~ 251
+        {
+            pokemonGen = 2;
+        }
+        else if (index <= 386) // 3세대: 252 ~ 386
+        {
+            pokemonGen = 3;
+        }
+        else if (index <= 493) // 4세대: 387 ~ 493
+        {
+            pokemonGen = 4;
+        }
+        else if (index <= 649) // 5세대: 494 ~ 649
+        {
+            pokemonGen = 5;
+        }
+        else if (index <= 721) // 6세대: 650 ~ 721
+        {
+            pokemonGen = 6;
+        }
+        else if (index <= 809) // 7세대: 722 ~ 809
+        {
+            pokemonGen = 7;
+        }
+        else if (index <= 898) // 8세대: 810 ~ 898
+        {
+            pokemonGen = 8;
+        }
+        else // 9세대 이후 (예시로 899 이상)
+        {
+            pokemonGen = 9;
+        }
     }
     void CalculateStats()
     {
@@ -79,7 +131,6 @@ public class Pokemon
 
         MaxHp = Mathf.FloorToInt((PokemonBase.MaxHp * PokemonLevel) / 100f) + 10 + PokemonLevel;
     }
-
     public void ResetRankup()
     {
         Rankup = new Dictionary<Stat, int>()
@@ -93,7 +144,6 @@ public class Pokemon
             {Stat.Evasion , 0}
         };
     }
-
     int GetStat(Stat stat)
     {
         int statVal = Stats[stat];
@@ -113,7 +163,6 @@ public class Pokemon
 
         return statVal;
     }
-
     public void ApplyRankups(List<Rankup> rankUps)
     {
         foreach (var rankUp in rankUps)
@@ -194,7 +243,6 @@ public class Pokemon
             }
         }
     }
-
     public int Attack
     {
         get { return GetStat(Stat.Attack); }
@@ -292,7 +340,6 @@ public class Pokemon
         int r = UnityEngine.Random.Range(0, skillWithPP.Count);
         return Skills[r];
     }
-
     string GetCorrectParticle(string name, bool subject)    //은는이가
     {
         char lastChar = name[name.Length - 1];
@@ -322,13 +369,11 @@ public class Pokemon
         StatusCngMsg.Enqueue($"{_base.PokemonName}{GetCorrectParticle(_base.PokemonName, false)} {Status.StartMessage}");
         OnStatusChanged?.Invoke();
     }
-
     public void CureStatus()
     {
         Status = null;
         OnStatusChanged?.Invoke();
     }
-
     public void SetVolatileStatus(ConditionID conditionID)
     {
         if (VolatileStatus != null)
@@ -340,7 +385,6 @@ public class Pokemon
         VolatileStatus?.OnStart?.Invoke(this);
         StatusCngMsg.Enqueue($"{_base.PokemonName}{GetCorrectParticle(_base.PokemonName, false)} {Status.StartMessage}");
     }
-
     public void CureVolatileStatus()
     {
         VolatileStatus = null;
@@ -351,7 +395,6 @@ public class Pokemon
     //     VolatileStatus = null;
     //     ResetRankup();
     // }
-
     public class DamageDetails
     {
         public bool Fainted { get; set; }

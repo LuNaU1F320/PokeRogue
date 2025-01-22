@@ -6,6 +6,7 @@ using UnityEngine;
 public class PokemonBase : ScriptableObject
 {
     [SerializeField] int pokemonIndex;
+    [SerializeField] int pokemonGen;
     [SerializeField] string pokemonName;
 
     [TextArea]
@@ -29,6 +30,10 @@ public class PokemonBase : ScriptableObject
     public int PokemonIndex
     {
         get { return pokemonIndex; }
+    }
+    public int PokemonGen
+    {
+        get { return pokemonGen; }
     }
     public string PokemonName
     {

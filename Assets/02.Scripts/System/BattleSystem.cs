@@ -65,11 +65,6 @@ public class BattleSystem : MonoBehaviour
     }
     public void StartBattle(PokemonParty playerParty, Pokemon wildPokemon)
     {
-        // if (playerParty == null || wildPokemon == null)
-        // {
-        //     Debug.Log("로딩실패");
-        //     return;
-        // }
         state = BattleState.Start;
         this.playerParty = playerParty;
         this.wildPokemon = wildPokemon;
@@ -114,7 +109,8 @@ public class BattleSystem : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.T))
         {
-            Debug.Log($"state {state}");
+            // Debug.Log($"state {state}");
+            Debug.Log($"{playerUnit.BattlePokemon.PokemonGen}");
         }
     }
 
@@ -540,7 +536,8 @@ public class BattleSystem : MonoBehaviour
             }
             else if (currentAction == 3)
             {//도망친다
-                Debug.Log("도망");
+                // Debug.Log("도망");
+                BattleOver(true);
             }
         }
     }

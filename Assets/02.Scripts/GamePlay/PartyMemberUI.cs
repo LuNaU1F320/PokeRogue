@@ -23,7 +23,7 @@ public class PartyMemberUI : MonoBehaviour
         {
             hpbar_Text.text = $"{SetPokemon.PokemonHp}/{SetPokemon.MaxHp}";
         }
-        pokemonDotSprite.sprite = Resources.Load<Sprite>($"Image/Pokemon/PokemonDot/{SetPokemon.PokemonBase.PokemonIndex}");
+        pokemonDotSprite.sprite = Resources.Load<Sprite>($"Image/Pokemon/PokemonDot/{SetPokemon.PokemonGen}/{SetPokemon.PokemonBase.PokemonIndex}");
     }
     public void SetSelected(bool selected, int memberIndex)
     {

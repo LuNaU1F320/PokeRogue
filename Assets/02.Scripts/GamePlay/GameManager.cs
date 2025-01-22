@@ -14,11 +14,13 @@ public class GameManager : MonoBehaviour
 {
     // public event Action OnEncountered;
     [SerializeField] BattleSystem battleSystem;
-    [SerializeField] PokemonParty PlayerParty;
+    PokemonParty PlayerParty;
     [SerializeField] MapArea mapArea;
     [SerializeField] Text Stage_Text;
     private int StageCount;
     [SerializeField] Text Gold_Text;
+    private int UserGold;
+    [HideInInspector] public bool isRun = true;
 
     GameState state;
 
@@ -34,13 +36,17 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
+
+        PlayerParty = FindObjectOfType<PokemonParty>().GetComponent<PokemonParty>();
         if (battleSystem == null || PlayerParty == null || mapArea == null)
         {
             return;
         }
         StartBattle();
         StageCount = 1;
-        Stage_Text.text = "마을 - 1";
+        UserGold = 1000;
+        Stage_Text.text = $"마을 - {StageCount}";
+        Gold_Text.text = $"￡{UserGold}";
         // OnEncountered += StartBattle;
         // battleSystem.OnBattleOver += EndBattle;
     }
@@ -80,10 +86,19 @@ public class GameManager : MonoBehaviour
             StageCount++;
             Stage_Text.text = $"마을 - {StageCount}";
             StartBattle();
+            AddGold();
+            Gold_Text.text = $"￡{UserGold}";
         }
         else
         {
             Debug.Log("전투에서 패배했습니다...");
+        }
+    }
+    void AddGold()
+    {
+        if (isRun == false)
+        {
+            UserGold += ((StageCount + 10) / 10) * 1000;
         }
     }
 }
