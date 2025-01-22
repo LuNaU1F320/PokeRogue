@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +7,7 @@ public class BattleHud : MonoBehaviour
     [SerializeField] Text nameTxt;
     [SerializeField] Text levelTxt;
     [SerializeField] HpBar hpbar;
+    [SerializeField] Image ExpBar;
     [SerializeField] public Text hpbar_Text;
     [SerializeField] Image PokemonTypeImg;
     [SerializeField] Image PokemonDualTypeImg1;
@@ -22,9 +22,10 @@ public class BattleHud : MonoBehaviour
         PokemonDualTypeImg2.gameObject.SetActive(false);
         Status_Img.gameObject.SetActive(false);
         _pokemon = SetPokemon;
-        nameTxt.text = SetPokemon.PokemonBase.PokemonName;
+        nameTxt.text = SetPokemon.Base.PokemonName;
         levelTxt.text = "" + SetPokemon.PokemonLevel;
         hpbar.SetHp((float)SetPokemon.PokemonHp / SetPokemon.MaxHp);
+        SetExp();
         if (hpbar_Text != null)
         {
             hpbar_Text.text = $"{SetPokemon.PokemonHp}/{SetPokemon.MaxHp}";
@@ -144,6 +145,43 @@ public class BattleHud : MonoBehaviour
             Status_Img.gameObject.SetActive(true);
             Status_Img.sprite = Resources.Load<Sprite>($"Image/UI/statuses/{_pokemon.Status.Id.ToString().ToUpper()}");
         }
+    }
+    public void SetExp()
+    {
+        if (ExpBar == null)
+        {
+            return;
+        }
+        float normalizeExp = GetNormalizedExp();
+        ExpBar.fillAmount = normalizeExp;
+    }
+    public IEnumerator SetExpSmooth()
+    {
+        if (ExpBar == null)
+        {
+            yield break;
+        }
+        float currentExp = ExpBar.fillAmount; // 현재 경험치 바 상태
+        float targetExp = GetNormalizedExp(); // 목표 경험치 바 상태
+        float duration = 0.5f; // 애니메이션 지속 시간
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            elapsedTime += Time.deltaTime;
+            ExpBar.fillAmount = Mathf.Lerp(currentExp, targetExp, elapsedTime / duration);
+            yield return null;
+        }
+
+        ExpBar.fillAmount = targetExp; // 최종 값 보정
+    }
+    public float GetNormalizedExp()
+    {
+        int curLevelExp = _pokemon.Base.GetExpForLevel(_pokemon.PokemonLevel);
+        int nextLevelExp = _pokemon.Base.GetExpForLevel(_pokemon.PokemonLevel + 1);
+
+        float normalizeExp = (float)(_pokemon.PokemonExp - curLevelExp) / (nextLevelExp - curLevelExp);
+        return Mathf.Clamp01(normalizeExp);
     }
     public IEnumerator UpdateHp()
     {

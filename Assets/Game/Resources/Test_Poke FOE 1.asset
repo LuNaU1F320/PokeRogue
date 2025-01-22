@@ -23,6 +23,8 @@ MonoBehaviour:
   spAttack: 100
   spDefence: 100
   speed: 100
+  expYield: 60
+  growthRate: 0
   catchRate: 255
   learnableSkills:
   - skillBase: {fileID: 11400000, guid: 322380722b15f7747b5595fc18e69dba, type: 2}

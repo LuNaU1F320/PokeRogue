@@ -6,7 +6,6 @@ using UnityEngine;
 public class PokemonBase : ScriptableObject
 {
     [SerializeField] int pokemonIndex;
-    [SerializeField] int pokemonGen;
     [SerializeField] string pokemonName;
 
     [TextArea]
@@ -22,18 +21,71 @@ public class PokemonBase : ScriptableObject
     [SerializeField] int spAttack;
     [SerializeField] int spDefence;
     [SerializeField] int speed;
+    [SerializeField] int expYield;
+    [SerializeField] GrowthRate growthRate;
 
     [SerializeField] int catchRate = 255;
 
     [SerializeField] List<LearnableSkill> learnableSkills;
+    public int GetExpForLevel(int level)
+    {
+        if (growthRate == GrowthRate.Erratic)
+        {
+            if (level <= 50)
+            {
+                return (level * level * level * (100 - level)) / 50;
+            }
+            else if (level <= 68)
+            {
+                return (level * level * level * (150 - level)) / 100;
+            }
+            else if (level <= 98)
+            {
+                return (level * level * level * ((1911 - 10 * level) / 3)) / 500;
+            }
+            else
+            {
+                return (level * level * level * (160 - level)) / 100;
+            }
+        }
+        else if (growthRate == GrowthRate.Fast)
+        {
+            return 4 * (level * level * level) / 5;
+        }
+        else if (growthRate == GrowthRate.MediumFast)
+        {
+            return level * level * level;
+        }
+        else if (growthRate == GrowthRate.MediumSlow)
+        {
+            return (6 * (level * level * level) / 5) - (15 * (level * level)) + (100 * level) - 140;
+        }
+        else if (growthRate == GrowthRate.Slow)
+        {
+            return 5 * (level * level * level) / 4;
+        }
+        else if (growthRate == GrowthRate.Fluctuating)
+        {
+            if (level <= 15)
+            {
+                return (level * level * level * (24 + (level + 1))) / 50;
+            }
+            else if (level <= 35)
+            {
+                return (level * level * level * (14 + level)) / 50;
+            }
+            else
+            {
+                return (level * level * level * (32 + (level / 2))) / 50;
+            }
+        }
+
+        return -1;
+    }
 
     public int PokemonIndex
     {
         get { return pokemonIndex; }
-    }
-    public int PokemonGen
-    {
-        get { return pokemonGen; }
     }
     public string PokemonName
     {
@@ -80,6 +132,8 @@ public class PokemonBase : ScriptableObject
     {
         get { return learnableSkills; }
     }
+    public int ExpYield => expYield;
+    public GrowthRate GrowthRate => growthRate;
 }
 [System.Serializable]
 public class LearnableSkill
@@ -134,6 +188,16 @@ public enum Stat
 
     Accuracy,
     Evasion
+}
+public enum GrowthRate
+{
+    Erratic,
+    Fast,
+    MediumFast,
+    MediumSlow,
+    Slow,
+    Fluctuating
+
 }
 public class TypeChart
 {

@@ -11,7 +11,7 @@ public class Pokemon
     int pokemonGen;
     [SerializeField] bool isShiny;
 
-    public PokemonBase PokemonBase
+    public PokemonBase Base
     {
         get
         {
@@ -32,6 +32,7 @@ public class Pokemon
             return pokemonGen;
         }
     }
+    public int PokemonExp { get; set; }
     public int PokemonHp { get; set; }
     public int startHp { get; set; }
     public List<Skill> Skills { get; set; }
@@ -56,7 +57,7 @@ public class Pokemon
     public void Init()
     {
         Skills = new List<Skill>();
-        foreach (var skill in PokemonBase.LearnableSkills)
+        foreach (var skill in Base.LearnableSkills)
         {
             if (skill.Level <= PokemonLevel)
             {
@@ -67,6 +68,7 @@ public class Pokemon
                 break;
             }
         }
+        PokemonExp = Base.GetExpForLevel(PokemonLevel);
         CalculateStats();
         PokemonHp = MaxHp;
 
@@ -122,14 +124,14 @@ public class Pokemon
     {
         Stats = new Dictionary<Stat, int>
         {
-            { Stat.Attack, Mathf.FloorToInt((PokemonBase.Attack * PokemonLevel) / 100f) + 5 },
-            { Stat.Defence, Mathf.FloorToInt((PokemonBase.Defence * PokemonLevel) / 100f) + 5 },
-            { Stat.SpAttack, Mathf.FloorToInt((PokemonBase.SpAttack * PokemonLevel) / 100f) + 5 },
-            { Stat.SpDefence, Mathf.FloorToInt((PokemonBase.SpDefence * PokemonLevel) / 100f) + 5 },
-            { Stat.Speed, Mathf.FloorToInt((PokemonBase.Speed * PokemonLevel) / 100f) + 5 }
+            { Stat.Attack, Mathf.FloorToInt((Base.Attack * PokemonLevel) / 100f) + 5 },
+            { Stat.Defence, Mathf.FloorToInt((Base.Defence * PokemonLevel) / 100f) + 5 },
+            { Stat.SpAttack, Mathf.FloorToInt((Base.SpAttack * PokemonLevel) / 100f) + 5 },
+            { Stat.SpDefence, Mathf.FloorToInt((Base.SpDefence * PokemonLevel) / 100f) + 5 },
+            { Stat.Speed, Mathf.FloorToInt((Base.Speed * PokemonLevel) / 100f) + 5 }
         };
 
-        MaxHp = Mathf.FloorToInt((PokemonBase.MaxHp * PokemonLevel) / 100f) + 10 + PokemonLevel;
+        MaxHp = Mathf.FloorToInt((Base.MaxHp * PokemonLevel) / 100f) + 10 + PokemonLevel;
     }
     public void ResetRankup()
     {
@@ -280,7 +282,7 @@ public class Pokemon
         {
             critical = 2f;
         }
-        float typeDmgMag = TypeChart.GetEffectiveness(skill.SkillBase.SkillType, this.PokemonBase.Type1) * TypeChart.GetEffectiveness(skill.SkillBase.SkillType, this.PokemonBase.Type2);       //타입별 데미지 배율
+        float typeDmgMag = TypeChart.GetEffectiveness(skill.SkillBase.SkillType, this.Base.Type1) * TypeChart.GetEffectiveness(skill.SkillBase.SkillType, this.Base.Type2);       //타입별 데미지 배율
 
         var damageDetails = new DamageDetails()
         {
@@ -437,10 +439,10 @@ public class Pokemon
     }
     public PokemonType Type1
     {
-        get { return PokemonBase.Type1; }
+        get { return Base.Type1; }
     }
     public PokemonType Type2
     {
-        get { return PokemonBase.Type2; }
+        get { return Base.Type2; }
     }
 }

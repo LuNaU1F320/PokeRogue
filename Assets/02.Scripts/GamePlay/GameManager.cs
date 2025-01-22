@@ -65,7 +65,7 @@ public class GameManager : MonoBehaviour
 
         var wildPokemon = mapArea.GetRandomWildPokemon();
 
-        var refWildPokemon = new Pokemon(wildPokemon.PokemonBase, wildPokemon.PokemonLevel);
+        var refWildPokemon = new Pokemon(wildPokemon.Base, wildPokemon.PokemonLevel);
 
         battleSystem.StartBattle(PlayerParty, refWildPokemon);
     }
@@ -86,19 +86,16 @@ public class GameManager : MonoBehaviour
             StageCount++;
             Stage_Text.text = $"마을 - {StageCount}";
             StartBattle();
-            AddGold();
-            Gold_Text.text = $"￡{UserGold}";
         }
         else
         {
             Debug.Log("전투에서 패배했습니다...");
         }
     }
-    void AddGold()
+    public void AddGold()
     {
-        if (isRun == false)
-        {
-            UserGold += ((StageCount + 10) / 10) * 1000;
-        }
+        UserGold += ((StageCount + 10) / 10) * 1000;
+
+        Gold_Text.text = $"￡{UserGold}";
     }
 }

@@ -36,7 +36,7 @@ public class ConditionsDB
                 {
                     pokemon.UpdateHp(pokemon.MaxHp / 8);
 
-                    pokemon.StatusCngMsg.Enqueue($"{pokemon.PokemonBase.PokemonName}은 독에 의한 데미지를 입었다!");
+                    pokemon.StatusCngMsg.Enqueue($"{pokemon.Base.PokemonName}은 독에 의한 데미지를 입었다!");
                 }
             }
         },
@@ -49,7 +49,7 @@ public class ConditionsDB
                 OnAfterTurn = (Pokemon pokemon) =>
                 {
                     pokemon.UpdateHp(pokemon.MaxHp / 16);
-                    pokemon.StatusCngMsg.Enqueue($"{pokemon.PokemonBase.PokemonName}은 화상 데미지를 입었다!");
+                    pokemon.StatusCngMsg.Enqueue($"{pokemon.Base.PokemonName}은 화상 데미지를 입었다!");
                 }
             }
         },
@@ -67,7 +67,7 @@ public class ConditionsDB
                 {
                     if( Random.Range(1,5) == 1)
                     {
-                        pokemon.StatusCngMsg.Enqueue($"{pokemon.PokemonBase.PokemonName}은 몸이 저려서 움직일 수 없다!");
+                        pokemon.StatusCngMsg.Enqueue($"{pokemon.Base.PokemonName}은 몸이 저려서 움직일 수 없다!");
                         return false;
                     }
                     return true;
@@ -85,12 +85,12 @@ public class ConditionsDB
                     if( Random.Range(1,5) == 1)
                     {
                         pokemon.CureStatus();
-                        pokemon.StatusCngMsg.Enqueue($"{pokemon.PokemonBase.PokemonName}은(는) 얼음에서 풀렸다!");
+                        pokemon.StatusCngMsg.Enqueue($"{pokemon.Base.PokemonName}은(는) 얼음에서 풀렸다!");
                         return true;
                     }
                     else
                     {
-                        pokemon.StatusCngMsg.Enqueue($"{pokemon.PokemonBase.PokemonName}은 얼어버려서 움직일 수 없다!");
+                        pokemon.StatusCngMsg.Enqueue($"{pokemon.Base.PokemonName}은 얼어버려서 움직일 수 없다!");
                         return false;
                     }
                 }
@@ -111,11 +111,11 @@ public class ConditionsDB
                     if(pokemon.StatusTime <= 0)
                     {
                     pokemon.CureStatus();
-                    pokemon.StatusCngMsg.Enqueue($"{pokemon.PokemonBase.PokemonName}은 잠에서 깨어났다!");
+                    pokemon.StatusCngMsg.Enqueue($"{pokemon.Base.PokemonName}은 잠에서 깨어났다!");
                     return true;
                     }
                     pokemon.StatusTime --;
-                    pokemon.StatusCngMsg.Enqueue($"{pokemon.PokemonBase.PokemonName}은 쿨쿨 잠들어 있다!");
+                    pokemon.StatusCngMsg.Enqueue($"{pokemon.Base.PokemonName}은 쿨쿨 잠들어 있다!");
                     return false;
                 }
             }
@@ -136,7 +136,7 @@ public class ConditionsDB
                     if(pokemon.VolatileStatusTime <= 0)
                     {
                     pokemon.CureVolatileStatus();
-                    pokemon.StatusCngMsg.Enqueue($"{pokemon.PokemonBase.PokemonName}은 혼란에서 풀렸다!");
+                    pokemon.StatusCngMsg.Enqueue($"{pokemon.Base.PokemonName}은 혼란에서 풀렸다!");
                     return true;
                     }
                     pokemon.VolatileStatusTime --;
@@ -145,7 +145,7 @@ public class ConditionsDB
                         return true;
                     }
 
-                    pokemon.StatusCngMsg.Enqueue($"{pokemon.PokemonBase.PokemonName}은 혼란에 빠져 있다!");
+                    pokemon.StatusCngMsg.Enqueue($"{pokemon.Base.PokemonName}은 혼란에 빠져 있다!");
                     pokemon.UpdateHp(pokemon.MaxHp / 8);
                     pokemon.StatusCngMsg.Enqueue($"영문도 모른 채 자신을 공격했다!");
                     return false;
