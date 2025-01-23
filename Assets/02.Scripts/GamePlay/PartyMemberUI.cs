@@ -16,14 +16,14 @@ public class PartyMemberUI : MonoBehaviour
     public void SetData(Pokemon SetPokemon)
     {
         _pokemon = SetPokemon;
-        nameTxt.text = SetPokemon.Base.PokemonName;
+        nameTxt.text = SetPokemon.P_Base.PokemonName;
         levelTxt.text = "" + SetPokemon.PokemonLevel;
         hpbar.SetHp((float)SetPokemon.PokemonHp / SetPokemon.MaxHp);
         if (hpbar_Text != null)
         {
             hpbar_Text.text = $"{SetPokemon.PokemonHp}/{SetPokemon.MaxHp}";
         }
-        pokemonDotSprite.sprite = Resources.Load<Sprite>($"Image/Pokemon/PokemonDot/{SetPokemon.PokemonGen}/{SetPokemon.Base.PokemonIndex}");
+        pokemonDotSprite.sprite = Resources.Load<Sprite>($"Image/Pokemon/PokemonDot/{SetPokemon.PokemonGen}/{SetPokemon.P_Base.PokemonIndex}");
     }
     public void SetSelected(bool selected, int memberIndex)
     {

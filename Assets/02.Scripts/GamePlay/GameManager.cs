@@ -65,7 +65,7 @@ public class GameManager : MonoBehaviour
 
         var wildPokemon = mapArea.GetRandomWildPokemon();
 
-        var refWildPokemon = new Pokemon(wildPokemon.Base, wildPokemon.PokemonLevel);
+        var refWildPokemon = new Pokemon(wildPokemon.P_Base, wildPokemon.PokemonLevel);
 
         battleSystem.StartBattle(PlayerParty, refWildPokemon);
     }
@@ -99,3 +99,39 @@ public class GameManager : MonoBehaviour
         Gold_Text.text = $"￡{UserGold}";
     }
 }
+
+
+
+/*
+  public getLevelForWave(): number {
+    const levelWaveIndex = this.gameMode.getWaveForDifficulty(this.waveIndex);
+    const baseLevel = 1 + levelWaveIndex / 2 + Math.pow(levelWaveIndex / 25, 2);
+    const bossMultiplier = 1.2;
+
+    if (this.gameMode.isBoss(this.waveIndex)) {
+      const ret = Math.floor(baseLevel * bossMultiplier);
+      if (this.battleSpec === BattleSpec.FINAL_BOSS || !(this.waveIndex % 250)) {
+        return Math.ceil(ret / 25) * 25;
+      }
+      let levelOffset = 0;
+      if (!this.gameMode.isWaveFinal(this.waveIndex)) {
+        levelOffset = Math.round(Phaser.Math.RND.realInRange(-1, 1) * Math.floor(levelWaveIndex / 10));
+      }
+      return ret + levelOffset;
+    }
+
+    let levelOffset = 0;
+
+    const deviation = 10 / levelWaveIndex;
+    levelOffset = Math.abs(this.randSeedGaussForLevel(deviation));
+
+    return Math.max(Math.round(baseLevel + levelOffset), 1);
+  }
+
+
+
+
+
+
+
+*/

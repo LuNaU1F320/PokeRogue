@@ -2,6 +2,7 @@ using System.Collections;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 
 public enum BattleState
 {
@@ -11,6 +12,7 @@ public enum BattleState
     RunningTurn,
     Busy,
     PartyScreen,
+    SkillToForget,
     BattleOver
 }
 public enum BattleAction
@@ -32,6 +34,7 @@ public class BattleSystem : MonoBehaviour
 
     //Party
     [SerializeField] PartyScreen partyScreen;
+    [SerializeField] SkillSelectScreen skillSelectScreen;
 
     // public event Action<bool> OnBattleOver;
 
@@ -65,6 +68,7 @@ public class BattleSystem : MonoBehaviour
         isTrainerBattle = false;
         this.playerParty = playerParty;
         this.wildPokemon = wildPokemon;
+        isTrainerBattle = false;
         StartCoroutine(SetUpBattle());
 
     }
@@ -94,6 +98,10 @@ public class BattleSystem : MonoBehaviour
         {
             HandlePartyScreenSelection();
         }
+        else if (state == BattleState.SkillToForget)
+        {
+
+        }
         if (Input.GetKeyDown(KeyCode.G))
         {
             Debug.Log(currentMember);
@@ -121,7 +129,7 @@ public class BattleSystem : MonoBehaviour
 
             skillCount = playerUnit.BattlePokemon.Skills.Count;
 
-            yield return dialogBox.TypeDialog($"앗! 야생 {enemyUnit.BattlePokemon.Base.PokemonName}{GetCorrectParticle(enemyUnit.BattlePokemon.Base.PokemonName, true)} \n튀어나왔다!");
+            yield return dialogBox.TypeDialog($"앗! 야생 {enemyUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(enemyUnit.BattlePokemon.P_Base.PokemonName, "subject")} \n튀어나왔다!");
         }
         else
         {
@@ -134,7 +142,7 @@ public class BattleSystem : MonoBehaviour
             PlayerSprite.sprite = player.TrainerSprite;
             TrainerSprite.sprite = trainer.TrainerSprite;
 
-            yield return dialogBox.TypeDialog($"{trainer.TrainerName}이 배틀을 걸어왔다!");
+            yield return dialogBox.TypeDialog($"{trainer.TrainerName}{/*은는이가*/""}이 배틀을 걸어왔다!");
         }
         escapeAttempts = 0;
         partyScreen.Init();
@@ -149,7 +157,7 @@ public class BattleSystem : MonoBehaviour
     void ActionSelection()
     {
         state = BattleState.ActionSelection;
-        dialogBox.SetDialog($"{playerUnit.BattlePokemon.Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.Base.PokemonName, false)} 무엇을 할까?");
+        dialogBox.SetDialog($"{playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")} 무엇을 할까?");
         dialogBox.EnableActionSelector(true);
     }
     void OpenPartyScreen()
@@ -165,6 +173,18 @@ public class BattleSystem : MonoBehaviour
         dialogBox.EnableActionSelector(false);
         dialogBox.EnableDialogText(false);
         dialogBox.EnableSkillSelector(true);
+    }
+    IEnumerator ChooseSkillToForget(Pokemon pokemon, SkillBase newSkill)
+    {
+        state = BattleState.Busy;
+        yield return dialogBox.TypeDialog($"{newSkill}대신 다른 기술을 잊게 하겠습니까?");
+        //예/아니오
+
+        yield return dialogBox.TypeDialog($"어느 기술을 잊게 하고싶은가?");
+        skillSelectScreen.gameObject.SetActive(true);
+        skillSelectScreen.SetSkill(pokemon.Skills.Select(x => x.SkillBase).ToList(), newSkill);
+
+        state = BattleState.SkillToForget;
     }
     IEnumerator RunTurns(BattleAction playerAction)
     {
@@ -284,7 +304,7 @@ public class BattleSystem : MonoBehaviour
 
         skill.SkillPP--;
 
-        yield return dialogBox.TypeDialog($"{sourceUnit.BattlePokemon.Base.PokemonName}의 {skill.SkillBase.SkillName}!");
+        yield return dialogBox.TypeDialog($"{sourceUnit.BattlePokemon.P_Base.PokemonName}의 {skill.SkillBase.SkillName}!");
 
         //공격 애니메이션
 
@@ -339,11 +359,11 @@ public class BattleSystem : MonoBehaviour
         {
             if (sourceUnit.IsPlayerUnit)
             {
-                yield return dialogBox.TypeDialog($"상대 {targetUnit.BattlePokemon.Base.PokemonName}에게는 \n맞지 않았다!");
+                yield return dialogBox.TypeDialog($"상대 {targetUnit.BattlePokemon.P_Base.PokemonName}에게는 \n맞지 않았다!");
             }
             else
             {
-                yield return dialogBox.TypeDialog($"{targetUnit.BattlePokemon.Base.PokemonName}에게는 맞지 않았다!");
+                yield return dialogBox.TypeDialog($"{targetUnit.BattlePokemon.P_Base.PokemonName}에게는 맞지 않았다!");
             }
         }
     }
@@ -442,23 +462,48 @@ public class BattleSystem : MonoBehaviour
     }
     IEnumerator HandlePokemonFainted(BattleUnit faintedUnit)
     {
-        yield return dialogBox.TypeDialog($"{faintedUnit.BattlePokemon.Base.PokemonName}{GetCorrectParticle(faintedUnit.BattlePokemon.Base.PokemonName, false)} 쓰러졌다!");
+        yield return dialogBox.TypeDialog($"{faintedUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(faintedUnit.BattlePokemon.P_Base.PokemonName, "topic")} 쓰러졌다!");
         //애니메이션 재생
 
-        //플레이어 승리 (다음스테이지로)
+        //플레이어 승리
         yield return new WaitForSeconds(1.5f);
 
         if (!faintedUnit.IsPlayerUnit)
         {
-            int expYield = faintedUnit.BattlePokemon.Base.ExpYield;
+            int expYield = faintedUnit.BattlePokemon.P_Base.ExpYield;
             int enemyLevel = faintedUnit.BattlePokemon.PokemonLevel;
             float trainerBonus = (isTrainerBattle) ? 1.5f : 1.0f;
 
             int expGain = Mathf.FloorToInt(expYield * enemyLevel * trainerBonus / 7);
             playerUnit.BattlePokemon.PokemonExp += expGain;
+            yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}\n{expGain}경험치를 얻었다!");
             yield return playerUnit.BattleHud.SetExpSmooth();
-            Debug.Log($"{playerUnit.BattlePokemon.Base.PokemonName}경험치 + " + expGain);
 
+            while (playerUnit.BattlePokemon.CheckForLevelUp())
+            {
+                playerUnit.BattleHud.SetLevel();
+                yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}\n레벨{playerUnit.BattlePokemon.PokemonLevel}으로 올랐다!");
+
+                var newSkill = playerUnit.BattlePokemon.GetLearnableSkill();
+                if (newSkill != null)
+                {
+                    if (playerUnit.BattlePokemon.Skills.Count < PokemonBase.MaxNumOfSkills)
+                    {
+                        playerUnit.BattlePokemon.LearnSkill(newSkill);
+                        yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}새로\n{newSkill.SkillBase.SkillName}{GetCorrectParticle(newSkill.SkillBase.SkillName, "object")} 배웠다!");
+                        dialogBox.SetSkillNames(playerUnit.BattlePokemon.Skills);
+                    }
+                    else
+                    {
+                        //스킬 잊기
+                        yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}새로 \n{newSkill.SkillBase.SkillName}{GetCorrectParticle(newSkill.SkillBase.SkillName, "object")} 배우고 싶다!...");
+                        yield return dialogBox.TypeDialog($"그러나 {playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}기술을 4개\n알고 있으므로 더 이상 배울 수 없다!");
+                        yield return ChooseSkillToForget(playerUnit.BattlePokemon, newSkill.SkillBase);
+                    }
+                }
+
+                yield return playerUnit.BattleHud.SetExpSmooth(true);
+            }
         }
         CheckForBattleOver(faintedUnit);
         GameManager.Inst.AddGold();
@@ -659,7 +704,7 @@ public class BattleSystem : MonoBehaviour
             var selectedMember = playerParty.Party[currentMember];
             if (selectedMember.PokemonHp <= 0)
             {
-                partyScreen.SetMessageText($"{playerParty.Party[currentMember].Base.PokemonName}{GetCorrectParticle(playerParty.Party[currentMember].Base.PokemonName, false)} 싸울 수 있는 \n기력이 남아 있지 않습니다!");
+                partyScreen.SetMessageText($"{playerParty.Party[currentMember].P_Base.PokemonName}{GetCorrectParticle(playerParty.Party[currentMember].P_Base.PokemonName, "topic")} 싸울 수 있는 \n기력이 남아 있지 않습니다!");
                 return;
             }
             if (selectedMember == playerUnit.BattlePokemon)
@@ -695,7 +740,7 @@ public class BattleSystem : MonoBehaviour
         playerUnit.BattlePokemon.CureVolatileStatus();
         playerUnit.BattlePokemon.ResetRankup();
 
-        yield return dialogBox.TypeDialog($"돌아와 {playerUnit.BattlePokemon.Base.PokemonName}!");
+        yield return dialogBox.TypeDialog($"돌아와 {playerUnit.BattlePokemon.P_Base.PokemonName}!");
         //사망애니메이션
         yield return new WaitForSeconds(1.5f);
 
@@ -711,23 +756,26 @@ public class BattleSystem : MonoBehaviour
 
         skillCount = newPokemon.Skills.Count;
 
-        yield return dialogBox.TypeDialog($"가랏! {newPokemon.Base.PokemonName}!");
+        yield return dialogBox.TypeDialog($"가랏! {newPokemon.P_Base.PokemonName}!");
         state = BattleState.RunningTurn;
     }
-    string GetCorrectParticle(string name, bool subject)    //은는이가
+    string GetCorrectParticle(string name, string particleType)    //은는이가
     {
         char lastChar = name[name.Length - 1];
         int unicode = (int)lastChar;
         bool endsWithConsonant = (unicode - 44032) % 28 != 0; // 44032는 '가'의 유니코드, 28는 받침의 수
 
 
-        if (subject)
+        switch (particleType)
         {
-            return endsWithConsonant ? "이" : "가";
-        }
-        else
-        {
-            return endsWithConsonant ? "은" : "는";
+            case "subject": // 이/가
+                { return endsWithConsonant ? "이" : "가"; }
+            case "topic": // 은/는
+                { return endsWithConsonant ? "은" : "는"; }
+            case "object": // 을/를
+                { return endsWithConsonant ? "을" : "를"; }
+            default:
+                throw new ArgumentException("Invalid particle type");
         }
     }
     IEnumerator ThrowPokeball()
@@ -758,7 +806,7 @@ public class BattleSystem : MonoBehaviour
             //잡힘
             playerParty.AddPokemon(enemyUnit.BattlePokemon);
             Destroy(pokeball);
-            yield return dialogBox.TypeDialog($"신난다-!\n야생 {enemyUnit.BattlePokemon.Base.PokemonName}을 잡았다!");
+            yield return dialogBox.TypeDialog($"신난다-!\n야생 {enemyUnit.BattlePokemon.P_Base.PokemonName}을 잡았다!");
             BattleOver(true);
             GameManager.Inst.AddGold();
         }
@@ -772,7 +820,7 @@ public class BattleSystem : MonoBehaviour
     }
     int TryToCatchPokemon(Pokemon pokemon)
     {
-        float a = (3 * pokemon.MaxHp - 2 * pokemon.PokemonHp) * pokemon.Base.CatchRate * ConditionsDB.GetStatusBonus(pokemon.Status) / (3 * pokemon.MaxHp);
+        float a = (3 * pokemon.MaxHp - 2 * pokemon.PokemonHp) * pokemon.P_Base.CatchRate * ConditionsDB.GetStatusBonus(pokemon.Status) / (3 * pokemon.MaxHp);
 
         if (a >= 255)
         {

@@ -52,14 +52,14 @@ public class BattleUnit : MonoBehaviour
         Texture2D sprite;
         if (isPlayerUnit)
         {
-            json = Resources.Load<TextAsset>($"Image/Pokemon/PokemonSprite_Back/{pokemon.Base.PokemonIndex}");
-            sprite = Resources.Load<Texture2D>($"Image/Pokemon/PokemonSprite_Back/{pokemon.Base.PokemonIndex}");
+            json = Resources.Load<TextAsset>($"Image/Pokemon/PokemonSprite_Back/{pokemon.P_Base.PokemonIndex}");
+            sprite = Resources.Load<Texture2D>($"Image/Pokemon/PokemonSprite_Back/{pokemon.P_Base.PokemonIndex}");
 
         }
         else
         {
-            json = Resources.Load<TextAsset>($"Image/Pokemon/PokemonSprite_Front/{pokemon.Base.PokemonIndex}");
-            sprite = Resources.Load<Texture2D>($"Image/Pokemon/PokemonSprite_Front/{pokemon.Base.PokemonIndex}");
+            json = Resources.Load<TextAsset>($"Image/Pokemon/PokemonSprite_Front/{pokemon.P_Base.PokemonIndex}");
+            sprite = Resources.Load<Texture2D>($"Image/Pokemon/PokemonSprite_Front/{pokemon.P_Base.PokemonIndex}");
         }
 
         battlehud.SetHud(pokemon, isPlayerUnit);

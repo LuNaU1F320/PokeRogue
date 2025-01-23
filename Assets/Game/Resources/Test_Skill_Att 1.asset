@@ -17,9 +17,9 @@ MonoBehaviour:
   skillDescription: 
   skillType: 11
   categoryKey: 0
-  skillPower: 30
+  skillPower: 9999
   skillAccuracy: 100
-  alwaysHits: 0
+  alwaysHits: 1
   skillPP: 30
   priority: 1
   effects:

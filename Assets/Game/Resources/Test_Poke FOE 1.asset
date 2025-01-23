@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 271878df85541a1469db368301d2282b, type: 3}
   m_Name: Test_Poke FOE 1
   m_EditorClassIdentifier: 
-  pokemonIndex: 256
+  pokemonIndex: 5
   pokemonName: "\uC8011"
   pokemonDescription: 
   pokemonType1: 8
@@ -23,7 +23,7 @@ MonoBehaviour:
   spAttack: 100
   spDefence: 100
   speed: 100
-  expYield: 60
+  expYield: 70
   growthRate: 0
   catchRate: 255
   learnableSkills:

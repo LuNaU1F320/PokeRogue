@@ -11,7 +11,7 @@ public class Pokemon
     int pokemonGen;
     [SerializeField] bool isShiny;
 
-    public PokemonBase Base
+    public PokemonBase P_Base
     {
         get
         {
@@ -57,18 +57,18 @@ public class Pokemon
     public void Init()
     {
         Skills = new List<Skill>();
-        foreach (var skill in Base.LearnableSkills)
+        foreach (var skill in P_Base.LearnableSkills)
         {
             if (skill.Level <= PokemonLevel)
             {
                 Skills.Add(new Skill(skill.SkillBase));
             }
-            if (Skills.Count >= 4)
+            if (Skills.Count >= PokemonBase.MaxNumOfSkills)
             {
                 break;
             }
         }
-        PokemonExp = Base.GetExpForLevel(PokemonLevel);
+        PokemonExp = P_Base.GetExpForLevel(PokemonLevel);
         CalculateStats();
         PokemonHp = MaxHp;
 
@@ -124,14 +124,14 @@ public class Pokemon
     {
         Stats = new Dictionary<Stat, int>
         {
-            { Stat.Attack, Mathf.FloorToInt((Base.Attack * PokemonLevel) / 100f) + 5 },
-            { Stat.Defence, Mathf.FloorToInt((Base.Defence * PokemonLevel) / 100f) + 5 },
-            { Stat.SpAttack, Mathf.FloorToInt((Base.SpAttack * PokemonLevel) / 100f) + 5 },
-            { Stat.SpDefence, Mathf.FloorToInt((Base.SpDefence * PokemonLevel) / 100f) + 5 },
-            { Stat.Speed, Mathf.FloorToInt((Base.Speed * PokemonLevel) / 100f) + 5 }
+            { Stat.Attack, Mathf.FloorToInt((P_Base.Attack * PokemonLevel) / 100f) + 5 },
+            { Stat.Defence, Mathf.FloorToInt((P_Base.Defence * PokemonLevel) / 100f) + 5 },
+            { Stat.SpAttack, Mathf.FloorToInt((P_Base.SpAttack * PokemonLevel) / 100f) + 5 },
+            { Stat.SpDefence, Mathf.FloorToInt((P_Base.SpDefence * PokemonLevel) / 100f) + 5 },
+            { Stat.Speed, Mathf.FloorToInt((P_Base.Speed * PokemonLevel) / 100f) + 5 }
         };
 
-        MaxHp = Mathf.FloorToInt((Base.MaxHp * PokemonLevel) / 100f) + 10 + PokemonLevel;
+        MaxHp = Mathf.FloorToInt((P_Base.MaxHp * PokemonLevel) / 100f) + 10 + PokemonLevel;
     }
     public void ResetRankup()
     {
@@ -245,6 +245,28 @@ public class Pokemon
             }
         }
     }
+    public bool CheckForLevelUp()
+    {
+        if (PokemonExp > P_Base.GetExpForLevel(level + 1))
+        {
+            level++;
+            return true;
+        }
+        return false;
+    }
+    public LearnableSkill GetLearnableSkill()
+    {
+        return P_Base.LearnableSkills.Where(x => x.Level == level).FirstOrDefault();
+    }
+    public void LearnSkill(LearnableSkill skillToLearn)
+    {
+        if (Skills.Count > PokemonBase.MaxNumOfSkills)
+        {
+            return;
+        }
+        Skills.Add(new Skill(skillToLearn.SkillBase));
+    }
+
     public int Attack
     {
         get { return GetStat(Stat.Attack); }
@@ -282,7 +304,7 @@ public class Pokemon
         {
             critical = 2f;
         }
-        float typeDmgMag = TypeChart.GetEffectiveness(skill.SkillBase.SkillType, this.Base.Type1) * TypeChart.GetEffectiveness(skill.SkillBase.SkillType, this.Base.Type2);       //타입별 데미지 배율
+        float typeDmgMag = TypeChart.GetEffectiveness(skill.SkillBase.SkillType, this.P_Base.Type1) * TypeChart.GetEffectiveness(skill.SkillBase.SkillType, this.P_Base.Type2);       //타입별 데미지 배율
 
         var damageDetails = new DamageDetails()
         {
@@ -439,10 +461,10 @@ public class Pokemon
     }
     public PokemonType Type1
     {
-        get { return Base.Type1; }
+        get { return P_Base.Type1; }
     }
     public PokemonType Type2
     {
-        get { return Base.Type2; }
+        get { return P_Base.Type2; }
     }
 }

@@ -27,6 +27,8 @@ public class PokemonBase : ScriptableObject
     [SerializeField] int catchRate = 255;
 
     [SerializeField] List<LearnableSkill> learnableSkills;
+
+    public static int MaxNumOfSkills { get; set; } = 4;
     public int GetExpForLevel(int level)
     {
         if (growthRate == GrowthRate.Erratic)
@@ -185,7 +187,6 @@ public enum Stat
     SpAttack,
     SpDefence,
     Speed,
-
     Accuracy,
     Evasion
 }
@@ -197,7 +198,6 @@ public enum GrowthRate
     MediumSlow,
     Slow,
     Fluctuating
-
 }
 public class TypeChart
 {
