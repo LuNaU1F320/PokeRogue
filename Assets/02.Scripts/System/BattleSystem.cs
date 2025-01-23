@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using Unity.VisualScripting;
 
 public enum BattleState
 {
@@ -54,6 +55,8 @@ public class BattleSystem : MonoBehaviour
     PlayerCtrl player;
     TrainerCtrl trainer;
 
+    SkillBase skillToLearn;
+
     private void Start()
     {
         state = BattleState.Start;
@@ -100,7 +103,47 @@ public class BattleSystem : MonoBehaviour
         }
         else if (state == BattleState.SkillToForget)
         {
+            Action<int> onSkillSelected = (skillIndex) =>
+            {
+                skillSelectScreen.gameObject.SetActive(false);
+                if (skillIndex == PokemonBase.MaxNumOfSkills)
+                {
+                    //배우지않음
 
+                }
+                else
+                {
+                    var selectedSkill = playerUnit.BattlePokemon.Skills[skillIndex].SkillBase;
+                    //텍스트출력
+                    playerUnit.BattlePokemon.Skills[skillIndex] = new Skill(skillToLearn);
+                }
+                skillToLearn = null;
+                state = BattleState.RunningTurn;
+
+            };
+            skillSelectScreen.HandleSkillSelection(onSkillSelected);
+            /*
+            if (skillSelectScreen.SelectionMade)
+            {
+                int skillIndex = skillSelectScreen.SelectedSkillIndex;
+                skillSelectScreen.SelectionMade = false; // 상태 초기화
+
+                if (skillIndex == PokemonBase.MaxNumOfSkills)
+                {
+                    // 배우지 않음 처리
+                    skillToLearn = null;
+                }
+                else
+                {
+                    // 선택된 스킬을 배우는 처리
+                    var selectedSkill = playerUnit.BattlePokemon.Skills[skillIndex].SkillBase;
+                    playerUnit.BattlePokemon.Skills[skillIndex] = new Skill(skillToLearn);
+                }
+
+                skillToLearn = null;
+                state = BattleState.RunningTurn;
+            }
+            */
         }
         if (Input.GetKeyDown(KeyCode.G))
         {
@@ -177,12 +220,13 @@ public class BattleSystem : MonoBehaviour
     IEnumerator ChooseSkillToForget(Pokemon pokemon, SkillBase newSkill)
     {
         state = BattleState.Busy;
-        yield return dialogBox.TypeDialog($"{newSkill}대신 다른 기술을 잊게 하겠습니까?");
+        yield return dialogBox.TypeDialog($"{newSkill.SkillName}대신 다른 기술을 잊게 하겠습니까?");
         //예/아니오
 
         yield return dialogBox.TypeDialog($"어느 기술을 잊게 하고싶은가?");
         skillSelectScreen.gameObject.SetActive(true);
         skillSelectScreen.SetSkill(pokemon.Skills.Select(x => x.SkillBase).ToList(), newSkill);
+        skillToLearn = newSkill;
 
         state = BattleState.SkillToForget;
     }
@@ -499,11 +543,14 @@ public class BattleSystem : MonoBehaviour
                         yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}새로 \n{newSkill.SkillBase.SkillName}{GetCorrectParticle(newSkill.SkillBase.SkillName, "object")} 배우고 싶다!...");
                         yield return dialogBox.TypeDialog($"그러나 {playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}기술을 4개\n알고 있으므로 더 이상 배울 수 없다!");
                         yield return ChooseSkillToForget(playerUnit.BattlePokemon, newSkill.SkillBase);
+                        yield return new WaitUntil(() => state != BattleState.SkillToForget);
+                        yield return new WaitForSeconds(2.0f);
                     }
                 }
 
                 yield return playerUnit.BattleHud.SetExpSmooth(true);
             }
+            yield return new WaitForSeconds(1.0f);
         }
         CheckForBattleOver(faintedUnit);
         GameManager.Inst.AddGold();

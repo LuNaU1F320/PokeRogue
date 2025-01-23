@@ -70,6 +70,7 @@ public class BattleUnit : MonoBehaviour
         {
             StartCoroutine(PlayAnimation());
         }
+
         // Debug.Log($"Loaded {sprites.Count} sprites.");
         // Debug.Log($"Loaded {animationFrames.Count} animationFrames.");
     }
@@ -106,6 +107,7 @@ public class BattleUnit : MonoBehaviour
     }
     void CreateAnimationFrames()
     {
+        // 여기서는 예시로 스프라이트 이름이 0001.png, 0002.png, ... 순으로 있다고 가정합니다.
         for (int i = 1; i <= sprites.Count; i++)
         {
             string key = i.ToString("0000") + ".png";
@@ -128,4 +130,5 @@ public class BattleUnit : MonoBehaviour
             yield return new WaitForSeconds(frameRate);
         }
     }
+
 }

@@ -7,6 +7,7 @@ public class SummaryNode : MonoBehaviour
     [SerializeField] Image SkillType_Img;
     [SerializeField] Text SkillName_Text;
     [SerializeField] Text SkillPP_Text;
+    [SerializeField] public GameObject SkillDescription;
     [SerializeField] Text SkillDesc_Text;
     [SerializeField] Text SkillPower_Text;
     [SerializeField] Text SkillAcc_Text;
@@ -28,6 +29,7 @@ public class SummaryNode : MonoBehaviour
         }
         SkillName_Text.text = skill.SkillName;
         SkillPP_Text.text = "PP " + skill.SkillPP.ToString();
+
         SkillDesc_Text.text = skill.SkillDescription;
         SkillPower_Text.text = $"{(skill.SkillPower == 0 ? "-" : skill.SkillPower.ToString())}";
         SkillAcc_Text.text = $"{(skill.SkillAccuracy == 0 ? "-" : skill.SkillAccuracy.ToString())}";
@@ -43,5 +45,9 @@ public class SummaryNode : MonoBehaviour
         {
             Debug.LogError($"스프라이트를 찾을 수 없습니다: {categoryName}");
         }
+    }
+    public void UpdateSkillData(SkillBase skill)
+    {
+
     }
 }

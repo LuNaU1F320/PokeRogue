@@ -30,8 +30,10 @@ MonoBehaviour:
   - skillBase: {fileID: 11400000, guid: 8929b825376c8e8459093f50e52e9160, type: 2}
     level: 1
   - skillBase: {fileID: 11400000, guid: c6fa7254e099e7d4c828d3dd72c9c105, type: 2}
-    level: 11
+    level: 1
   - skillBase: {fileID: 11400000, guid: 33e6700730d61a84f905d9fb21113815, type: 2}
-    level: 12
+    level: 1
   - skillBase: {fileID: 11400000, guid: bf32303feb6babb44919478ee46da054, type: 2}
-    level: 13
+    level: 1
+  - skillBase: {fileID: 11400000, guid: 47dfdb937b0276a4193afb2c95b60bf4, type: 2}
+    level: 11
