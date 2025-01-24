@@ -44,6 +44,7 @@ public class BattleSystem : MonoBehaviour
     int currentAction = 0;
     int currentSkill = 0;
     int currentMember = 0;
+    int currentSelection = 0;
     int skillCount = 0;
     int escapeAttempts = 0;
 
@@ -61,9 +62,6 @@ public class BattleSystem : MonoBehaviour
     {
         state = BattleState.Start;
         currentAction = 0;
-        // playerParty = FindObjectOfType<PokemonParty>().GetComponent<PokemonParty>();
-        // wildPokemon = FindObjectOfType<MapArea>().GetComponent<MapArea>().GetRandomWildPokemon();
-        // StartCoroutine(SetUpBattle());
     }
     public void StartBattle(PokemonParty playerParty, Pokemon wildPokemon)
     {
@@ -103,48 +101,10 @@ public class BattleSystem : MonoBehaviour
         }
         else if (state == BattleState.SkillToForget)
         {
-            Action<int> onSkillSelected = (skillIndex) =>
-            {
-                skillSelectScreen.gameObject.SetActive(false);
-                if (skillIndex == PokemonBase.MaxNumOfSkills)
-                {
-                    //배우지않음
-
-                }
-                else
-                {
-                    var selectedSkill = playerUnit.BattlePokemon.Skills[skillIndex].SkillBase;
-                    //텍스트출력
-                    playerUnit.BattlePokemon.Skills[skillIndex] = new Skill(skillToLearn);
-                }
-                skillToLearn = null;
-                state = BattleState.RunningTurn;
-
-            };
-            skillSelectScreen.HandleSkillSelection(onSkillSelected);
-            /*
-            if (skillSelectScreen.SelectionMade)
-            {
-                int skillIndex = skillSelectScreen.SelectedSkillIndex;
-                skillSelectScreen.SelectionMade = false; // 상태 초기화
-
-                if (skillIndex == PokemonBase.MaxNumOfSkills)
-                {
-                    // 배우지 않음 처리
-                    skillToLearn = null;
-                }
-                else
-                {
-                    // 선택된 스킬을 배우는 처리
-                    var selectedSkill = playerUnit.BattlePokemon.Skills[skillIndex].SkillBase;
-                    playerUnit.BattlePokemon.Skills[skillIndex] = new Skill(skillToLearn);
-                }
-
-                skillToLearn = null;
-                state = BattleState.RunningTurn;
-            }
-            */
+            HandleLearnSkillSelection();
         }
+
+
         if (Input.GetKeyDown(KeyCode.G))
         {
             Debug.Log(currentMember);
@@ -156,7 +116,6 @@ public class BattleSystem : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.T))
         {
-            // Debug.Log($"state {state}");
             Debug.Log($"{playerUnit.BattlePokemon.PokemonGen}");
         }
     }
@@ -225,11 +184,13 @@ public class BattleSystem : MonoBehaviour
 
         yield return dialogBox.TypeDialog($"어느 기술을 잊게 하고싶은가?");
         skillSelectScreen.gameObject.SetActive(true);
+        skillSelectScreen.SetPokemonData(pokemon);
         skillSelectScreen.SetSkill(pokemon.Skills.Select(x => x.SkillBase).ToList(), newSkill);
         skillToLearn = newSkill;
 
         state = BattleState.SkillToForget;
     }
+    #region BattleSystem
     IEnumerator RunTurns(BattleAction playerAction)
     {
         state = BattleState.RunningTurn;
@@ -544,7 +505,7 @@ public class BattleSystem : MonoBehaviour
                         yield return dialogBox.TypeDialog($"그러나 {playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}기술을 4개\n알고 있으므로 더 이상 배울 수 없다!");
                         yield return ChooseSkillToForget(playerUnit.BattlePokemon, newSkill.SkillBase);
                         yield return new WaitUntil(() => state != BattleState.SkillToForget);
-                        yield return new WaitForSeconds(2.0f);
+                        yield return new WaitForSeconds(5.0f);
                     }
                 }
 
@@ -620,6 +581,7 @@ public class BattleSystem : MonoBehaviour
             }
         }
     }
+    #endregion
     void HandleActionSelection()
     {
         if (Input.GetKeyDown(KeyCode.DownArrow))
@@ -725,6 +687,7 @@ public class BattleSystem : MonoBehaviour
             ActionSelection();
         }
     }
+    #region PartySystem
     void HandlePartyScreenSelection()
     {
         if (Input.GetKeyDown(KeyCode.DownArrow))
@@ -806,25 +769,65 @@ public class BattleSystem : MonoBehaviour
         yield return dialogBox.TypeDialog($"가랏! {newPokemon.P_Base.PokemonName}!");
         state = BattleState.RunningTurn;
     }
-    string GetCorrectParticle(string name, string particleType)    //은는이가
+    #endregion
+    #region LearnSkill
+    public void HandleLearnSkillSelection()
     {
-        char lastChar = name[name.Length - 1];
-        int unicode = (int)lastChar;
-        bool endsWithConsonant = (unicode - 44032) % 28 != 0; // 44032는 '가'의 유니코드, 28는 받침의 수
-
-
-        switch (particleType)
+        if (Input.GetKeyDown(KeyCode.DownArrow))
         {
-            case "subject": // 이/가
-                { return endsWithConsonant ? "이" : "가"; }
-            case "topic": // 은/는
-                { return endsWithConsonant ? "은" : "는"; }
-            case "object": // 을/를
-                { return endsWithConsonant ? "을" : "를"; }
-            default:
-                throw new ArgumentException("Invalid particle type");
+            currentSelection++;
+        }
+        else if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            currentSelection--;
+        }
+        currentSelection = Mathf.Clamp(currentSelection, 0, PokemonBase.MaxNumOfSkills);
+        skillSelectScreen.UpdateSkillSelection(currentSelection);
+
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
+        {
+            {
+                skillSelectScreen.gameObject.SetActive(false);
+                if (currentSelection == PokemonBase.MaxNumOfSkills)
+                {
+                    //배우지않음
+
+                }
+                else
+                {
+                    var selectedSkill = playerUnit.BattlePokemon.Skills[currentSelection].SkillBase;
+                    playerUnit.BattlePokemon.Skills[currentSelection] = new Skill(skillToLearn);
+                    IEnumerator TypeText()
+                    {
+                        yield return dialogBox.TypeDialog("1, 2, ... ... 짠!");
+                        yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")} {selectedSkill.SkillName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "object")} 깨끗이 잊었다!");
+                        yield return dialogBox.TypeDialog("그리고...");
+                        yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")} 새로\n{playerUnit.BattlePokemon.Skills[currentSelection].SkillBase.SkillName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "object")} 배웠다!");
+                    }
+                    StartCoroutine(TypeText());
+                }
+                skillToLearn = null;
+                state = BattleState.RunningTurn;
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+
+            skillSelectScreen.gameObject.SetActive(false);
+            if (currentSelection == PokemonBase.MaxNumOfSkills)
+            {
+                //배우지않음
+                //그럼... {}을
+                //배우는 것을 포기하겠습니까?
+                //예/아니오
+                return;
+            }
+
+            state = BattleState.RunningTurn;
         }
     }
+    #endregion
+    #region Catch
     IEnumerator ThrowPokeball()
     {
         state = BattleState.Busy;
@@ -926,6 +929,28 @@ public class BattleSystem : MonoBehaviour
                 // yield break;
 
             }
+        }
+    }
+    #endregion
+
+
+    string GetCorrectParticle(string name, string particleType)    //은는이가
+    {
+        char lastChar = name[name.Length - 1];
+        int unicode = (int)lastChar;
+        bool endsWithConsonant = (unicode - 44032) % 28 != 0; // 44032는 '가'의 유니코드, 28는 받침의 수
+
+
+        switch (particleType)
+        {
+            case "subject": // 이/가
+                { return endsWithConsonant ? "이" : "가"; }
+            case "topic": // 은/는
+                { return endsWithConsonant ? "은" : "는"; }
+            case "object": // 을/를
+                { return endsWithConsonant ? "을" : "를"; }
+            default:
+                throw new ArgumentException("Invalid particle type");
         }
     }
 }

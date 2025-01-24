@@ -25,7 +25,7 @@ public class BattleUnit : MonoBehaviour
     }
 
     [HideInInspector] public Dictionary<string, Sprite> sprites = new Dictionary<string, Sprite>();
-    [HideInInspector] private SpriteRenderer spriteRenderer;
+    [HideInInspector] public SpriteRenderer spriteRenderer;
     [HideInInspector] private List<Sprite> animationFrames = new List<Sprite>();
     [HideInInspector] float frameRate = 0.07f; // 프레임 간격(초)
 
@@ -120,7 +120,10 @@ public class BattleUnit : MonoBehaviour
     IEnumerator PlayAnimation()
     {
         // yield return new WaitForSeconds(0.5f);
-        if (animationFrames.Count == 0) yield break;
+        if (animationFrames.Count == 0)
+        {
+            yield break;
+        }
 
         int currentFrame = 0;
         while (true)

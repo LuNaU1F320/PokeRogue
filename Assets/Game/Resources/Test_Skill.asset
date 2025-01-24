@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Test_Skill
   m_EditorClassIdentifier: 
   skillIndex: 843
-  skillName: "\uC874\uB098\uC388\uACF5\uACA9"
-  skillDescription: 
+  skillName: "\uC874\uC388\uACF5"
+  skillDescription: "\u3157"
   skillType: 18
   categoryKey: 0
   skillPower: 1000

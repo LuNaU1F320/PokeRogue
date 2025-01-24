@@ -1,16 +1,24 @@
-using System;
-using System.Collections;
+
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SkillSelectScreen : MonoBehaviour
 {
     [SerializeField] List<SummaryNode> summaryNodes;
+    // [SerializeField] BattleUnit playerPokemon;
+    [SerializeField] public Text PokemonIdx;
+    // [SerializeField] Image PokemonSprite;
+    [SerializeField] SpriteRenderer PokemonSprite;
 
     int currentSelection = 0;
-    // public bool SelectionMade { get; private set; } = false; // 선택 완료 여부
-    // public int SelectedSkillIndex { get; private set; } = -1; // 선택된 스킬 인덱스
 
+    public void SetPokemonData(Pokemon pokemon)
+    {
+        PokemonIdx.text = pokemon.P_Base.PokemonIndex.ToString();
+        PokemonSprite.sprite = Resources.Load<Sprite>($"Image/Pokemon/PokemonDot/{pokemon.PokemonGen}/{pokemon.P_Base.PokemonIndex}");
+        // PokemonSprite = playerPokemon.spriteRenderer;
+    }
     public void SetSkill(List<SkillBase> currentSkills, SkillBase newSkill)
     {
         for (int i = 0; i < currentSkills.Count; ++i)
@@ -19,34 +27,31 @@ public class SkillSelectScreen : MonoBehaviour
         }
         summaryNodes[currentSkills.Count].SetSkillData(newSkill);
     }
-    public void HandleSkillSelection(Action<int> onSelected)
-    {
-        if (Input.GetKeyDown(KeyCode.DownArrow))
-        {
-            currentSelection++;
-        }
-        else if (Input.GetKeyDown(KeyCode.UpArrow))
-        {
-            currentSelection--;
-        }
-        currentSelection = Mathf.Clamp(currentSelection, 0, PokemonBase.MaxNumOfSkills);
-        UpdateSkillSelection(currentSelection);
+    // public void HandleSkillSelection(int onSelected)
+    // {
+    //     if (Input.GetKeyDown(KeyCode.DownArrow))
+    //     {
+    //         currentSelection++;
+    //     }
+    //     else if (Input.GetKeyDown(KeyCode.UpArrow))
+    //     {
+    //         currentSelection--;
+    //     }
+    //     currentSelection = Mathf.Clamp(currentSelection, 0, PokemonBase.MaxNumOfSkills);
+    //     UpdateSkillSelection(currentSelection);
 
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
-        {
-            {
+    //     if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
+    //     {
+    //         {
 
-                onSelected?.Invoke(currentSelection);
+    //             // onSelected?.Invoke(currentSelection);
 
-                /*
-                    SelectionMade = true;
-                    SelectedSkillIndex = currentSelection;
-                    gameObject.SetActive(false); // 선택 화면 비활성화
-                */
+    //             gameObject.SetActive(false); // 선택 화면 비활성화
 
-            }
-        }
-    }
+
+    //         }
+    //     }
+    // }
     public void UpdateSkillSelection(int selection)
     {
         for (int i = 0; i < PokemonBase.MaxNumOfSkills + 1; i++)

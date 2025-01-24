@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   skillIndex: 843
   skillName: "\uC7A0"
-  skillDescription: 
+  skillDescription: "\uC874\uB098\uC790\uAE30"
   skillType: 1
   categoryKey: 2
   skillPower: 0
