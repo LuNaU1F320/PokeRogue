@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using SimpleJSON;
 using System;
+using UnityEngine.SceneManagement;
 
 public class PartyManager : MonoBehaviour
 {
@@ -38,6 +39,10 @@ public class PartyManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            SceneManager.LoadScene("BattleScene");
+        }
         HandleScreenCusor();
     }
 

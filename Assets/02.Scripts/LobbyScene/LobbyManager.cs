@@ -47,7 +47,7 @@ public class LobbyManager : MonoBehaviour
             if (currentSelection == 1)  //NewGame
             {
                 // Debug.Log("NewGame");
-                SceneManager.LoadScene("BattleScene");
+                SceneManager.LoadScene("PartyScene");
             }
             if (currentSelection == 2)  //LoadGame
             {

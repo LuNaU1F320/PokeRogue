@@ -6,10 +6,6 @@ using System.Linq;
 public class PokemonParty : MonoBehaviour
 {
     [SerializeField] List<Pokemon> party;
-    // void Awake()
-    // {
-    //     DontDestroyOnLoad(this.gameObject);
-    // }
     public List<Pokemon> Party
     {
         get
