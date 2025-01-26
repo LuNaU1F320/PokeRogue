@@ -11,8 +11,6 @@ public class SkillSelectScreen : MonoBehaviour
     // [SerializeField] Image PokemonSprite;
     [SerializeField] SpriteRenderer PokemonSprite;
 
-    int currentSelection = 0;
-
     public void SetPokemonData(Pokemon pokemon)
     {
         PokemonIdx.text = pokemon.P_Base.PokemonIndex.ToString();
@@ -27,31 +25,6 @@ public class SkillSelectScreen : MonoBehaviour
         }
         summaryNodes[currentSkills.Count].SetSkillData(newSkill);
     }
-    // public void HandleSkillSelection(int onSelected)
-    // {
-    //     if (Input.GetKeyDown(KeyCode.DownArrow))
-    //     {
-    //         currentSelection++;
-    //     }
-    //     else if (Input.GetKeyDown(KeyCode.UpArrow))
-    //     {
-    //         currentSelection--;
-    //     }
-    //     currentSelection = Mathf.Clamp(currentSelection, 0, PokemonBase.MaxNumOfSkills);
-    //     UpdateSkillSelection(currentSelection);
-
-    //     if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
-    //     {
-    //         {
-
-    //             // onSelected?.Invoke(currentSelection);
-
-    //             gameObject.SetActive(false); // 선택 화면 비활성화
-
-
-    //         }
-    //     }
-    // }
     public void UpdateSkillSelection(int selection)
     {
         for (int i = 0; i < PokemonBase.MaxNumOfSkills + 1; i++)

@@ -15,6 +15,7 @@ public class BattleDialogBox : MonoBehaviour
 
     [SerializeField] List<Text> skillTexts;
     [SerializeField] List<Text> actionTexts;
+    [SerializeField] List<Text> confirmTexts;
 
     [SerializeField] Image typeImg;
     [SerializeField] Image categoryKeyImg;
@@ -132,6 +133,20 @@ public class BattleDialogBox : MonoBehaviour
             else
             {
                 skillTexts[i].text = "-";
+            }
+        }
+    }
+    public void ConfirmBoxSelection(int selectedAction)
+    {
+        for (int i = 0; i < confirmTexts.Count; i++)
+        {
+            if (i == selectedAction)
+            {
+                confirmTexts[i].color = highlightedColor;
+            }
+            else
+            {
+                confirmTexts[i].color = Color.white;
             }
         }
     }

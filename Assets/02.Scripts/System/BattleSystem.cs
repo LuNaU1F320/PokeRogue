@@ -14,6 +14,7 @@ public enum BattleState
     Busy,
     PartyScreen,
     SkillToForget,
+    ConfirmBox,
     BattleOver
 }
 public enum BattleAction
@@ -29,6 +30,7 @@ public class BattleSystem : MonoBehaviour
     [SerializeField] BattleUnit enemyUnit;
     [SerializeField] BattleDialogBox dialogBox;
     [SerializeField] GameObject Pokeball;
+    [SerializeField] GameObject ConfirmBox;
 
     [SerializeField] SpriteRenderer PlayerSprite;
     [SerializeField] SpriteRenderer TrainerSprite;
@@ -45,6 +47,7 @@ public class BattleSystem : MonoBehaviour
     int currentSkill = 0;
     int currentMember = 0;
     int currentSelection = 0;
+    int currentConfirm = 0;
     int skillCount = 0;
     int escapeAttempts = 0;
 
@@ -58,6 +61,7 @@ public class BattleSystem : MonoBehaviour
 
     SkillBase skillToLearn;
 
+    #region Start
     private void Start()
     {
         state = BattleState.Start;
@@ -85,6 +89,7 @@ public class BattleSystem : MonoBehaviour
 
         StartCoroutine(SetUpBattle());
     }
+    #endregion
     public void Update()
     {
         if (state == BattleState.ActionSelection)
@@ -102,6 +107,10 @@ public class BattleSystem : MonoBehaviour
         else if (state == BattleState.SkillToForget)
         {
             HandleLearnSkillSelection();
+        }
+        else if (state == BattleState.ConfirmBox)
+        {
+            HandleConfirmBoxSelection();
         }
 
 
@@ -176,12 +185,15 @@ public class BattleSystem : MonoBehaviour
         dialogBox.EnableDialogText(false);
         dialogBox.EnableSkillSelector(true);
     }
+    void ConfirmBoxSelection()
+    {
+        state = BattleState.ConfirmBox;
+        currentConfirm = 0;
+        ConfirmBox.SetActive(true);
+    }
     IEnumerator ChooseSkillToForget(Pokemon pokemon, SkillBase newSkill)
     {
         state = BattleState.Busy;
-        yield return dialogBox.TypeDialog($"{newSkill.SkillName}대신 다른 기술을 잊게 하겠습니까?");
-        //예/아니오
-
         yield return dialogBox.TypeDialog($"어느 기술을 잊게 하고싶은가?");
         skillSelectScreen.gameObject.SetActive(true);
         skillSelectScreen.SetPokemonData(pokemon);
@@ -190,6 +202,7 @@ public class BattleSystem : MonoBehaviour
 
         state = BattleState.SkillToForget;
     }
+
     #region BattleSystem
     IEnumerator RunTurns(BattleAction playerAction)
     {
@@ -500,14 +513,43 @@ public class BattleSystem : MonoBehaviour
                     }
                     else
                     {
-                        //스킬 잊기
-                        yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}새로 \n{newSkill.SkillBase.SkillName}{GetCorrectParticle(newSkill.SkillBase.SkillName, "object")} 배우고 싶다!...");
-                        yield return dialogBox.TypeDialog($"그러나 {playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}기술을 4개\n알고 있으므로 더 이상 배울 수 없다!");
-                        yield return ChooseSkillToForget(playerUnit.BattlePokemon, newSkill.SkillBase);
-                        yield return new WaitUntil(() => state != BattleState.SkillToForget);
-                        yield return new WaitForSeconds(5.0f);
+                        bool isFinalDecisionMade = false; // 최종 결정 플래그
+
+                        while (!isFinalDecisionMade)
+                        {
+                            // 스킬 잊기
+                            yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}새로 \n{newSkill.SkillBase.SkillName}{GetCorrectParticle(newSkill.SkillBase.SkillName, "object")} 배우고 싶다!...");
+                            yield return dialogBox.TypeDialog($"그러나 {playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}기술을 4개\n알고 있으므로 더 이상 배울 수 없다!");
+
+                            yield return dialogBox.TypeDialog($"{newSkill.SkillBase.SkillName}대신 다른 기술을 잊게 하겠습니까?");
+
+                            ConfirmBoxSelection();
+                            yield return new WaitUntil(() => state != BattleState.ConfirmBox);
+                            bool isConfirmed = HandleConfirmBoxSelection();
+                            if (isConfirmed)
+                            {
+                                yield return ChooseSkillToForget(playerUnit.BattlePokemon, newSkill.SkillBase);
+                                yield return new WaitUntil(() => state != BattleState.SkillToForget);
+                                yield return new WaitForSeconds(5.0f);
+                                isFinalDecisionMade = true;
+                            }
+                            else
+                            {
+                                yield return dialogBox.TypeDialog($"그럼... {newSkill.SkillBase.SkillName}{GetCorrectParticle(newSkill.SkillBase.SkillName, "object")}\n배우는 것을 포기하겠습니까?");
+                                ConfirmBoxSelection();
+                                yield return new WaitUntil(() => state != BattleState.ConfirmBox);
+                                bool isRealConfirmed = HandleConfirmBoxSelection();
+                                if (isRealConfirmed)
+                                {
+                                    yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}{newSkill.SkillBase.SkillName}{GetCorrectParticle(newSkill.SkillBase.SkillName, "object")}\n결국 배우지 않았다!");
+                                    yield return new WaitForSeconds(1.0f);
+                                    isFinalDecisionMade = true;
+                                }
+                            }
+                        }
                     }
                 }
+
 
                 yield return playerUnit.BattleHud.SetExpSmooth(true);
             }
@@ -632,7 +674,7 @@ public class BattleSystem : MonoBehaviour
             }
             else if (currentAction == 3)
             {//도망친다
-                // Debug.Log("도망");
+             // Debug.Log("도망");
                 StartCoroutine(RunTurns(BattleAction.Run));
             }
         }
@@ -812,7 +854,6 @@ public class BattleSystem : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.Backspace))
         {
-
             skillSelectScreen.gameObject.SetActive(false);
             if (currentSelection == PokemonBase.MaxNumOfSkills)
             {
@@ -822,8 +863,52 @@ public class BattleSystem : MonoBehaviour
                 //예/아니오
                 return;
             }
-
             state = BattleState.RunningTurn;
+        }
+    }
+    #endregion
+    #region  Confirm Box
+    public bool HandleConfirmBoxSelection()
+    {
+        if (Input.GetKeyDown(KeyCode.DownArrow))
+        {
+            currentConfirm++;
+        }
+        else if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            currentConfirm--;
+        }
+        currentConfirm = Mathf.Clamp(currentConfirm, 0, 1);
+        dialogBox.ConfirmBoxSelection(currentConfirm);
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
+        {
+            {
+                if (currentConfirm == 0)
+                {
+                    ConfirmBox.SetActive(false);
+
+                    state = BattleState.Busy;
+                    return true;
+                }
+                else
+                {
+                    ConfirmBox.SetActive(false);
+
+                    state = BattleState.Busy;
+                    return false;
+                }
+            }
+        }
+        else if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+            ConfirmBox.SetActive(false);
+
+            state = BattleState.Busy;
+            return false;
+        }
+        else
+        {
+            return true;
         }
     }
     #endregion
