@@ -74,11 +74,55 @@ public class Pokemon
 
         SetGeneration();
 
-
         StatusCngMsg = new Queue<string>();
         ResetRankup();
         Status = null;
         VolatileStatus = null;
+    }
+    public Pokemon(PokemonSaveData saveData)
+    {
+        _base = PokemonDB.GetPokemonByIndex(saveData.index);
+        PokemonHp = saveData.hp;
+        level = saveData.level;
+        PokemonExp = saveData.exp;
+        if (saveData.statusID != null)
+        {
+            Status = ConditionsDB.Conditions[saveData.statusID.Value];
+        }
+        else
+        {
+            Status = null;
+        }
+
+        Skills = new List<Skill>();
+        foreach (var skill in P_Base.LearnableSkills)
+        {
+            if (skill.Level <= PokemonLevel)
+            {
+                Skills.Add(new Skill(skill.SkillBase));
+            }
+            if (Skills.Count >= PokemonBase.MaxNumOfSkills)
+            {
+                break;
+            }
+        }
+
+        CalculateStats();
+        StatusCngMsg = new Queue<string>();
+        ResetRankup();
+        VolatileStatus = null;
+    }
+    public PokemonSaveData GetSaveData()
+    {
+        var saveData = new PokemonSaveData()
+        {
+            index = P_Base.PokemonIndex,
+            hp = PokemonHp,
+            level = PokemonLevel,
+            exp = PokemonExp,
+            statusID = Status?.Id
+        };
+        return saveData;
     }
     private void SetGeneration()
     {
@@ -419,12 +463,6 @@ public class Pokemon
     //     VolatileStatus = null;
     //     ResetRankup();
     // }
-    public class DamageDetails
-    {
-        public bool Fainted { get; set; }
-        public float Critical { get; set; }
-        public float TypeEffectiveness { get; set; }
-    }
 
     public void UpdateHp(int damage)
     {
@@ -467,4 +505,19 @@ public class Pokemon
     {
         get { return P_Base.Type2; }
     }
+}
+public class DamageDetails
+{
+    public bool Fainted { get; set; }
+    public float Critical { get; set; }
+    public float TypeEffectiveness { get; set; }
+}
+[System.Serializable]
+public class PokemonSaveData
+{
+    public int index;
+    public int hp;
+    public int level;
+    public int exp;
+    public ConditionID? statusID;
 }

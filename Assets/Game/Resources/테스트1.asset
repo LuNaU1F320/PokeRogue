@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 271878df85541a1469db368301d2282b, type: 3}
   m_Name: "\uD14C\uC2A4\uD2B81"
   m_EditorClassIdentifier: 
-  pokemonIndex: 487
+  pokemonIndex: 1
   pokemonName: "\uD14C\uC2A4\uD2B81"
   pokemonDescription: 
   pokemonType1: 14

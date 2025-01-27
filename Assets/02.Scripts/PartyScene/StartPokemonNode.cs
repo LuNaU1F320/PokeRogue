@@ -17,13 +17,6 @@ public class StartPokemonNode : MonoBehaviour
     {
         SetPokemonData();
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     public void SetPokemonData()
     {
         SetGeneration();

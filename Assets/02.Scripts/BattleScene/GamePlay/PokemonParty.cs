@@ -17,9 +17,13 @@ public class PokemonParty : MonoBehaviour
     private void Awake()
     {
         DontDestroyOnLoad(this.gameObject);
-        foreach (var pokemon in party)
+        if (Party != null)
         {
-            pokemon.Init();
+            foreach (var pokemon in party)
+            {
+                pokemon.Init();
+            }
+
         }
     }
     public Pokemon GetHealthyPokemon()
@@ -36,5 +40,9 @@ public class PokemonParty : MonoBehaviour
         {
             //놓아줄 포켓몬 선택
         }
+    }
+    public void RemovePokemon(Pokemon removePokemon)
+    {
+        party.Remove(removePokemon);
     }
 }
