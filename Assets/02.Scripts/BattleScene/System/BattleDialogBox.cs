@@ -82,9 +82,9 @@ public class BattleDialogBox : MonoBehaviour
         }
 
         // PP 텍스트 설정
-        ppText.text = $"{skill.SkillPP}/{skill.SkillBase.SkillPP}";
+        ppText.text = $"{skill.PP}/{skill.SkillBase.SkillPP}";
 
-        if (skill.SkillPP == 0)
+        if (skill.PP == 0)
         {
             ppText.color = Color.red;
         }

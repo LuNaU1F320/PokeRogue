@@ -9,6 +9,15 @@ public class PlayerCtrl : MonoBehaviour
     [SerializeField] string name;
     // List<PokemonSaveData> pokemons;
 
+
+    public string TrainerName
+    {
+        get => name;
+    }
+    public Sprite TrainerSprite
+    {
+        get => sprite;
+    }
     public object CaptureState()
     {
         var saveData = new PlayerSaveData()
@@ -17,13 +26,11 @@ public class PlayerCtrl : MonoBehaviour
         };
         return saveData;
     }
-    public string TrainerName
+    public void RestoreState(object state)
     {
-        get => name;
-    }
-    public Sprite TrainerSprite
-    {
-        get => sprite;
+        var saveData = (PlayerSaveData)state;
+
+        GetComponent<PokemonParty>().Party = saveData.pokemons.Select(s => new Pokemon(s)).ToList();
     }
 }
 

@@ -94,18 +94,7 @@ public class Pokemon
             Status = null;
         }
 
-        Skills = new List<Skill>();
-        foreach (var skill in P_Base.LearnableSkills)
-        {
-            if (skill.Level <= PokemonLevel)
-            {
-                Skills.Add(new Skill(skill.SkillBase));
-            }
-            if (Skills.Count >= PokemonBase.MaxNumOfSkills)
-            {
-                break;
-            }
-        }
+        Skills = saveData.skills.Select(s => new Skill(s)).ToList();
 
         CalculateStats();
         StatusCngMsg = new Queue<string>();
@@ -120,7 +109,8 @@ public class Pokemon
             hp = PokemonHp,
             level = PokemonLevel,
             exp = PokemonExp,
-            statusID = Status?.Id
+            statusID = Status?.Id,
+            skills = Skills.Select(s => s.GetSaveData()).ToList()
         };
         return saveData;
     }
@@ -403,7 +393,7 @@ public class Pokemon
     }
     public Skill GetRandomSkill()
     {
-        var skillWithPP = Skills.Where(x => x.SkillPP > 0).ToList();
+        var skillWithPP = Skills.Where(x => x.PP > 0).ToList();
 
         int r = UnityEngine.Random.Range(0, skillWithPP.Count);
         return Skills[r];
@@ -520,4 +510,5 @@ public class PokemonSaveData
     public int level;
     public int exp;
     public ConditionID? statusID;
+    public List<SkillSaveData> skills;
 }

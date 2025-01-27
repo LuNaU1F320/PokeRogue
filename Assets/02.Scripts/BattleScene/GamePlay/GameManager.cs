@@ -32,6 +32,7 @@ public class GameManager : MonoBehaviour
         Inst = this;
         ConditionsDB.Init();
         PokemonDB.Init();
+        SkillDB.Init();
         Time.timeScale = 5.0f;
     }
 

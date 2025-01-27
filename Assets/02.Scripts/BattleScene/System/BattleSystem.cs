@@ -320,7 +320,7 @@ public class BattleSystem : MonoBehaviour
         //     yield break; // 현재 실행 종료
         // }
 
-        skill.SkillPP--;
+        skill.PP--;
 
         yield return dialogBox.TypeDialog($"{sourceUnit.BattlePokemon.P_Base.PokemonName}의 {skill.SkillBase.SkillName}!");
 
@@ -708,7 +708,7 @@ public class BattleSystem : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
         {
             var skill = playerUnit.BattlePokemon.Skills[currentSkill];
-            if (skill.SkillPP == 0)
+            if (skill.PP == 0)
             {
                 // 스킬 사용 불가 메시지 출력
                 dialogBox.EnableSkillSelector(false);

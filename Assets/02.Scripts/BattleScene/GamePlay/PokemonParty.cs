@@ -13,6 +13,10 @@ public class PokemonParty : MonoBehaviour
             return party;
 
         }
+        set
+        {
+            party = value;
+        }
     }
     private void Awake()
     {

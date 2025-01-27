@@ -23,6 +23,10 @@ public class SkillBase : ScriptableObject
     [SerializeField] List<SecondaryEffects> secondaryEffects;
     [SerializeField] SkillTarget target;
 
+    public int SkillIndex
+    {
+        get { return skillIndex; }
+    }
     public string SkillName
     {
         get { return skillName; }
