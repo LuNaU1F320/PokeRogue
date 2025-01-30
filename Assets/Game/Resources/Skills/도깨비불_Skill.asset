@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5073655c03dece548bd7c8970b70fa57, type: 3}
+  m_Name: "\uB3C4\uAE68\uBE44\uBD88_Skill"
+  m_EditorClassIdentifier: 
+  skillIndex: 261
+  skillName: "\uB3C4\uAE68\uBE44\uBD88"
+  skillDescription: 
+  skillType: 2
+  categoryKey: 2
+  skillPower: 0
+  skillAccuracy: 75
+  alwaysHits: 0
+  skillPP: 15
+  priority: 0
+  effects:
+    rankup: []
+    status: 0
+    volatileStatus: 0
+  secondaryEffects: []
+  target: 1

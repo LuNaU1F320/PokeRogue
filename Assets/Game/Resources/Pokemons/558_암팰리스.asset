@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 271878df85541a1469db368301d2282b, type: 3}
+  m_Name: "558_\uC554\uD330\uB9AC\uC2A4"
+  m_EditorClassIdentifier: 
+  pokemonIndex: 558
+  pokemonName: "\uC554\uD330\uB9AC\uC2A4"
+  pokemonDescription: 
+  pokemonType1: 15
+  pokemonType2: 10
+  maxHp: 70
+  attack: 95
+  defence: 125
+  spAttack: 65
+  spDefence: 75
+  speed: 45
+  expYield: 170
+  growthRate: 2
+  catchRate: 75
+  learnableSkills:
+  - skillBase: {fileID: 11400000, guid: 4f615a703fb1e0f48bef132f40fefeb2, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: 0d1ca77be1845e049a86b3d754e68fa6, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: cdb7555372d086641b6e5c2a7ddfe3c5, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: dc4edf0579c71284ca7a9f4290e6de5d, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: fcaead0b429bd414c82fdaf31288d65e, type: 2}
+    level: 12
+  - skillBase: {fileID: 11400000, guid: 15114c2226117534d91f6d7cf46875f8, type: 2}
+    level: 16
+  - skillBase: {fileID: 11400000, guid: 0bb478f84327baa499a8090337de6b20, type: 2}
+    level: 20
+  - skillBase: {fileID: 11400000, guid: 39fde6cd534487748a735ec6a8a57678, type: 2}
+    level: 24
+  - skillBase: {fileID: 11400000, guid: 4e7108433d432a643be739186c04573b, type: 2}
+    level: 28
+  - skillBase: {fileID: 11400000, guid: 641a8fa74ce4f844fb1543711631460b, type: 2}
+    level: 32
+  - skillBase: {fileID: 11400000, guid: 359c273c44da1dc409f0babe6c97577f, type: 2}
+    level: 38
+  - skillBase: {fileID: 11400000, guid: 4034fb74511664543bf8e72c291058af, type: 2}
+    level: 44
+  - skillBase: {fileID: 11400000, guid: 37a39554f56cde7449d0a578a195f98d, type: 2}
+    level: 50
+  - skillBase: {fileID: 11400000, guid: 7e55535e333d62f43bf34a77247f000d, type: 2}
+    level: 56

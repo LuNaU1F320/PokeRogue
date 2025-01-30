@@ -2,10 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using System;
 
 public class PokemonParty : MonoBehaviour
 {
     [SerializeField] List<Pokemon> party;
+
+    public event Action OnUpdated;
+
     public List<Pokemon> Party
     {
         get
@@ -16,6 +20,7 @@ public class PokemonParty : MonoBehaviour
         set
         {
             party = value;
+            OnUpdated?.Invoke();
         }
     }
     private void Awake()
@@ -39,6 +44,7 @@ public class PokemonParty : MonoBehaviour
         if (party.Count < 6)
         {
             party.Add(newPokemon);
+            OnUpdated?.Invoke();
         }
         else
         {
@@ -48,5 +54,27 @@ public class PokemonParty : MonoBehaviour
     public void RemovePokemon(Pokemon removePokemon)
     {
         party.Remove(removePokemon);
+    }
+
+    public IEnumerator CheckForEvolutions()
+    {
+        foreach (var pokemon in party)
+        {
+            var evolution = pokemon.CheckForEvolution();
+            if (evolution != null)
+            {
+                // BattleSystem battleSystem = new BattleSystem();
+                // battleSystem.ConfirmBoxSelection();
+
+                yield return null;
+                pokemon.Evolve(evolution);
+            }
+        }
+        OnUpdated?.Invoke();
+    }
+
+    public static PokemonParty GetPlayerParty()
+    {
+        return FindObjectOfType<PlayerCtrl>().GetComponent<PokemonParty>();
     }
 }

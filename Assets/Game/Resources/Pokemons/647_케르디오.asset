@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 271878df85541a1469db368301d2282b, type: 3}
+  m_Name: "647_\uCF00\uB974\uB514\uC624"
+  m_EditorClassIdentifier: 
+  pokemonIndex: 647
+  pokemonName: "\uCF00\uB974\uB514\uC624"
+  pokemonDescription: 
+  pokemonType1: 3
+  pokemonType2: 7
+  maxHp: 91
+  attack: 72
+  defence: 90
+  spAttack: 129
+  spDefence: 90
+  speed: 108
+  expYield: 290
+  growthRate: 4
+  catchRate: 3
+  learnableSkills:
+  - skillBase: {fileID: 11400000, guid: ad794bec067f4244a8d873a481e88d1d, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: e1b73afd30838504db85908c27e9ab5a, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: 4c990c2ec15a6f24dafffb2d347b7207, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: e06b9fbaf1046ab40ab97c7b5ac1d15d, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: 1df147f2368e763429cf2a878689d0b6, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: 5c29d6989a9ec924d8ba0a97ba05820c, type: 2}
+    level: 7
+  - skillBase: {fileID: 11400000, guid: d730d93423c18f04db68b4c20c5b87b6, type: 2}
+    level: 14
+  - skillBase: {fileID: 11400000, guid: 06e8a2278553fec4489f4190c1421110, type: 2}
+    level: 21
+  - skillBase: {fileID: 11400000, guid: b3d43313f7788aa4ea31a08705e2fbdf, type: 2}
+    level: 28
+  - skillBase: {fileID: 11400000, guid: 9ba4dcab9b4dcc143872a42d6352528f, type: 2}
+    level: 35
+  - skillBase: {fileID: 11400000, guid: f73167b4b6da3414293080951cb8bbad, type: 2}
+    level: 42
+  - skillBase: {fileID: 11400000, guid: 3d90ca65e2d0cf34aa9b6401acd8b36d, type: 2}
+    level: 49
+  - skillBase: {fileID: 11400000, guid: fbccf620e3b9ee146a9f2cfe6f1e41a8, type: 2}
+    level: 56
+  - skillBase: {fileID: 11400000, guid: 5ed5f5e2408703b4baba2f95c33e9882, type: 2}
+    level: 63
+  - skillBase: {fileID: 11400000, guid: f8dd6b75d0008724bbeb26b8b79c748a, type: 2}
+    level: 70

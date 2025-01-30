@@ -12,7 +12,7 @@ public enum GameState
 
 public class GameManager : MonoBehaviour
 {
-    // public event Action OnEncountered;
+    PlayerCtrl playerCtrl;
     [SerializeField] BattleSystem battleSystem;
     PokemonParty PlayerParty;
     [SerializeField] MapArea mapArea;
@@ -38,7 +38,6 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-
         PlayerParty = FindObjectOfType<PokemonParty>().GetComponent<PokemonParty>();
         if (battleSystem == null || PlayerParty == null || mapArea == null)
         {
@@ -82,9 +81,12 @@ public class GameManager : MonoBehaviour
     }
     public void EndBattle(bool won)
     {
+        // var playerParty = playerCtrl.GetComponent<PokemonParty>();
+
         if (won)
         {
             StopAllCoroutines();
+            StartCoroutine(PlayerParty.CheckForEvolutions());
             StageCount++;
             Stage_Text.text = $"마을 - {StageCount}";
             StartBattle();

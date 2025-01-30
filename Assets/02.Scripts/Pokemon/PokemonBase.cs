@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -24,9 +25,10 @@ public class PokemonBase : ScriptableObject
     [SerializeField] int expYield;
     [SerializeField] GrowthRate growthRate;
 
-    [SerializeField] int catchRate = 255;
+    [SerializeField] int catchRate;
 
     [SerializeField] List<LearnableSkill> learnableSkills;
+    [SerializeField] List<Evolution> evolutions;
 
     public static int MaxNumOfSkills { get; set; } = 4;
     public int GetExpForLevel(int level)
@@ -129,10 +131,17 @@ public class PokemonBase : ScriptableObject
     {
         get { return speed; }
     }
-    public int CatchRate => catchRate;
+    public int CatchRate
+    {
+        get { return catchRate; }
+    }
     public List<LearnableSkill> LearnableSkills
     {
         get { return learnableSkills; }
+    }
+    public List<Evolution> Evolutions
+    {
+        get { return evolutions; }
     }
     public int ExpYield => expYield;
     public GrowthRate GrowthRate => growthRate;
@@ -157,7 +166,15 @@ public class LearnableSkill
         get { return level; }
     }
 }
+[System.Serializable]
+public class Evolution
+{
+    [SerializeField] PokemonBase evolesInto;
+    [SerializeField] int requiredLevel;
 
+    public PokemonBase EvolvesInto => evolesInto;
+    public int RequiredLevel => requiredLevel;
+}
 public enum PokemonType
 {
     None,

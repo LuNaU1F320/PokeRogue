@@ -97,8 +97,6 @@ public class SkillEffects
     {
         get { return volatileStatus; }
     }
-
-
 }
 [System.Serializable]
 public class SecondaryEffects : SkillEffects

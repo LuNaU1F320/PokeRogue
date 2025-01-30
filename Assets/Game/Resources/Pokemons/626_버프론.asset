@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 271878df85541a1469db368301d2282b, type: 3}
+  m_Name: "626_\uBC84\uD504\uB860"
+  m_EditorClassIdentifier: 
+  pokemonIndex: 626
+  pokemonName: "\uBC84\uD504\uB860"
+  pokemonDescription: 
+  pokemonType1: 1
+  pokemonType2: 0
+  maxHp: 95
+  attack: 110
+  defence: 95
+  spAttack: 40
+  spDefence: 95
+  speed: 55
+  expYield: 172
+  growthRate: 2
+  catchRate: 45
+  learnableSkills:
+  - skillBase: {fileID: 11400000, guid: b42199491cb4cbe4f9a6fad9498d66e2, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: ad794bec067f4244a8d873a481e88d1d, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: efd0711d29d800c49a5daca094370530, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: b2ce5207965450848946a83ce7249d43, type: 2}
+    level: 5
+  - skillBase: {fileID: 11400000, guid: 30a01c003b588a24c92f9874d37df7a1, type: 2}
+    level: 10
+  - skillBase: {fileID: 11400000, guid: f766e7902b9810c4cad65799750b7fb1, type: 2}
+    level: 15
+  - skillBase: {fileID: 11400000, guid: 604ac110d48da7b4a8fad0efcfebd156, type: 2}
+    level: 20
+  - skillBase: {fileID: 11400000, guid: b39f098b905dd3948892ee6bac219177, type: 2}
+    level: 25
+  - skillBase: {fileID: 11400000, guid: efe0453a9bb41054fbc2b36d2d0e322e, type: 2}
+    level: 30
+  - skillBase: {fileID: 11400000, guid: 4b5fdab4a8ae41943bdf0f9ec9bfcf72, type: 2}
+    level: 35
+  - skillBase: {fileID: 11400000, guid: 6998dcd7ddda2e0438b25fa014ab4f19, type: 2}
+    level: 40
+  - skillBase: {fileID: 11400000, guid: fbccf620e3b9ee146a9f2cfe6f1e41a8, type: 2}
+    level: 45
+  - skillBase: {fileID: 11400000, guid: 3548288569a9f444b8e92f199fc28966, type: 2}
+    level: 50
+  - skillBase: {fileID: 11400000, guid: 35157ebfbf7bdf24ebf4e337e47ee3ec, type: 2}
+    level: 55

@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 271878df85541a1469db368301d2282b, type: 3}
+  m_Name: "069_\uBAA8\uB2E4\uD53C"
+  m_EditorClassIdentifier: 
+  pokemonIndex: 69
+  pokemonName: "\uBAA8\uB2E4\uD53C"
+  pokemonDescription: 
+  pokemonType1: 5
+  pokemonType2: 8
+  maxHp: 50
+  attack: 75
+  defence: 35
+  spAttack: 70
+  spDefence: 30
+  speed: 40
+  expYield: 60
+  growthRate: 3
+  catchRate: 255
+  learnableSkills:
+  - skillBase: {fileID: 11400000, guid: a85323f507b75b14e9641411ca0e4bed, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: d5144f5122b229945a2b4ad055a1ce9a, type: 2}
+    level: 7
+  - skillBase: {fileID: 11400000, guid: 18bb317f1865c814ebc54f81f58ab974, type: 2}
+    level: 11
+  - skillBase: {fileID: 11400000, guid: 6f284aaeb430bd943aaed2efd5b09dc8, type: 2}
+    level: 13
+  - skillBase: {fileID: 11400000, guid: 186291c83c82413478c82a3a3873e1fc, type: 2}
+    level: 15
+  - skillBase: {fileID: 11400000, guid: 4639b545735b4204e9e2dabb84f3ead8, type: 2}
+    level: 17
+  - skillBase: {fileID: 11400000, guid: aa7ee6655e1dd8b40b12e5ed4bc2a840, type: 2}
+    level: 23
+  - skillBase: {fileID: 11400000, guid: 28a1e03898e49cb46bb2995cf839be26, type: 2}
+    level: 27
+  - skillBase: {fileID: 11400000, guid: ff9b14b795a895042bc00401f97e09ea, type: 2}
+    level: 29
+  - skillBase: {fileID: 11400000, guid: 4e4d425803dc4614f9e7fb91674718ef, type: 2}
+    level: 35
+  - skillBase: {fileID: 11400000, guid: 2a5ba1b25d83d0b418712bac760ef3ca, type: 2}
+    level: 39
+  - skillBase: {fileID: 11400000, guid: a4f90d20f1da8fa46a19c4536fc8e9e0, type: 2}
+    level: 41
+  - skillBase: {fileID: 11400000, guid: 6253eed93c3e44846b248e5de611da3c, type: 2}
+    level: 47
+  - skillBase: {fileID: 11400000, guid: c7247cab04ac0ca488fa346bc88bd48e, type: 2}
+    level: 52

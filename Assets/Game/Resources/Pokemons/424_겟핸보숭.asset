@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 271878df85541a1469db368301d2282b, type: 3}
+  m_Name: "424_\uAC9F\uD578\uBCF4\uC22D"
+  m_EditorClassIdentifier: 
+  pokemonIndex: 424
+  pokemonName: "\uAC9F\uD578\uBCF4\uC22D"
+  pokemonDescription: 
+  pokemonType1: 1
+  pokemonType2: 0
+  maxHp: 75
+  attack: 100
+  defence: 66
+  spAttack: 60
+  spDefence: 66
+  speed: 115
+  expYield: 169
+  growthRate: 1
+  catchRate: 45
+  learnableSkills:
+  - skillBase: {fileID: 11400000, guid: a5f816141a5b4c048ae906a2e2eed552, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: 4f615a703fb1e0f48bef132f40fefeb2, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: 4073f0dd24cbdfc44925948fe67ce14a, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: 036fe7f566cca1b42b4f445f7544adc1, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: d197f3611fbec9748a9a453a0266cb0d, type: 2}
+    level: 11
+  - skillBase: {fileID: 11400000, guid: e7cee3fbeac36fb40a59ef78b7dc98f4, type: 2}
+    level: 15
+  - skillBase: {fileID: 11400000, guid: f3cb8a13d2732984d962e30cc9cfab96, type: 2}
+    level: 18
+  - skillBase: {fileID: 11400000, guid: 8e4dd9520eddebb4ea1c488afe32da6f, type: 2}
+    level: 22
+  - skillBase: {fileID: 11400000, guid: c90a635e3e29f9d4785c758128a98870, type: 2}
+    level: 25
+  - skillBase: {fileID: 11400000, guid: ab72614cc83d9874296dfc1c19dd483d, type: 2}
+    level: 29
+  - skillBase: {fileID: 11400000, guid: f309318b8a934e44db46cf881f09ca02, type: 2}
+    level: 32
+  - skillBase: {fileID: 11400000, guid: 9c2fbb6a124630f4e912f52394885062, type: 2}
+    level: 36
+  - skillBase: {fileID: 11400000, guid: e6170572b609a3747bee3d1a3eb30740, type: 2}
+    level: 39
+  - skillBase: {fileID: 11400000, guid: fbc74601863c44949b37a098f5798325, type: 2}
+    level: 43

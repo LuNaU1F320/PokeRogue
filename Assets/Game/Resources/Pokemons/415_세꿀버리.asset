@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 271878df85541a1469db368301d2282b, type: 3}
+  m_Name: "415_\uC138\uAFC0\uBC84\uB9AC"
+  m_EditorClassIdentifier: 
+  pokemonIndex: 415
+  pokemonName: "\uC138\uAFC0\uBC84\uB9AC"
+  pokemonDescription: 
+  pokemonType1: 15
+  pokemonType2: 11
+  maxHp: 30
+  attack: 30
+  defence: 42
+  spAttack: 30
+  spDefence: 42
+  speed: 70
+  expYield: 49
+  growthRate: 3
+  catchRate: 120
+  learnableSkills:
+  - skillBase: {fileID: 11400000, guid: 7533ef656f3a11c4aa31d7f64777abd0, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: ff9b14b795a895042bc00401f97e09ea, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: fcaead0b429bd414c82fdaf31288d65e, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: 591edfbb800b2a34e886d57b875b94a2, type: 2}
+    level: 1

@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 271878df85541a1469db368301d2282b, type: 3}
+  m_Name: "416_\uBE44\uD038"
+  m_EditorClassIdentifier: 
+  pokemonIndex: 416
+  pokemonName: "\uBE44\uD038"
+  pokemonDescription: 
+  pokemonType1: 15
+  pokemonType2: 11
+  maxHp: 70
+  attack: 80
+  defence: 102
+  spAttack: 80
+  spDefence: 102
+  speed: 40
+  expYield: 166
+  growthRate: 3
+  catchRate: 45
+  learnableSkills:
+  - skillBase: {fileID: 11400000, guid: 0bb478f84327baa499a8090337de6b20, type: 2}
+    level: 0
+  - skillBase: {fileID: 11400000, guid: 7533ef656f3a11c4aa31d7f64777abd0, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: bd74824767b523549bdc651451149cdb, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: c83881830d8b8724b9661afc4bf2320a, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: ff9b14b795a895042bc00401f97e09ea, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: fcaead0b429bd414c82fdaf31288d65e, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: 591edfbb800b2a34e886d57b875b94a2, type: 2}
+    level: 1
+  - skillBase: {fileID: 11400000, guid: cdb7555372d086641b6e5c2a7ddfe3c5, type: 2}
+    level: 4
+  - skillBase: {fileID: 11400000, guid: 7147b2ac85598234cbb3beeaa9eabda7, type: 2}
+    level: 8
+  - skillBase: {fileID: 11400000, guid: 8152182360748f047913984ad961777b, type: 2}
+    level: 12
+  - skillBase: {fileID: 11400000, guid: f3cb8a13d2732984d962e30cc9cfab96, type: 2}
+    level: 16
+  - skillBase: {fileID: 11400000, guid: df7706bbc7c676c42ba9a8a6808ac9a7, type: 2}
+    level: 20
+  - skillBase: {fileID: 11400000, guid: dfae7a111df1cbe4ca9f7e2add99cb79, type: 2}
+    level: 24
+  - skillBase: {fileID: 11400000, guid: 230ad67d2d037104ababb09caa0bdd6c, type: 2}
+    level: 28
+  - skillBase: {fileID: 11400000, guid: a10832ada76c95548b0e1d9a4f83ee9b, type: 2}
+    level: 32
+  - skillBase: {fileID: 11400000, guid: 4a8c1f8d5a019374aba87b4b5a3f6887, type: 2}
+    level: 36
+  - skillBase: {fileID: 11400000, guid: b33018cb6ff4cbf4f8e96a486a7adf7a, type: 2}
+    level: 40
+  - skillBase: {fileID: 11400000, guid: dc3a4a236bc4749419ff9faa11419b2b, type: 2}
+    level: 40
+  - skillBase: {fileID: 11400000, guid: 9e71fef204c069d439cf9faeda7f3f94, type: 2}
+    level: 40
+  - skillBase: {fileID: 11400000, guid: 6519c12dd941f9346a2687d705e8d906, type: 2}
+    level: 44

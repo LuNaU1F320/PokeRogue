@@ -165,7 +165,10 @@ public class Pokemon
             { Stat.Speed, Mathf.FloorToInt((P_Base.Speed * PokemonLevel) / 100f) + 5 }
         };
 
+        int oldMaxHp = MaxHp;
         MaxHp = Mathf.FloorToInt((P_Base.MaxHp * PokemonLevel) / 100f) + 10 + PokemonLevel;
+
+        PokemonHp += MaxHp - oldMaxHp;
     }
     public void ResetRankup()
     {
@@ -284,6 +287,7 @@ public class Pokemon
         if (PokemonExp > P_Base.GetExpForLevel(level + 1))
         {
             level++;
+            CalculateStats();
             return true;
         }
         return false;
@@ -300,6 +304,20 @@ public class Pokemon
         }
         Skills.Add(new Skill(skillToLearn.SkillBase));
     }
+    public bool HasSkill(SkillBase skillToCheck)
+    {
+        return Skills.Count(s => s.SkillBase == skillToCheck) > 0;
+    }
+    public Evolution CheckForEvolution()
+    {
+        return P_Base.Evolutions.FirstOrDefault(e => e.RequiredLevel <= level);
+    }
+    public void Evolve(Evolution evolution)
+    {
+        _base = evolution.EvolvesInto;
+        CalculateStats();
+    }
+
 
     public int Attack
     {

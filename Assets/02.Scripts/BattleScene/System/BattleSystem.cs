@@ -185,7 +185,7 @@ public class BattleSystem : MonoBehaviour
         dialogBox.EnableDialogText(false);
         dialogBox.EnableSkillSelector(true);
     }
-    void ConfirmBoxSelection()
+    public void ConfirmBoxSelection()
     {
         state = BattleState.ConfirmBox;
         currentConfirm = 0;
@@ -513,8 +513,7 @@ public class BattleSystem : MonoBehaviour
                     }
                     else
                     {
-                        bool isFinalDecisionMade = false; // 최종 결정 플래그
-
+                        bool isFinalDecisionMade = false;
                         while (!isFinalDecisionMade)
                         {
                             // 스킬 잊기
@@ -549,7 +548,18 @@ public class BattleSystem : MonoBehaviour
                         }
                     }
                 }
-
+                // var evolution = playerUnit.BattlePokemon.CheckForEvolution();
+                // if (evolution != null)
+                // {
+                //     ConfirmBoxSelection();
+                //     yield return new WaitUntil(() => state != BattleState.ConfirmBox);
+                //     bool isEvoConfirmed = HandleConfirmBoxSelection();
+                //     if (isEvoConfirmed)
+                //     {
+                //         //진화
+                //         playerUnit.BattlePokemon.Evolve(evolution);
+                //     }
+                // }
 
                 yield return playerUnit.BattleHud.SetExpSmooth(true);
             }
