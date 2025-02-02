@@ -35,3 +35,6 @@ MonoBehaviour:
     level: 1
   - skillBase: {fileID: 11400000, guid: 322380722b15f7747b5595fc18e69dba, type: 2}
     level: 1
+  - skillBase: {fileID: 11400000, guid: ef6e976dcb8c6ae4faa533f75db75554, type: 2}
+    level: 16
+  evolutions: []

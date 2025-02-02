@@ -7,6 +7,7 @@ public enum GameState
     None,
     Battle,
     Dialog,
+    Evolution,
     Busy
 }
 
@@ -21,6 +22,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] Text Gold_Text;
     private int UserGold;
     [HideInInspector] public bool isRun = true;
+    [SerializeField] float GameSpeed = 1.0f;
 
     GameState state;
 
@@ -33,23 +35,25 @@ public class GameManager : MonoBehaviour
         ConditionsDB.Init();
         PokemonDB.Init();
         SkillDB.Init();
-        Time.timeScale = 5.0f;
+        Time.timeScale = GameSpeed;
     }
 
     void Start()
     {
         PlayerParty = FindObjectOfType<PokemonParty>().GetComponent<PokemonParty>();
+        StartBattle();
         if (battleSystem == null || PlayerParty == null || mapArea == null)
         {
             return;
         }
-        StartBattle();
         StageCount = 1;
         UserGold = 1000;
         Stage_Text.text = $"마을 - {StageCount}";
         Gold_Text.text = $"￡{UserGold}";
         // OnEncountered += StartBattle;
         // battleSystem.OnBattleOver += EndBattle;
+        // EvolutionManager.Inst.OnStartEvolution += () => state = GameState.Evolution;
+        // EvolutionManager.Inst.OnCompleteEvolution += () => state = GameState.None;
     }
 
     // Update is called once per frame
@@ -59,11 +63,6 @@ public class GameManager : MonoBehaviour
     }
     void StartBattle()
     {
-        // battleSystem.gameObject.SetActive(true);
-
-        // var playerParty = GetComponent<PokemonParty>();
-        // var wildPokemon = FindObjectOfType<MapArea>().GetComponent<MapArea>().GetRandomWildPokemon();
-
         var wildPokemon = mapArea.GetRandomWildPokemon();
 
         var refWildPokemon = new Pokemon(wildPokemon.P_Base, wildPokemon.PokemonLevel);
@@ -81,14 +80,12 @@ public class GameManager : MonoBehaviour
     }
     public void EndBattle(bool won)
     {
-        // var playerParty = playerCtrl.GetComponent<PokemonParty>();
-
         if (won)
         {
-            StopAllCoroutines();
-            StartCoroutine(PlayerParty.CheckForEvolutions());
+            // StopAllCoroutines();
             StageCount++;
             Stage_Text.text = $"마을 - {StageCount}";
+            StartCoroutine(PlayerParty.CheckForEvolutions());
             StartBattle();
         }
         else
@@ -101,6 +98,27 @@ public class GameManager : MonoBehaviour
         UserGold += ((StageCount + 10) / 10) * 1000;
 
         Gold_Text.text = $"￡{UserGold}";
+    }
+    public string GetCorrectParticle(string name, string particleType)    //은는이가
+    {
+        char lastChar = name[name.Length - 1];
+        int unicode = (int)lastChar;
+        bool endsWithConsonant = (unicode - 44032) % 28 != 0; // 44032는 '가'의 유니코드, 28는 받침의 수
+
+
+        switch (particleType)
+        {
+            case "subject": // 이/가
+                { return endsWithConsonant ? "이" : "가"; }
+            case "topic": // 은/는
+                { return endsWithConsonant ? "은" : "는"; }
+            case "object": // 을/를
+                { return endsWithConsonant ? "을" : "를"; }
+            case "objectTo": // 로/으로
+                { return endsWithConsonant ? "로" : "으로"; }
+            default:
+                throw new ArgumentException("Invalid particle type");
+        }
     }
 }
 

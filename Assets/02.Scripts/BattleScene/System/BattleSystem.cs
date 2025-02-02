@@ -15,6 +15,7 @@ public enum BattleState
     PartyScreen,
     SkillToForget,
     ConfirmBox,
+    Evolution,
     BattleOver
 }
 public enum BattleAction
@@ -61,7 +62,6 @@ public class BattleSystem : MonoBehaviour
 
     SkillBase skillToLearn;
 
-    #region Start
     private void Start()
     {
         state = BattleState.Start;
@@ -75,7 +75,6 @@ public class BattleSystem : MonoBehaviour
         this.wildPokemon = wildPokemon;
         isTrainerBattle = false;
         StartCoroutine(SetUpBattle());
-
     }
     public void StartTrainerBattle(PokemonParty playerParty, PokemonParty trainerParty)
     {
@@ -89,7 +88,6 @@ public class BattleSystem : MonoBehaviour
 
         StartCoroutine(SetUpBattle());
     }
-    #endregion
     public void Update()
     {
         if (state == BattleState.ActionSelection)
@@ -363,14 +361,6 @@ public class BattleSystem : MonoBehaviour
             if (targetUnit.BattlePokemon.PokemonHp <= 0)
             {
                 yield return HandlePokemonFainted(targetUnit);
-
-                // yield return dialogBox.TypeDialog($"{targetUnit.BattlePokemon.PokemonBase.PokemonName}{GetCorrectParticle(targetUnit.BattlePokemon.PokemonBase.PokemonName, false)} 쓰러졌다!");
-                // //애니메이션 재생
-
-                // //플레이어 승리 (다음스테이지로)
-                // yield return new WaitForSeconds(1.5f);
-                // CheckForBattleOver(targetUnit);
-                // GameManager.Inst.AddGold();
             }
         }
         else
@@ -502,6 +492,8 @@ public class BattleSystem : MonoBehaviour
                 playerUnit.BattleHud.SetLevel();
                 yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}\n레벨{playerUnit.BattlePokemon.PokemonLevel}으로 올랐다!");
 
+                // playerParty.CheckForEvolutions();
+
                 var newSkill = playerUnit.BattlePokemon.GetLearnableSkill();
                 if (newSkill != null)
                 {
@@ -548,17 +540,12 @@ public class BattleSystem : MonoBehaviour
                         }
                     }
                 }
+
+
                 // var evolution = playerUnit.BattlePokemon.CheckForEvolution();
                 // if (evolution != null)
                 // {
-                //     ConfirmBoxSelection();
-                //     yield return new WaitUntil(() => state != BattleState.ConfirmBox);
-                //     bool isEvoConfirmed = HandleConfirmBoxSelection();
-                //     if (isEvoConfirmed)
-                //     {
-                //         //진화
-                //         playerUnit.BattlePokemon.Evolve(evolution);
-                //     }
+                //     // playerUnit.BattlePokemon.Evolve(evolution);
                 // }
 
                 yield return playerUnit.BattleHud.SetExpSmooth(true);
@@ -1069,6 +1056,8 @@ public class BattleSystem : MonoBehaviour
                 { return endsWithConsonant ? "은" : "는"; }
             case "object": // 을/를
                 { return endsWithConsonant ? "을" : "를"; }
+            case "objectTo": // 로/으로
+                { return endsWithConsonant ? "로" : "으로"; }
             default:
                 throw new ArgumentException("Invalid particle type");
         }

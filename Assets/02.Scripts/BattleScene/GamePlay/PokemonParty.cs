@@ -63,11 +63,7 @@ public class PokemonParty : MonoBehaviour
             var evolution = pokemon.CheckForEvolution();
             if (evolution != null)
             {
-                // BattleSystem battleSystem = new BattleSystem();
-                // battleSystem.ConfirmBoxSelection();
-
-                yield return null;
-                pokemon.Evolve(evolution);
+                yield return EvolutionManager.Inst.Evolve(pokemon, evolution);
             }
         }
         OnUpdated?.Invoke();

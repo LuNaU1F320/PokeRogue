@@ -231,7 +231,7 @@ public class PartyScreenManager : MonoBehaviour
     #region SetPokemonSprite
     void SetUpPokemonSprite()
     {
-        if (Pokemon_Sprite != null)
+        if (Pokemon_Sprite.sprite != null)
         {
             Pokemon_Sprite.sprite = null;
         }

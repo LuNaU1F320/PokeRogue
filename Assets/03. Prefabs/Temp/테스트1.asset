@@ -24,7 +24,7 @@ MonoBehaviour:
   spDefence: 100
   speed: 150
   expYield: 100
-  growthRate: 3
+  growthRate: 1
   catchRate: 255
   learnableSkills:
   - skillBase: {fileID: 11400000, guid: 8929b825376c8e8459093f50e52e9160, type: 2}
@@ -41,3 +41,6 @@ MonoBehaviour:
     level: 12
   - skillBase: {fileID: 11400000, guid: 33e6700730d61a84f905d9fb21113815, type: 2}
     level: 13
+  evolutions:
+  - evolesInto: {fileID: 11400000, guid: 8c9a87392c34c2f47b5005e3675774c9, type: 2}
+    requiredLevel: 16
