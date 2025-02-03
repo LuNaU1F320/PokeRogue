@@ -4811,7 +4811,7 @@ MonoBehaviour:
   Stage_Text: {fileID: 1559609162}
   Gold_Text: {fileID: 549918070}
   isRun: 1
-  GameSpeed: 1
+  GameSpeed: 5
 --- !u!4 &818044222
 Transform:
   m_ObjectHideFlags: 0
@@ -10411,6 +10411,7 @@ MonoBehaviour:
   TrainerSprite: {fileID: 1381389140}
   partyScreen: {fileID: 566295760}
   skillSelectScreen: {fileID: 1297005689}
+  state: 0
 --- !u!4 &2067398447
 Transform:
   m_ObjectHideFlags: 0

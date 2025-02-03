@@ -27,6 +27,7 @@ public enum BattleAction
 }
 public class BattleSystem : MonoBehaviour
 {
+    public static BattleSystem Inst;
     [SerializeField] BattleUnit playerUnit;
     [SerializeField] BattleUnit enemyUnit;
     [SerializeField] BattleDialogBox dialogBox;
@@ -40,9 +41,7 @@ public class BattleSystem : MonoBehaviour
     [SerializeField] PartyScreen partyScreen;
     [SerializeField] SkillSelectScreen skillSelectScreen;
 
-    // public event Action<bool> OnBattleOver;
-
-    BattleState state;
+    [HideInInspector] public BattleState state;
     BattleState? preState;
     int currentAction = 0;
     int currentSkill = 0;
@@ -62,6 +61,10 @@ public class BattleSystem : MonoBehaviour
 
     SkillBase skillToLearn;
 
+    private void Awake()
+    {
+        Inst = this;
+    }
     private void Start()
     {
         state = BattleState.Start;
@@ -160,7 +163,7 @@ public class BattleSystem : MonoBehaviour
     void BattleOver(bool won)
     {
         state = BattleState.BattleOver;
-        StopAllCoroutines();
+        // StartCoroutine(playerParty.CheckForEvolutions());
         GameManager.Inst.EndBattle(won);
     }
     void ActionSelection()
@@ -541,7 +544,6 @@ public class BattleSystem : MonoBehaviour
                     }
                 }
 
-
                 // var evolution = playerUnit.BattlePokemon.CheckForEvolution();
                 // if (evolution != null)
                 // {
@@ -551,11 +553,12 @@ public class BattleSystem : MonoBehaviour
                 yield return playerUnit.BattleHud.SetExpSmooth(true);
             }
             yield return new WaitForSeconds(1.0f);
+            // yield return playerParty.CheckForEvolutions();
         }
-        CheckForBattleOver(faintedUnit);
+        yield return CheckForBattleOver(faintedUnit);
         GameManager.Inst.AddGold();
     }
-    void CheckForBattleOver(BattleUnit faintedUnit)
+    IEnumerator CheckForBattleOver(BattleUnit faintedUnit)
     {
         if (faintedUnit.IsPlayerUnit)
         {
@@ -573,6 +576,7 @@ public class BattleSystem : MonoBehaviour
         {
             if (!isTrainerBattle)
             {
+                yield return playerParty.CheckForEvolutions();
                 BattleOver(true);
             }
             else
@@ -581,10 +585,12 @@ public class BattleSystem : MonoBehaviour
                 if (nextPokemon != null)
                 {
                     //다음포케
+                    yield return playerParty.CheckForEvolutions();
 
                 }
                 else
                 {
+                    yield return playerParty.CheckForEvolutions();
                     BattleOver(true);
                 }
             }

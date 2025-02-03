@@ -82,10 +82,10 @@ public class GameManager : MonoBehaviour
     {
         if (won)
         {
-            // StopAllCoroutines();
+            StopAllCoroutines();
             StageCount++;
             Stage_Text.text = $"마을 - {StageCount}";
-            StartCoroutine(PlayerParty.CheckForEvolutions());
+            // StartCoroutine(PlayerParty.CheckForEvolutions());
             StartBattle();
         }
         else

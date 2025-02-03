@@ -17,13 +17,13 @@ MonoBehaviour:
   pokemonDescription: 
   pokemonType1: 11
   pokemonType2: 2
-  maxHp: 1
+  maxHp: 100
   attack: 100
   defence: 100
   spAttack: 100
   spDefence: 100
-  speed: 1
-  expYield: 0
+  speed: 100
+  expYield: 100
   growthRate: 0
   catchRate: 255
   learnableSkills:
