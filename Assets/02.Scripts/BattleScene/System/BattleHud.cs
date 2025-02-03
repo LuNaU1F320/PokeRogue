@@ -178,6 +178,7 @@ public class BattleHud : MonoBehaviour
         }
 
         ExpBar.fillAmount = targetExp; // 최종 값 보정
+        yield return new WaitForSeconds(duration);
     }
     public void SetLevel()
     {

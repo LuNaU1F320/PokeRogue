@@ -60,5 +60,6 @@
             "editor.defaultFormatter": "ms-dotnettools.csharp"
         }
     },
-    "dotnet.defaultSolution": "PokeRogue.sln"
+    "dotnet.defaultSolution": "PokeRogue.sln",
+    "git.ignoreLimitWarning": true
 }

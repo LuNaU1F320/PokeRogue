@@ -488,75 +488,122 @@ public class BattleSystem : MonoBehaviour
             int expGain = Mathf.FloorToInt(expYield * enemyLevel * trainerBonus / 7);
             playerUnit.BattlePokemon.PokemonExp += expGain;
             yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}\n{expGain}경험치를 얻었다!");
+
             yield return playerUnit.BattleHud.SetExpSmooth();
+            yield return CheckLearnableSkill();
+            // while (playerUnit.BattlePokemon.CheckForLevelUp())
+            // {
+            //     playerUnit.BattleHud.SetLevel();
+            //     yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}\n레벨{playerUnit.BattlePokemon.PokemonLevel}으로 올랐다!");
 
-            while (playerUnit.BattlePokemon.CheckForLevelUp())
+            //     var newSkill = playerUnit.BattlePokemon.GetLearnableSkill();
+            //     if (newSkill != null)
+            //     {
+            //         if (playerUnit.BattlePokemon.Skills.Count < PokemonBase.MaxNumOfSkills)
+            //         {
+            //             playerUnit.BattlePokemon.LearnSkill(newSkill);
+            //             yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}새로\n{newSkill.SkillBase.SkillName}{GetCorrectParticle(newSkill.SkillBase.SkillName, "object")} 배웠다!");
+            //             dialogBox.SetSkillNames(playerUnit.BattlePokemon.Skills);
+            //         }
+            //         else
+            //         {
+            //             bool isFinalDecisionMade = false;
+            //             while (!isFinalDecisionMade)
+            //             {
+            //                 // 스킬 잊기
+            //                 yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}새로 \n{newSkill.SkillBase.SkillName}{GetCorrectParticle(newSkill.SkillBase.SkillName, "object")} 배우고 싶다!...");
+            //                 yield return dialogBox.TypeDialog($"그러나 {playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}기술을 4개\n알고 있으므로 더 이상 배울 수 없다!");
+
+            //                 yield return dialogBox.TypeDialog($"{newSkill.SkillBase.SkillName}대신 다른 기술을 잊게 하겠습니까?");
+
+            //                 ConfirmBoxSelection();
+            //                 yield return new WaitUntil(() => state != BattleState.ConfirmBox);
+            //                 bool isConfirmed = HandleConfirmBoxSelection();
+            //                 if (isConfirmed)
+            //                 {
+            //                     yield return ChooseSkillToForget(playerUnit.BattlePokemon, newSkill.SkillBase);
+            //                     yield return new WaitUntil(() => state != BattleState.SkillToForget);
+            //                     yield return new WaitForSeconds(5.0f);
+            //                     isFinalDecisionMade = true;
+            //                 }
+            //                 else
+            //                 {
+            //                     yield return dialogBox.TypeDialog($"그럼... {newSkill.SkillBase.SkillName}{GetCorrectParticle(newSkill.SkillBase.SkillName, "object")}\n배우는 것을 포기하겠습니까?");
+            //                     ConfirmBoxSelection();
+            //                     yield return new WaitUntil(() => state != BattleState.ConfirmBox);
+            //                     bool isRealConfirmed = HandleConfirmBoxSelection();
+            //                     if (isRealConfirmed)
+            //                     {
+            //                         yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}{newSkill.SkillBase.SkillName}{GetCorrectParticle(newSkill.SkillBase.SkillName, "object")}\n결국 배우지 않았다!");
+            //                         yield return new WaitForSeconds(1.0f);
+            //                         isFinalDecisionMade = true;
+            //                     }
+            //                 }
+            //             }
+            //         }
+            //     }
+            //     yield return playerUnit.BattleHud.SetExpSmooth(true);
+            // }
+            // yield return new WaitForSeconds(1.0f);
+        }
+        yield return CheckForBattleOver(faintedUnit);
+        GameManager.Inst.AddGold();
+    }
+    IEnumerator CheckLearnableSkill()
+    {
+        while (playerUnit.BattlePokemon.CheckForLevelUp())
+        {
+            playerUnit.BattleHud.SetLevel();
+            yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}\n레벨{playerUnit.BattlePokemon.PokemonLevel}으로 올랐다!");
+
+            var newSkill = playerUnit.BattlePokemon.GetLearnableSkill();
+            if (newSkill != null)
             {
-                playerUnit.BattleHud.SetLevel();
-                yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}\n레벨{playerUnit.BattlePokemon.PokemonLevel}으로 올랐다!");
-
-                // playerParty.CheckForEvolutions();
-
-                var newSkill = playerUnit.BattlePokemon.GetLearnableSkill();
-                if (newSkill != null)
+                if (playerUnit.BattlePokemon.Skills.Count < PokemonBase.MaxNumOfSkills)
                 {
-                    if (playerUnit.BattlePokemon.Skills.Count < PokemonBase.MaxNumOfSkills)
+                    playerUnit.BattlePokemon.LearnSkill(newSkill);
+                    yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}새로\n{newSkill.SkillBase.SkillName}{GetCorrectParticle(newSkill.SkillBase.SkillName, "object")} 배웠다!");
+                    dialogBox.SetSkillNames(playerUnit.BattlePokemon.Skills);
+                }
+                else
+                {
+                    bool isFinalDecisionMade = false;
+                    while (!isFinalDecisionMade)
                     {
-                        playerUnit.BattlePokemon.LearnSkill(newSkill);
-                        yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}새로\n{newSkill.SkillBase.SkillName}{GetCorrectParticle(newSkill.SkillBase.SkillName, "object")} 배웠다!");
-                        dialogBox.SetSkillNames(playerUnit.BattlePokemon.Skills);
-                    }
-                    else
-                    {
-                        bool isFinalDecisionMade = false;
-                        while (!isFinalDecisionMade)
+                        // 스킬 잊기
+                        yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}새로 \n{newSkill.SkillBase.SkillName}{GetCorrectParticle(newSkill.SkillBase.SkillName, "object")} 배우고 싶다!...");
+                        yield return dialogBox.TypeDialog($"그러나 {playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}기술을 4개\n알고 있으므로 더 이상 배울 수 없다!");
+
+                        yield return dialogBox.TypeDialog($"{newSkill.SkillBase.SkillName}대신 다른 기술을 잊게 하겠습니까?");
+
+                        ConfirmBoxSelection();
+                        yield return new WaitUntil(() => state != BattleState.ConfirmBox);
+                        bool isConfirmed = HandleConfirmBoxSelection();
+                        if (isConfirmed)
                         {
-                            // 스킬 잊기
-                            yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}새로 \n{newSkill.SkillBase.SkillName}{GetCorrectParticle(newSkill.SkillBase.SkillName, "object")} 배우고 싶다!...");
-                            yield return dialogBox.TypeDialog($"그러나 {playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}기술을 4개\n알고 있으므로 더 이상 배울 수 없다!");
-
-                            yield return dialogBox.TypeDialog($"{newSkill.SkillBase.SkillName}대신 다른 기술을 잊게 하겠습니까?");
-
+                            yield return ChooseSkillToForget(playerUnit.BattlePokemon, newSkill.SkillBase);
+                            yield return new WaitUntil(() => state != BattleState.SkillToForget);
+                            yield return new WaitForSeconds(5.0f);
+                            isFinalDecisionMade = true;
+                        }
+                        else
+                        {
+                            yield return dialogBox.TypeDialog($"그럼... {newSkill.SkillBase.SkillName}{GetCorrectParticle(newSkill.SkillBase.SkillName, "object")}\n배우는 것을 포기하겠습니까?");
                             ConfirmBoxSelection();
                             yield return new WaitUntil(() => state != BattleState.ConfirmBox);
-                            bool isConfirmed = HandleConfirmBoxSelection();
-                            if (isConfirmed)
+                            bool isRealConfirmed = HandleConfirmBoxSelection();
+                            if (isRealConfirmed)
                             {
-                                yield return ChooseSkillToForget(playerUnit.BattlePokemon, newSkill.SkillBase);
-                                yield return new WaitUntil(() => state != BattleState.SkillToForget);
-                                yield return new WaitForSeconds(5.0f);
+                                yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}{newSkill.SkillBase.SkillName}{GetCorrectParticle(newSkill.SkillBase.SkillName, "object")}\n결국 배우지 않았다!");
+                                yield return new WaitForSeconds(1.0f);
                                 isFinalDecisionMade = true;
-                            }
-                            else
-                            {
-                                yield return dialogBox.TypeDialog($"그럼... {newSkill.SkillBase.SkillName}{GetCorrectParticle(newSkill.SkillBase.SkillName, "object")}\n배우는 것을 포기하겠습니까?");
-                                ConfirmBoxSelection();
-                                yield return new WaitUntil(() => state != BattleState.ConfirmBox);
-                                bool isRealConfirmed = HandleConfirmBoxSelection();
-                                if (isRealConfirmed)
-                                {
-                                    yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")}{newSkill.SkillBase.SkillName}{GetCorrectParticle(newSkill.SkillBase.SkillName, "object")}\n결국 배우지 않았다!");
-                                    yield return new WaitForSeconds(1.0f);
-                                    isFinalDecisionMade = true;
-                                }
                             }
                         }
                     }
                 }
-
-                // var evolution = playerUnit.BattlePokemon.CheckForEvolution();
-                // if (evolution != null)
-                // {
-                //     // playerUnit.BattlePokemon.Evolve(evolution);
-                // }
-
-                yield return playerUnit.BattleHud.SetExpSmooth(true);
             }
-            yield return new WaitForSeconds(1.0f);
-            // yield return playerParty.CheckForEvolutions();
+            yield return playerUnit.BattleHud.SetExpSmooth(true);
         }
-        yield return CheckForBattleOver(faintedUnit);
-        GameManager.Inst.AddGold();
     }
     IEnumerator CheckForBattleOver(BattleUnit faintedUnit)
     {

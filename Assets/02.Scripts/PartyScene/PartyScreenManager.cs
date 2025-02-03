@@ -9,9 +9,14 @@ using UnityEngine.SceneManagement;
 public class PartyScreenManager : MonoBehaviour
 {
     PokemonBase _base;
+
+    [SerializeField] GameObject pokemonNodePrefab;
+    [SerializeField] Transform contentPanel;
+    [HideInInspector] private List<GameObject> Nodes = new List<GameObject>();
+    [SerializeField] GameObject StartCheck_Img;
+
     private List<Pokemon> selectedPokemons = new List<Pokemon>();
     [SerializeField] PokemonParty playerParty;
-    [SerializeField] List<GameObject> Nodes;
     [SerializeField] List<Image> PartyPokemon_Img;
     [SerializeField] Sprite DefaultParty_Sprite;
 
@@ -19,6 +24,7 @@ public class PartyScreenManager : MonoBehaviour
     [SerializeField] Text PokemonName_Text;
     [SerializeField] SpriteRenderer Pokemon_Sprite;
     [SerializeField] Text PokemonValue_Text;
+
     List<StartPokemonNode> pokemonNodes = new List<StartPokemonNode>();
     StartPokemonNode selectPokemonNode;
 
@@ -44,7 +50,48 @@ public class PartyScreenManager : MonoBehaviour
 
     void Start()
     {
+        List<int> playerDataList = new List<int> { 4, 16, 21 }; // 🔹 외부 데이터: 잡은 포켓몬 목록
+        GeneratePokemonNodes(playerDataList);
         PokemonValue_Text.text = "0/10";
+    }
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.X))
+        {
+            SceneManager.LoadScene("BattleScene");
+        }
+        HandleScreenCusor();
+    }
+    void GeneratePokemonNodes(List<int> playerDataList)
+    {
+        // ✅ 1. 기본 포켓몬 리스트 설정
+        List<int> defaultPokemonList = new List<int> { 1, 4, 7, 10, 13, 16, 19, 21, 23, 25, 27, 29, 32, 37, 41, 43, 46, 48, 50, 52, 54, 56, 58, 60, 63, 66, 69, 72, 74, 77, 79, 81, 83, 84, 86, 88, 90, 92, 95, 96, 98, 100, 102, 104, 108, 109, 111, 114, 115, 116, 118, 120, 123, 127, 128, 129, 131, 132, 133, 137, 138, 140, 142, 144, 145, 146, 147, 150, 151 };
+
+        // ✅ 2. 외부에서 제공한 playerDataList를 HashSet으로 변환하여 빠른 검색 가능하게 처리
+        HashSet<int> playerPokemonSet = new HashSet<int>(playerDataList);
+
+        // ✅ 3. 포켓몬 노드 생성 (기본 리스트 기준)
+        foreach (int pokemonIndex in defaultPokemonList)
+        {
+            bool isCatch = playerPokemonSet.Contains(pokemonIndex); // ✅ 특정 리스트에 포함된 경우 true
+
+            GameObject newNode = Instantiate(pokemonNodePrefab, contentPanel);
+            StartPokemonNode nodeComponent = newNode.GetComponent<StartPokemonNode>();
+
+            if (nodeComponent != null)
+            {
+                nodeComponent.Init(pokemonIndex, isCatch);
+                Nodes.Add(newNode);
+            }
+        }
+
+        // ✅ 4. StartCheck_Img 추가
+        if (StartCheck_Img != null)
+        {
+            Nodes.Add(StartCheck_Img);
+        }
+
+        // ✅ 5. Nodes 리스트에서 StartPokemonNode를 가져와 pokemonNodes 리스트에 추가
         foreach (GameObject node in Nodes)
         {
             StartPokemonNode pokemonNode = node.GetComponent<StartPokemonNode>();
@@ -55,23 +102,20 @@ public class PartyScreenManager : MonoBehaviour
         }
 
         lastIndex = Nodes.Count - 1;
+        lastNodeImageObject = Nodes[lastIndex];
 
-        lastNodeImageObject = Nodes[lastIndex].gameObject;
-        lastNodeImageObject.SetActive(false);
+        if (lastNodeImageObject != null)
+        {
+            lastNodeImageObject.SetActive(false);
+        }
+
         if (pokemonNodes.Count > 0)
         {
             currentSelection = 0;
             UpdateScreenSelection();
         }
     }
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            SceneManager.LoadScene("BattleScene");
-        }
-        HandleScreenCusor();
-    }
+
     void HandleScreenCusor()
     {
         int rowSize = 9; // 가로에 9개씩 배치됨
@@ -148,7 +192,7 @@ public class PartyScreenManager : MonoBehaviour
                 if (nodeComponent != null)
                 {
                     selectPokemonNode = nodeComponent;
-                    nodeComponent.Select_Cusor.gameObject.SetActive(true);
+                    nodeComponent.Select_Cursor.gameObject.SetActive(true);
                     setPokemonIdx = nodeComponent.PokemonIndex;
                     Pokemon_Sprite.color = nodeComponent.IsCatch ? Color.white : Color.black;
 
@@ -184,7 +228,7 @@ public class PartyScreenManager : MonoBehaviour
                 StartPokemonNode otherNodeComponent = Nodes[i].GetComponent<StartPokemonNode>();
                 if (otherNodeComponent != null)
                 {
-                    otherNodeComponent.Select_Cusor.gameObject.SetActive(false);
+                    otherNodeComponent.Select_Cursor.gameObject.SetActive(false);
                 }
             }
         }
@@ -198,8 +242,6 @@ public class PartyScreenManager : MonoBehaviour
             selectedPokemons.Add(newPokemon);
 
             playerParty.AddPokemon(newPokemon);
-
-            // Debug.Log(pokemon.PokemonIndex);
 
             currentPartyIndex++;
         }
