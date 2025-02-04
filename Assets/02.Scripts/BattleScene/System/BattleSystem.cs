@@ -1018,11 +1018,10 @@ public class BattleSystem : MonoBehaviour
             Destroy(pokeball);
             yield return dialogBox.TypeDialog($"신난다-!\n야생 {enemyUnit.BattlePokemon.P_Base.PokemonName}을 잡았다!");
             BattleOver(true);
-            GameManager.Inst.AddGold();
         }
         else
         {
-            yield return dialogBox.TypeDialog($"씨발!");
+            yield return dialogBox.TypeDialog($"!");
             Destroy(pokeball);
             state = BattleState.RunningTurn;
         }
