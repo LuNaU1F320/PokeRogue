@@ -1015,6 +1015,9 @@ public class BattleSystem : MonoBehaviour
         {
             //잡힘
             playerParty.AddPokemon(enemyUnit.BattlePokemon);
+
+            GlobalValue.CatchPokemon(enemyUnit.BattlePokemon.P_Base.PokemonIndex, false);
+
             Destroy(pokeball);
             yield return dialogBox.TypeDialog($"신난다-!\n야생 {enemyUnit.BattlePokemon.P_Base.PokemonName}을 잡았다!");
             BattleOver(true);
@@ -1050,6 +1053,8 @@ public class BattleSystem : MonoBehaviour
         }
         return shakeCount;
     }
+    #endregion
+
     IEnumerator TryToRun()
     {
         state = BattleState.Busy;
@@ -1090,7 +1095,6 @@ public class BattleSystem : MonoBehaviour
             }
         }
     }
-    #endregion
 
 
     string GetCorrectParticle(string name, string particleType)    //은는이가
