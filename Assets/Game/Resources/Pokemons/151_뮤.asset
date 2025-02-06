@@ -51,3 +51,5 @@ MonoBehaviour:
     level: 90
   - skillBase: {fileID: 11400000, guid: e57a3e2e151a4724f87431b8ba369419, type: 2}
     level: 100
+  evolutions: []
+  evolutionBase: {fileID: 11400000}

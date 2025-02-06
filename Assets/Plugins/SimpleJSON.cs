@@ -176,9 +176,13 @@ namespace SimpleJSON
             public bool MoveNext()
             {
                 if (type == Type.Array)
+                {
                     return m_Array.MoveNext();
+                }
                 else if (type == Type.Object)
+                {
                     return m_Object.MoveNext();
+                }
                 return false;
             }
         }

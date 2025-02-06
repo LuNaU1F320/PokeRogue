@@ -29,6 +29,7 @@ public class PokemonBase : ScriptableObject
 
     [SerializeField] List<LearnableSkill> learnableSkills;
     [SerializeField] List<Evolution> evolutions;
+    [SerializeField] PokemonBase evolutionBase;
 
     public static int MaxNumOfSkills { get; set; } = 4;
     public int GetExpForLevel(int level)
@@ -142,6 +143,10 @@ public class PokemonBase : ScriptableObject
     public List<Evolution> Evolutions
     {
         get { return evolutions; }
+    }
+    public PokemonBase EvolutionBase
+    {
+        get { return evolutionBase; }
     }
     public int ExpYield => expYield;
     public GrowthRate GrowthRate => growthRate;

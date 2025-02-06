@@ -43,9 +43,13 @@ public class PartyScreenManager : MonoBehaviour
     GameObject lastNodeImageObject;
 
 
+    List<int> DefaultPokemonList = new List<int> { 1, 4, 7, 10, 13, 16, 19, 21, 23, 25, 27, 29, 32, 37, 41, 43, 46, 48, 50, 52, 54, 56, 58, 60, 63, 66, 69, 72, 74, 77, 79, 81, 83, 84, 86, 88, 90, 92, 95, 96, 98, 100, 102, 104, 108, 109, 111, 114, 115, 116, 118, 120, 123, 127, 128, 129, 131, 132, 133, 137, 138, 140, 142, 144, 145, 146, 147, 150, 151 };
+
+
     private void Awake()
     {
         PokemonDB.Init();
+        GlobalValue.LoadGameInfo();
     }
 
     void Start()
@@ -64,16 +68,10 @@ public class PartyScreenManager : MonoBehaviour
     }
     void GeneratePokemonNodes(List<int> playerDataList)
     {
-        // ✅ 1. 기본 포켓몬 리스트 설정
-        List<int> defaultPokemonList = new List<int> { 1, 4, 7, 10, 13, 16, 19, 21, 23, 25, 27, 29, 32, 37, 41, 43, 46, 48, 50, 52, 54, 56, 58, 60, 63, 66, 69, 72, 74, 77, 79, 81, 83, 84, 86, 88, 90, 92, 95, 96, 98, 100, 102, 104, 108, 109, 111, 114, 115, 116, 118, 120, 123, 127, 128, 129, 131, 132, 133, 137, 138, 140, 142, 144, 145, 146, 147, 150, 151 };
-
-        // ✅ 2. 외부에서 제공한 playerDataList를 HashSet으로 변환하여 빠른 검색 가능하게 처리
-        HashSet<int> playerPokemonSet = new HashSet<int>(playerDataList);
-
-        // ✅ 3. 포켓몬 노드 생성 (기본 리스트 기준)
-        foreach (int pokemonIndex in defaultPokemonList)
+        foreach (int pokemonIndex in DefaultPokemonList)
         {
-            bool isCatch = playerPokemonSet.Contains(pokemonIndex); // ✅ 특정 리스트에 포함된 경우 true
+            // bool isCatch = playerPokemonSet.Contains(pokemonIndex);
+            bool isCatch = GlobalValue.MyPokemon.ContainsKey(pokemonIndex);
 
             GameObject newNode = Instantiate(pokemonNodePrefab, contentPanel);
             StartPokemonNode nodeComponent = newNode.GetComponent<StartPokemonNode>();

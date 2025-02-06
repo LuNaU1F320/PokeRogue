@@ -60,3 +60,4 @@ MonoBehaviour:
   evolutions:
   - evolesInto: {fileID: 11400000, guid: 8f17f4a4e02f83048a54aed04c801367, type: 2}
     requiredLevel: 16
+  evolutionBase: {fileID: 11400000}

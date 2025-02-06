@@ -1016,7 +1016,7 @@ public class BattleSystem : MonoBehaviour
             //잡힘
             playerParty.AddPokemon(enemyUnit.BattlePokemon);
 
-            GlobalValue.CatchPokemon(enemyUnit.BattlePokemon.P_Base.PokemonIndex, false);
+            GlobalValue.CatchPokemon(enemyUnit.BattlePokemon.P_Base, false);
 
             Destroy(pokeball);
             yield return dialogBox.TypeDialog($"신난다-!\n야생 {enemyUnit.BattlePokemon.P_Base.PokemonName}을 잡았다!");

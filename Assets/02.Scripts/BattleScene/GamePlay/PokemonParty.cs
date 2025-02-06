@@ -32,7 +32,6 @@ public class PokemonParty : MonoBehaviour
             {
                 pokemon.Init();
             }
-
         }
     }
     public Pokemon GetHealthyPokemon()
