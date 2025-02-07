@@ -8,6 +8,7 @@ public class PokemonBase : ScriptableObject
 {
     [SerializeField] int pokemonIndex;
     [SerializeField] string pokemonName;
+    [SerializeField] int cost;
 
     [TextArea]
     [SerializeField] string pokemonDescription;
@@ -95,6 +96,10 @@ public class PokemonBase : ScriptableObject
     public string PokemonName
     {
         get { return pokemonName; }
+    }
+    public int Cost
+    {
+        get { return cost; }
     }
     public string Description
     {

@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pokemonIndex: 147
   pokemonName: "\uBBF8\uB1FD"
+  cost: 4
   pokemonDescription: 
   pokemonType1: 17
   pokemonType2: 0

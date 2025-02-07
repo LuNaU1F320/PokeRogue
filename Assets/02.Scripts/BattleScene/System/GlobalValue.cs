@@ -31,28 +31,41 @@ public class GlobalValue
             json[kvp.Key.ToString()] = pokemonNode;
         }
 
-        Debug.Log(json.ToString());
-
         PlayerPrefs.SetString("MyPokemon", json.ToString());
+        Debug.Log("저장된 JSON 데이터: " + PlayerPrefs.GetString("MyPokemon", ""));
+
         PlayerPrefs.Save();
     }
     public static void LoadGameInfo()
     {
+        if (MyPokemon == null)
+        {
+            MyPokemon = new Dictionary<int, MyPokemonData>();
+        }
+
         UserGold = PlayerPrefs.GetInt("UserGold", 0);
         CurStage = PlayerPrefs.GetInt("CurStage", 1);
 
 
         string myPokemonJson = PlayerPrefs.GetString("MyPokemon", "");
         Debug.Log("로드된 JSON 데이터: " + myPokemonJson);  // JSON 출력
+
         if (!string.IsNullOrEmpty(myPokemonJson))
         {
             JSONNode json = JSON.Parse(myPokemonJson);
 
-            var newPokemonDict = new Dictionary<int, MyPokemonData>(); // 🔹 새 Dictionary 생성
-
-            foreach (KeyValuePair<string, JSONNode> kvp in json) // 🔹 Dictionary처럼 접근
+            if (MyPokemon == null)
             {
-                int pokemonIdx = kvp.Value["PokemonIdx"].AsInt;  // 🔹 kvp.Value를 직접 접근
+                MyPokemon = new Dictionary<int, MyPokemonData>();
+            }
+            else
+            {
+                MyPokemon.Clear();
+            }
+
+            foreach (KeyValuePair<string, JSONNode> kvp in json)
+            {
+                int pokemonIdx = kvp.Value["PokemonIdx"].AsInt;
                 bool isShiny = kvp.Value["IsShiny"].AsBool;
 
                 MyPokemon[int.Parse(kvp.Key)] = new MyPokemonData
@@ -61,9 +74,9 @@ public class GlobalValue
                     IsShiny = isShiny
                 };
             }
-
-            MyPokemon = newPokemonDict; // 🔹 마지막에 한 번에 교체
         }
+
+        SetBasicStartPokemon();
     }
 
 
@@ -76,4 +89,23 @@ public class GlobalValue
             SaveGameInfo();
         }
     }
+
+    static void SetBasicStartPokemon()
+    {
+        int[] defaultPokemons = { 1, 4, 7 };  // 기본 제공 포켓몬 ID 목록
+
+        foreach (int pokemonId in defaultPokemons)
+        {
+            if (!MyPokemon.ContainsKey(pokemonId))  // 이미 존재하는 경우 덮어씌우지 않음
+            {
+                MyPokemon[pokemonId] = new MyPokemonData { PokemonIdx = pokemonId, IsShiny = false };
+            }
+        }
+
+        SaveGameInfo();  // 변경된 데이터 저장
+    }
+
+
+    public static List<int> StartPokemonList = new List<int> { 1, 4, 7, 10, 13, 16, 19, 21, 23, 25, 27, 29, 32, 37, 41, 43, 46, 48, 50, 52, 54, 56, 58, 60, 63, 66, 69, 72, 74, 77, 79, 81, 83, 84, 86, 88, 90, 92, 95, 96, 98, 100, 102, 104, 108, 109, 111, 114, 115, 116, 118, 120, 123, 127, 128, 129, 131, 132, 133, 137, 138, 140, 142, 144, 145, 146, 147, 150, 151 };
 }
+

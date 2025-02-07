@@ -24,6 +24,7 @@ public class PartyScreenManager : MonoBehaviour
     [SerializeField] Text PokemonName_Text;
     [SerializeField] SpriteRenderer Pokemon_Sprite;
     [SerializeField] Text PokemonValue_Text;
+    int PokemonValue = 0;
 
     List<StartPokemonNode> pokemonNodes = new List<StartPokemonNode>();
     StartPokemonNode selectPokemonNode;
@@ -42,20 +43,16 @@ public class PartyScreenManager : MonoBehaviour
     int previousSelection = -1; // 마지막 노드에 들어가기 전 위치 저장 변수
     GameObject lastNodeImageObject;
 
-
-    List<int> DefaultPokemonList = new List<int> { 1, 4, 7, 10, 13, 16, 19, 21, 23, 25, 27, 29, 32, 37, 41, 43, 46, 48, 50, 52, 54, 56, 58, 60, 63, 66, 69, 72, 74, 77, 79, 81, 83, 84, 86, 88, 90, 92, 95, 96, 98, 100, 102, 104, 108, 109, 111, 114, 115, 116, 118, 120, 123, 127, 128, 129, 131, 132, 133, 137, 138, 140, 142, 144, 145, 146, 147, 150, 151 };
-
-
     private void Awake()
     {
         PokemonDB.Init();
         GlobalValue.LoadGameInfo();
+        // Debug.Log($"MyPokemon Count: {GlobalValue.MyPokemon.Count}");
     }
 
     void Start()
     {
-        List<int> playerDataList = new List<int> { 4, 16, 21 }; // 🔹 외부 데이터: 잡은 포켓몬 목록
-        GeneratePokemonNodes(playerDataList);
+        GeneratePokemonNodes();
         PokemonValue_Text.text = "0/10";
     }
     void Update()
@@ -66,11 +63,10 @@ public class PartyScreenManager : MonoBehaviour
         }
         HandleScreenCusor();
     }
-    void GeneratePokemonNodes(List<int> playerDataList)
+    void GeneratePokemonNodes()
     {
-        foreach (int pokemonIndex in DefaultPokemonList)
+        foreach (int pokemonIndex in GlobalValue.StartPokemonList)
         {
-            // bool isCatch = playerPokemonSet.Contains(pokemonIndex);
             bool isCatch = GlobalValue.MyPokemon.ContainsKey(pokemonIndex);
 
             GameObject newNode = Instantiate(pokemonNodePrefab, contentPanel);
@@ -83,13 +79,11 @@ public class PartyScreenManager : MonoBehaviour
             }
         }
 
-        // ✅ 4. StartCheck_Img 추가
         if (StartCheck_Img != null)
         {
             Nodes.Add(StartCheck_Img);
         }
 
-        // ✅ 5. Nodes 리스트에서 StartPokemonNode를 가져와 pokemonNodes 리스트에 추가
         foreach (GameObject node in Nodes)
         {
             StartPokemonNode pokemonNode = node.GetComponent<StartPokemonNode>();
@@ -168,8 +162,13 @@ public class PartyScreenManager : MonoBehaviour
             }
             else
             {
-                if (_base != null)
+                if (selectPokemonNode != null)
                 {
+                    if (selectPokemonNode.IsCatch == false)
+                    {
+                        Debug.Log("안댐");
+                        return;
+                    }
                     SetPlayerParty(selectPokemonNode);
                 }
             }
@@ -241,6 +240,8 @@ public class PartyScreenManager : MonoBehaviour
 
             playerParty.AddPokemon(newPokemon);
 
+            PokemonValue += newPokemon.P_Base.Cost;
+            PokemonValue_Text.text = $"{PokemonValue}/10";
             currentPartyIndex++;
         }
         else
@@ -258,6 +259,9 @@ public class PartyScreenManager : MonoBehaviour
 
             playerParty.RemovePokemon(lastSelectedPokemon);
             selectedPokemons.RemoveAt(selectedPokemons.Count - 1);
+
+            PokemonValue -= lastSelectedPokemon.P_Base.Cost;
+            PokemonValue_Text.text = $"{PokemonValue}/10";
 
             // currentPartyIndex가 0 이하로 떨어지지 않도록 제한
             if (currentPartyIndex > 0)
