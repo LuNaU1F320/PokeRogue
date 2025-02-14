@@ -24,6 +24,7 @@ public class BattleDialogBox : MonoBehaviour
 
     public void SetDialog(string dialog)
     {
+        dialogText.text = string.Empty;
         dialogText.text = dialog;
     }
     public IEnumerator TypeDialog(string dialog)

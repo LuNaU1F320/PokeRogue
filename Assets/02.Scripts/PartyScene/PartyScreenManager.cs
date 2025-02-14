@@ -53,6 +53,7 @@ public class PartyScreenManager : MonoBehaviour
     void Start()
     {
         GeneratePokemonNodes();
+        PokemonValue = 0;
         PokemonValue_Text.text = "0/10";
     }
     void Update()
@@ -234,13 +235,18 @@ public class PartyScreenManager : MonoBehaviour
     {
         if (currentPartyIndex < PartyPokemon_Img.Count)
         {
-            PartyPokemon_Img[currentPartyIndex].sprite = pokemon.PokemonDot.sprite;
             Pokemon newPokemon = new Pokemon(_base, 5);
-            selectedPokemons.Add(newPokemon);
+            if (PokemonValue + newPokemon.P_Base.Cost > 10)
+            {
+                Debug.LogWarning("포켓몬 가치를 초과하여 추가할 수 없습니다.");
+                return;
+            }
+            PokemonValue += newPokemon.P_Base.Cost;
 
+            PartyPokemon_Img[currentPartyIndex].sprite = pokemon.PokemonDot.sprite;
+            selectedPokemons.Add(newPokemon);
             playerParty.AddPokemon(newPokemon);
 
-            PokemonValue += newPokemon.P_Base.Cost;
             PokemonValue_Text.text = $"{PokemonValue}/10";
             currentPartyIndex++;
         }
