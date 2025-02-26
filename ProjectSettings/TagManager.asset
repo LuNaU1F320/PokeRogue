@@ -62,3 +62,6 @@ TagManager:
   - name: Evolution
     uniqueID: 2565128413
     locked: 0
+  - name: Setting
+    uniqueID: 2803822617
+    locked: 0
