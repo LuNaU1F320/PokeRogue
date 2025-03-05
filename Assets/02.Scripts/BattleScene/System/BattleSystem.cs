@@ -16,7 +16,8 @@ public enum BattleState
     SkillToForget,
     ConfirmBox,
     Evolution,
-    BattleOver
+    BattleOver,
+    ConfigSelection
 }
 public enum BattleAction
 {
@@ -31,6 +32,7 @@ public class BattleSystem : MonoBehaviour
     [SerializeField] BattleUnit playerUnit;
     [SerializeField] BattleUnit enemyUnit;
     [SerializeField] BattleDialogBox dialogBox;
+    [SerializeField] ConfigPanel configPanel;
     [SerializeField] GameObject Pokeball;
     [SerializeField] GameObject ConfirmBox;
 
@@ -48,6 +50,7 @@ public class BattleSystem : MonoBehaviour
     int currentMember = 0;
     int currentSelection = 0;
     int currentConfirm = 0;
+    int currentConfig = 0;
     int skillCount = 0;
     int escapeAttempts = 0;
 
@@ -113,8 +116,34 @@ public class BattleSystem : MonoBehaviour
         {
             HandleConfirmBoxSelection();
         }
+        else if (state == BattleState.ConfigSelection)
+        {
+            HandleConfigSelection();
+        }
 
-
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            // Debug.Log(state);
+            if (state == BattleState.ConfigSelection)
+            {
+                if (configPanel.state == ConfigState.Config_Right)
+                {
+                    if (Input.GetKeyDown(KeyCode.Escape))
+                    {
+                        configPanel.Panel.SetActive(false);
+                        state = preState ?? BattleState.RunningTurn;
+                    }
+                }
+            }
+            else
+            {
+                configPanel.Panel.SetActive(true);
+                preState = state;
+                state = BattleState.ConfigSelection;
+                currentConfig = 0;
+                configPanel.state = ConfigState.Config_Right;
+            }
+        }
         if (Input.GetKeyDown(KeyCode.G))
         {
             Debug.Log(currentMember);
@@ -930,6 +959,51 @@ public class BattleSystem : MonoBehaviour
         else
         {
             return true;
+        }
+    }
+    #endregion
+    #region Config
+    void HandleConfigSelection()
+    {
+        if (configPanel.state == ConfigState.Config_Right)
+        {
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                --currentConfig;
+            }
+            if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                ++currentConfig;
+            }
+            currentConfig = Mathf.Clamp(currentConfig, 0, 5);
+            configPanel.ConfigSelection(currentConfig);
+            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
+            {
+                if (currentConfig == 0)
+                {//게임설정
+                    configPanel.SettingSelection();
+                }
+                else if (currentConfig == 1)
+                {//도감
+                    Debug.Log("도감");
+                }
+                else if (currentConfig == 2)
+                {//데이터관리
+                    Debug.Log("데이터 관리");
+                }
+                else if (currentConfig == 3)
+                {//커뮤니티
+                    Debug.Log("커뮤니티");
+                }
+                else if (currentConfig == 4)
+                {//저장 후 나가기
+                    Debug.Log("저장 후 나가기");
+                }
+                else if (currentConfig == 5)
+                {//로그아웃
+                    Debug.Log("로그아웃");
+                }
+            }
         }
     }
     #endregion

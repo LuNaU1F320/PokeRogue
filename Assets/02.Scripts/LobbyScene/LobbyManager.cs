@@ -7,6 +7,9 @@ using UnityEngine.UI;
 public class LobbyManager : MonoBehaviour
 {
     [SerializeField] List<Text> SelectionTexts;
+    [SerializeField] GameObject LoadingPanel;
+    [SerializeField] Image LoadingBar;
+    [SerializeField] Text LoadingText;
     int currentSelection = 0;
     // Start is called before the first frame update
     void Start()
@@ -47,7 +50,8 @@ public class LobbyManager : MonoBehaviour
             if (currentSelection == 1)  //NewGame
             {
                 // Debug.Log("NewGame");
-                SceneManager.LoadScene("PartyScene");
+                // SceneManager.LoadScene("PartyScene");
+                LoadingManager.LoadScene("PartyScene");
             }
             if (currentSelection == 2)  //LoadGame
             {
@@ -76,5 +80,59 @@ public class LobbyManager : MonoBehaviour
                 SelectionTexts[i].color = Color.white;
             }
         }
+    }
+
+    private IEnumerator LoadGameSceneAsync(string SceneName)
+    {
+        LoadingPanel.SetActive(true);
+
+        AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(SceneName);
+
+        float Progress = asyncOperation.progress;
+
+        int ProgressPercent = Mathf.RoundToInt(Progress * 100f);
+
+        while (!asyncOperation.isDone)
+        {
+            LoadingBar.fillAmount = ProgressPercent / 100;
+            LoadingText.text = ProgressPercent.ToString();
+            yield return null;
+        }
+
+        LoadingPanel.SetActive(false);
+    }
+    IEnumerator LoadScene(string SceneName)
+    {
+
+        LoadingPanel.SetActive(true);
+        yield return null;
+        AsyncOperation op = SceneManager.LoadSceneAsync(SceneName);
+        op.allowSceneActivation = false;
+        float timer = 0.0f;
+        while (!op.isDone)
+        {
+            yield return null;
+            timer += Time.deltaTime;
+            if (op.progress < 0.9f)
+            {
+                LoadingBar.fillAmount = Mathf.Lerp(LoadingBar.fillAmount, op.progress, timer);
+                LoadingText.text = op.progress.ToString();
+                if (LoadingBar.fillAmount >= op.progress)
+                {
+                    timer = 0f;
+                }
+            }
+            else
+            {
+                LoadingBar.fillAmount = Mathf.Lerp(LoadingBar.fillAmount, 1f, timer);
+                if (LoadingBar.fillAmount == 1.0f)
+                {
+                    op.allowSceneActivation = true;
+                    yield break;
+                }
+            }
+        }
+
+        LoadingPanel.SetActive(false);
     }
 }

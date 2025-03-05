@@ -16,6 +16,7 @@ public class BattleDialogBox : MonoBehaviour
     [SerializeField] List<Text> skillTexts;
     [SerializeField] List<Text> actionTexts;
     [SerializeField] List<Text> confirmTexts;
+    [SerializeField] List<Text> configTexts;
 
     [SerializeField] Image typeImg;
     [SerializeField] Image categoryKeyImg;
