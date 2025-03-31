@@ -22,24 +22,37 @@ public class BattleDialogBox : MonoBehaviour
     [SerializeField] Image categoryKeyImg;
     [SerializeField] Text ppText;
     [SerializeField] Text skillDetailText;
+    bool isTyping = false;
+    // public IEnumerator TypeDialog(string dialog)
+    // {
+    //     dialogText.text = string.Empty;
 
-    public void SetDialog(string dialog)
-    {
-        dialogText.text = string.Empty;
-        dialogText.text = dialog;
-    }
+    //     foreach (var letter in dialog.ToCharArray())
+    //     {
+    //         dialogText.text += letter;
+    //         yield return new WaitForSeconds(1f / lettersPerSecond);
+    //     }
+    //     yield return new WaitForSeconds(1.0f);
+
+    //     dialogText.text = string.Empty;
+    // }
     public IEnumerator TypeDialog(string dialog)
     {
-        dialogText.text = string.Empty;
+        dialogText.text = "";
+        isTyping = true;
 
         foreach (var letter in dialog.ToCharArray())
         {
             dialogText.text += letter;
-            yield return new WaitForSeconds(1f / lettersPerSecond);
+            yield return new WaitForSecondsRealtime(1f / lettersPerSecond);
         }
-        yield return new WaitForSeconds(1.0f);
 
-        dialogText.text = string.Empty;
+        isTyping = false;
+        dialogText.text += " ▼";
+
+        // // 입력 대기
+        yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+
     }
     public void EnableDialogText(bool enabled)
     {

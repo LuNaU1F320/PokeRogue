@@ -9,7 +9,7 @@ public enum ConfigState
 }
 public class ConfigPanel : MonoBehaviour
 {
-    public ConfigState state = ConfigState.Config_Right;
+    [HideInInspector] public ConfigState state = ConfigState.Config_Right;
     [SerializeField] public GameObject Panel;
     [SerializeField] Color highlightedColor;
     // [SerializeField] public GameObject Config_Right;
@@ -27,7 +27,8 @@ public class ConfigPanel : MonoBehaviour
         Panel.SetActive(false);
         SettingPanel.SetActive(false);
         InitializeConfigOptions();
-        UpdateSelection(); // 처음 실행 시 선택된 항목 표시
+        LoadOptions();
+        UpdateSelection();
     }
     public void Update()
     {
@@ -52,7 +53,9 @@ public class ConfigPanel : MonoBehaviour
 
             if (Input.GetKey(KeyCode.Backspace))
             {
-                SaveOptions(); // Backspace 눌렀을 때 값 저장
+                // SaveOptions(); // Backspace 눌렀을 때 값 저장
+                // GlobalValue.SaveSetting();
+                SaveOptions();
                 SettingPanel.SetActive(false);
                 state = ConfigState.Config_Right;
             }
@@ -113,7 +116,7 @@ public class ConfigPanel : MonoBehaviour
         selectedOptions[currentRow] += direction;
         selectedOptions[currentRow] = Mathf.Clamp(selectedOptions[currentRow], 0, maxIndex);
 
-        if (currentRow == 0) // 첫 번째 행이 게임 속도 설정
+        if (currentRow == 0)
         {
             ChangeGameSpeed(selectedOptions[currentRow]);
         }
@@ -121,74 +124,49 @@ public class ConfigPanel : MonoBehaviour
         {
             ChangeHpBarSpeed(selectedOptions[currentRow]);
         }
+        else if (currentRow == 2)
+        {
+            ChangeExpBarSpeed(selectedOptions[currentRow]);
+        }
 
         UpdateSelection(); // UI 업데이트
     }
     #region  SettingPanel
-    // 게임 속도에 대한 설정 (0: 느리게, 1: 기본, 2: 빠르게)
+
     private void ChangeGameSpeed(int optionIndex)
     {
-        switch (optionIndex)
-        {
-            case 0:
-                Time.timeScale = 1f; // 기본 속도 (1배속)
-                break;
-            case 1:
-                Time.timeScale = 1.5f;
-                break;
-            case 2:
-                Time.timeScale = 2f;
-                break;
-            case 3:
-                Time.timeScale = 2.5f;
-                break;
-            case 4:
-                Time.timeScale = 3f;
-                break;
-            case 5:
-                Time.timeScale = 4f;
-                break;
-            case 6:
-                Time.timeScale = 5f;
-                break;
-            default:
-                Time.timeScale = 1f;
-                break;
-        }
+        float[] speeds = { 1f, 1.5f, 2f, 2.5f, 3f, 4f, 5f };
+        float selectedSpeed = speeds[Mathf.Clamp(optionIndex, 0, speeds.Length - 1)];
+
+        GlobalValue.GameSpeed = selectedSpeed;
+        Time.timeScale = selectedSpeed;
     }
     private void ChangeHpBarSpeed(int optionIndex)
     {
-        switch (optionIndex)
+        float[] HpBarspeeds = { 0.5f, 1.0f, 2.0f, 10.0f };
+        if (optionIndex >= 0 && optionIndex < HpBarspeeds.Length)
         {
-            case 0:
-                HpBar.HpBarSpeed = 0.5f;
-                break;
-            case 1:
-                HpBar.HpBarSpeed = 2.0f;
-                break;
-            case 2:
-                HpBar.HpBarSpeed = 3.0f;
-                break;
-            case 3:
-                Time.timeScale = 100f;
-                break;
-            default:
-                Time.timeScale = 1f;
-                break;
+            GlobalValue.HpBarSpeed = HpBarspeeds[optionIndex];
+            HpBar.HpBarSpeed = GlobalValue.HpBarSpeed;
+        }
+    }
+    private void ChangeExpBarSpeed(int optionIndex)
+    {
+        float[] speeds = { 1.0f, 1.5f, 2.0f, 10.0f };
+        if (optionIndex >= 0 && optionIndex < speeds.Length)
+        {
+            GlobalValue.ExpBarSpeed = speeds[optionIndex];
         }
     }
 
     #endregion
-
-
-
-
 
     public void SettingSelection()
     {
         SettingPanel.SetActive(true);
         state = ConfigState.Setting;
     }
+
     public void ConfigSelection(int selectedAction)
     {
         for (int i = 0; i < configTexts.Count; i++)
@@ -203,27 +181,21 @@ public class ConfigPanel : MonoBehaviour
             }
         }
     }
-
-
     private void SaveOptions()
     {
-        for (int i = 0; i < selectedOptions.Count; i++)
-        {
-            PlayerPrefs.SetInt("Option_" + i, selectedOptions[i]);
-        }
-        PlayerPrefs.Save(); // 변경 사항 저장
+        GlobalValue.SaveSetting(selectedOptions);
     }
-
-    // PlayerPrefs에서 값을 불러오기
     private void LoadOptions()
     {
-        for (int i = 0; i < selectedOptions.Count; i++)
+        List<int> loaded = GlobalValue.LoadSetting(configRows.Count);
+        for (int i = 0; i < loaded.Count; i++)
         {
-            if (PlayerPrefs.HasKey("Option_" + i)) // 값이 존재하면 불러오기
-            {
-                selectedOptions[i] = PlayerPrefs.GetInt("Option_" + i);
-            }
+            selectedOptions[i] = loaded[i];
+            // Debug.Log(i + " : " + selectedOptions[i]);
         }
+        ChangeGameSpeed(selectedOptions[0]);
+        ChangeHpBarSpeed(selectedOptions[1]);
+        ChangeExpBarSpeed(selectedOptions[2]);
+        UpdateSelection();
     }
-
 }

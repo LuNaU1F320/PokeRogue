@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pokemonIndex: 1
   pokemonName: "\uD14C\uC2A4\uD2B81"
+  cost: 0
   pokemonDescription: 
   pokemonType1: 14
   pokemonType2: 17
@@ -43,4 +44,5 @@ MonoBehaviour:
     level: 13
   evolutions:
   - evolesInto: {fileID: 11400000, guid: 8c9a87392c34c2f47b5005e3675774c9, type: 2}
-    requiredLevel: 16
+    requiredLevel: 50
+  evolutionBase: {fileID: 11400000}

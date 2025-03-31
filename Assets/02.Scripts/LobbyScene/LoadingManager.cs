@@ -23,8 +23,6 @@ public class LoadingManager : MonoBehaviour
 
     IEnumerator LoadScene()
     {
-        yield return null;
-
         AsyncOperation op = SceneManager.LoadSceneAsync(nextScene);
         op.allowSceneActivation = false;
 

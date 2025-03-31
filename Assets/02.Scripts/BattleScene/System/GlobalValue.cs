@@ -15,10 +15,17 @@ public class GlobalValue
         public bool IsShiny;
     }
     public static Dictionary<int, MyPokemonData> MyPokemon = new Dictionary<int, MyPokemonData>();
+
+    public static float GameSpeed = 1f;
+    public static float HpBarSpeed = 1.0f;
+    public static float ExpBarSpeed = 1.0f;
+
+
     public static void SaveGameInfo()
     {
         PlayerPrefs.SetInt("UserGold", UserGold);
         PlayerPrefs.SetInt("CurStage", CurStage);
+
 
         // JSON 객체 생성
         JSONNode json = new JSONObject();
@@ -78,7 +85,26 @@ public class GlobalValue
 
         SetBasicStartPokemon();
     }
+    public static void SaveSetting(List<int> selectedOptions)
+    {
+        for (int i = 0; i < selectedOptions.Count; i++)
+        {
+            PlayerPrefs.SetInt("Option_" + i, selectedOptions[i]);
+        }
 
+        PlayerPrefs.Save();
+
+        // Debug.Log($"[설정 저장] GameSpeed: {GameSpeed}, HpBarSpeed: {HpBarSpeed}");
+    }
+    public static List<int> LoadSetting(int optionCount)
+    {
+        List<int> indices = new List<int>();
+        for (int i = 0; i < optionCount; i++)
+        {
+            indices.Add(PlayerPrefs.GetInt("Option_" + i, 0));
+        }
+        return indices;
+    }
 
     public static void CatchPokemon(PokemonBase pokemon, bool isShiny)
     {
@@ -104,7 +130,6 @@ public class GlobalValue
 
         SaveGameInfo();  // 변경된 데이터 저장
     }
-
 
     public static List<int> StartPokemonList = new List<int> { 1, 4, 7, 10, 13, 16, 19, 21, 23, 25, 27, 29, 32, 37, 41, 43, 46, 48, 50, 52, 54, 56, 58, 60, 63, 66, 69, 72, 74, 77, 79, 81, 83, 84, 86, 88, 90, 92, 95, 96, 98, 100, 102, 104, 108, 109, 111, 114, 115, 116, 118, 120, 123, 127, 128, 129, 131, 132, 133, 137, 138, 140, 142, 144, 145, 146, 147, 150, 151 };
 }

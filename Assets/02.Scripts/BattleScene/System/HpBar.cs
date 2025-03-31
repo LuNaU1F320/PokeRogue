@@ -5,7 +5,7 @@ using UnityEngine;
 public class HpBar : MonoBehaviour
 {
     [SerializeField] GameObject health;
-    [HideInInspector] public static float HpBarSpeed = 1.0f;
+    [HideInInspector] public static float HpBarSpeed = GlobalValue.HpBarSpeed;
 
     public void SetHp(float hpNormalized)
     {

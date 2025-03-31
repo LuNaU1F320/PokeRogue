@@ -8,6 +8,7 @@ public class BattleHud : MonoBehaviour
     [SerializeField] Text levelTxt;
     [SerializeField] HpBar hpbar;
     [SerializeField] Image ExpBar;
+
     [SerializeField] public Text hpbar_Text;
     [SerializeField] Image PokemonTypeImg;
     [SerializeField] Image PokemonDualTypeImg1;
@@ -167,7 +168,7 @@ public class BattleHud : MonoBehaviour
         }
         float currentExp = ExpBar.fillAmount; // 현재 경험치 바 상태
         float targetExp = GetNormalizedExp(); // 목표 경험치 바 상태
-        float duration = 0.5f; // 애니메이션 지속 시간
+        float duration = 0.5f / Mathf.Max(GlobalValue.ExpBarSpeed, 0.01f);
         float elapsedTime = 0f;
 
         while (elapsedTime < duration)
@@ -206,7 +207,6 @@ public class BattleHud : MonoBehaviour
             _pokemon.IsHpChanged = false;
         }
     }
-
     public IEnumerator AnimateTextHp(int startNumber, int endNumber, float animationDuration = 1f /*, Text TextObject = null, string numType = ""*/)
     {
         float elapsedTime = 0f;
