@@ -62,7 +62,13 @@ public class PokemonParty : MonoBehaviour
             var evolution = pokemon.CheckForEvolution();
             if (evolution != null)
             {
+                BattleSystem.Inst.state = BattleState.Evolution;
+
                 yield return EvolutionManager.Inst.Evolve(pokemon, evolution);
+
+                yield return new WaitForSeconds(0.5f);
+
+                BattleSystem.Inst.state = BattleState.Busy;
             }
         }
         OnUpdated?.Invoke();
