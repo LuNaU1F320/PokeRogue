@@ -55,7 +55,7 @@ public class GlobalValue
 
 
         string myPokemonJson = PlayerPrefs.GetString("MyPokemon", "");
-        Debug.Log("로드된 JSON 데이터: " + myPokemonJson);  // JSON 출력
+        // Debug.Log("로드된 JSON 데이터: " + myPokemonJson);  // JSON 출력
 
         if (!string.IsNullOrEmpty(myPokemonJson))
         {

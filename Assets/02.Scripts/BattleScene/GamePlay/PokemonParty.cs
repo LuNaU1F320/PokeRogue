@@ -76,6 +76,6 @@ public class PokemonParty : MonoBehaviour
 
     public static PokemonParty GetPlayerParty()
     {
-        return FindObjectOfType<PlayerCtrl>().GetComponent<PokemonParty>();
+        return PlayerCtrl.Instance?.Party;
     }
 }

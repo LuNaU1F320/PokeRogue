@@ -3,13 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class PlayerCtrl : MonoBehaviour
+public class PlayerCtrl : MonoBehaviour, ISaveable
 {
+    public static PlayerCtrl Instance { get; private set; }
     [SerializeField] Sprite sprite;
     [SerializeField] string name;
     // List<PokemonSaveData> pokemons;
+    private PokemonParty party;
 
+    void Awake()
+    {
+        SkillDB.Init();
+        PokemonDB.Init();
+        ConditionsDB.Init();
+        GlobalValue.LoadGameInfo();
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(this.gameObject);
 
+            party = GetComponent<PokemonParty>();
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+    public PokemonParty Party => party;
     public string TrainerName
     {
         get => name;
@@ -20,17 +40,22 @@ public class PlayerCtrl : MonoBehaviour
     }
     public object CaptureState()
     {
-        var saveData = new PlayerSaveData()
+        return new PlayerSaveData
         {
-            pokemons = GetComponent<PokemonParty>().Party.Select(p => p.GetSaveData()).ToList()
+            pokemons = GetComponent<PokemonParty>().Party.Select(p => p.GetSaveData()).ToList(),
+            // gold = GameManager.Inst.gold,
+            // stageIndex = GameManager.Inst.CurrentStageIndex
         };
-        return saveData;
     }
+
     public void RestoreState(object state)
     {
-        var saveData = (PlayerSaveData)state;
+        var data = (PlayerSaveData)state;
+        // data.pokemons.Select(s => new Pokemon(s)).ToList();
+        GetComponent<PokemonParty>().Party = data.pokemons.Select(p => new Pokemon(p)).ToList();
 
-        GetComponent<PokemonParty>().Party = saveData.pokemons.Select(s => new Pokemon(s)).ToList();
+        // GameManager.Inst.gold = data.gold;
+        // GameManager.Inst.CurrentStageIndex = data.stageIndex;
     }
 }
 
@@ -38,4 +63,6 @@ public class PlayerCtrl : MonoBehaviour
 public class PlayerSaveData
 {
     public List<PokemonSaveData> pokemons;
+    public int gold;
+    public int stageIndex;
 }

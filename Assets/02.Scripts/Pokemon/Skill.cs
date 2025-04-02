@@ -15,7 +15,9 @@ public class Skill
     }
     public Skill(SkillSaveData saveData)
     {
-        SkillDB.GetSkillByName(saveData.skillName);
+        // SkillDB.GetSkillByName(saveData.skillName);
+        SkillDB.GetSkillByIdx(saveData.);
+
         PP = saveData.pp;
     }
     public SkillSaveData GetSaveData()
@@ -33,5 +35,6 @@ public class Skill
 public class SkillSaveData
 {
     public string skillName;
+    public int skillIdx;
     public int pp;
 }

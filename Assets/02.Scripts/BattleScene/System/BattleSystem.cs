@@ -2,6 +2,8 @@ using System.Collections;
 using System;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public enum BattleState
 {
@@ -58,6 +60,7 @@ public class BattleSystem : MonoBehaviour
     bool isTrainerBattle = false;
 
     PlayerCtrl player;
+    [SerializeField] Image PlayerImage;
     TrainerCtrl trainer;
 
     SkillBase skillToLearn;
@@ -68,8 +71,11 @@ public class BattleSystem : MonoBehaviour
     }
     private void Start()
     {
+        player = GameManager.Inst.playerCtrl;
         state = BattleState.Start;
         currentAction = 0;
+        PlayerImage.sprite = player.TrainerSprite;
+        PlayerImage.gameObject.SetActive(false);
     }
     public void StartBattle(PokemonParty playerParty, Pokemon wildPokemon)
     {
@@ -1080,7 +1086,18 @@ public class BattleSystem : MonoBehaviour
                 }
                 else if (currentConfig == 4)
                 {//저장 후 나가기
-                    Debug.Log("저장 후 나가기");
+                    var savingSystem = FindObjectOfType<SavingSystem>();
+                    if (savingSystem != null)
+                    {
+                        savingSystem.SaveGame();
+                        // Debug.Log("저장 완료!");
+                        SceneManager.LoadScene("LobbyScene");
+                        // Debug.Log("저장 후 나가기");
+                    }
+                    else
+                    {
+                        Debug.LogWarning("SavingSystem을 찾지 못했어요… 저장 실패!");
+                    }
                 }
                 else if (currentConfig == 5)
                 {//로그아웃

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.IO;
 
 public class LobbyManager : MonoBehaviour
 {
@@ -11,6 +12,11 @@ public class LobbyManager : MonoBehaviour
     [SerializeField] Image LoadingBar;
     [SerializeField] Text LoadingText;
     int currentSelection = 0;
+    void Awake()
+    {
+        // SkillDB.Init();
+        // PokemonDB.Init();
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -45,12 +51,22 @@ public class LobbyManager : MonoBehaviour
         {
             if (currentSelection == 0)  //Continue
             {
-                Debug.Log("Continue");
+                // Debug.Log("Continue");
+                string savePath = Path.Combine(Application.persistentDataPath, "save.json");
+
+                if (File.Exists(savePath))
+                {
+                    FindObjectOfType<SavingSystem>().LoadGame();
+                    LoadingManager.LoadScene("BattleScene");
+                }
+                else
+                {
+                    Debug.LogWarning("저장 파일이 없어요… 새 게임을 시작해야 해요!");
+                    // 선택지: NewGame으로 전환할 수도 있음
+                }
             }
             if (currentSelection == 1)  //NewGame
             {
-                // Debug.Log("NewGame");
-                // SceneManager.LoadScene("PartyScene");
                 LoadingManager.LoadScene("PartyScene");
             }
             if (currentSelection == 2)  //LoadGame

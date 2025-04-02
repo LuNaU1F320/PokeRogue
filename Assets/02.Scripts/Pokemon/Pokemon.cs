@@ -96,6 +96,19 @@ public class Pokemon
 
         Skills = saveData.skills.Select(s => new Skill(s)).ToList();
 
+        // Skills = new List<Skill>();
+        // foreach (var skill in _base.LearnableSkills)
+        // {
+        //     if (skill.Level <= PokemonLevel)
+        //     {
+        //         Skills.Add(new Skill(skill.SkillBase));
+        //     }
+        //     if (Skills.Count >= PokemonBase.MaxNumOfSkills)
+        //     {
+        //         break;
+        //     }
+        // }
+
         CalculateStats();
         StatusCngMsg = new Queue<string>();
         ResetRankup();

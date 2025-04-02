@@ -45,13 +45,14 @@ public class PartyScreenManager : MonoBehaviour
 
     private void Awake()
     {
-        PokemonDB.Init();
-        GlobalValue.LoadGameInfo();
+        // PokemonDB.Init();
+        // GlobalValue.LoadGameInfo();
         // Debug.Log($"MyPokemon Count: {GlobalValue.MyPokemon.Count}");
     }
 
     void Start()
     {
+        playerParty = FindObjectOfType<PokemonParty>();
         GeneratePokemonNodes();
         PokemonValue = 0;
         PokemonValue_Text.text = "0/10";

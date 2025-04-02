@@ -13,7 +13,7 @@ public enum GameState
 
 public class GameManager : MonoBehaviour
 {
-    PlayerCtrl playerCtrl;
+    public PlayerCtrl playerCtrl;
     [SerializeField] BattleSystem battleSystem;
     PokemonParty PlayerParty;
     [SerializeField] MapArea mapArea;
@@ -32,10 +32,11 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         Inst = this;
-        ConditionsDB.Init();
-        PokemonDB.Init();
-        SkillDB.Init();
+        // SkillDB.Init();
+        // PokemonDB.Init();
+        // ConditionsDB.Init();
         Time.timeScale = GameSpeed;
+        playerCtrl = FindObjectOfType<PlayerCtrl>();
     }
 
     void Start()
