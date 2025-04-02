@@ -39,7 +39,7 @@ public class GlobalValue
         }
 
         PlayerPrefs.SetString("MyPokemon", json.ToString());
-        Debug.Log("저장된 JSON 데이터: " + PlayerPrefs.GetString("MyPokemon", ""));
+        // Debug.Log("저장된 JSON 데이터: " + PlayerPrefs.GetString("MyPokemon", ""));
 
         PlayerPrefs.Save();
     }

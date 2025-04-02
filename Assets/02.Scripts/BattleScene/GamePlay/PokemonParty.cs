@@ -25,14 +25,24 @@ public class PokemonParty : MonoBehaviour
     }
     private void Awake()
     {
-        DontDestroyOnLoad(this.gameObject);
-        if (Party != null)
-        {
-            foreach (var pokemon in party)
-            {
-                pokemon.Init();
-            }
-        }
+        // DontDestroyOnLoad(this.gameObject);
+        // if (Party != null)
+        // {
+        //     foreach (var pokemon in party)
+        //     {
+        //         pokemon.Init();
+        //     }
+        // }
+    }
+    void Start()
+    {
+        // if (Party != null)
+        // {
+        //     foreach (var pokemon in party)
+        //     {
+        //         pokemon.Init();
+        //     }
+        // }
     }
     public Pokemon GetHealthyPokemon()
     {
@@ -74,8 +84,8 @@ public class PokemonParty : MonoBehaviour
         OnUpdated?.Invoke();
     }
 
-    public static PokemonParty GetPlayerParty()
-    {
-        return PlayerCtrl.Instance?.Party;
-    }
+    // public static PokemonParty GetPlayerParty()
+    // {
+    //     return PlayerCtrl.Instance?.Party;
+    // }
 }

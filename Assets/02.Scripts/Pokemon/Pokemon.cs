@@ -52,7 +52,7 @@ public class Pokemon
         _base = pBase;
         level = pLevel;
 
-        Init();
+        // Init();
     }
     public void Init()
     {
@@ -95,6 +95,17 @@ public class Pokemon
         }
 
         Skills = saveData.skills.Select(s => new Skill(s)).ToList();
+        // Skills = saveData.skills.Select(s =>
+        // {
+        //     Debug.Log($"[검사] 불러오는 skillIndex: {s.skillIdx}");
+        //     var skill = new Skill(s);
+        //     if (skill.SkillBase == null)
+        //     {
+        //         Debug.LogError($"[Skill 생성 실패] SkillBase not found for index: {s.skillIdx}");
+        //     }
+        //     return skill;
+        // }).ToList();
+
 
         // Skills = new List<Skill>();
         // foreach (var skill in _base.LearnableSkills)
