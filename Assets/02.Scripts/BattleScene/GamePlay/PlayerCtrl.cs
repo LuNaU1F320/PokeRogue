@@ -13,13 +13,13 @@ public class PlayerCtrl : MonoBehaviour, ISaveable
 
     void Awake()
     {
-        SkillDB.Init();
-        PokemonDB.Init();
-        ConditionsDB.Init();
-        GlobalValue.LoadGameInfo();
         if (Instance == null)
         {
             Instance = this;
+            PokemonDB.Init();
+            SkillDB.Init();
+            ConditionsDB.Init();
+            GlobalValue.LoadGameInfo();
             DontDestroyOnLoad(this.gameObject);
 
             party = GetComponent<PokemonParty>();
@@ -53,15 +53,15 @@ public class PlayerCtrl : MonoBehaviour, ISaveable
         var data = (PlayerSaveData)state;
         GetComponent<PokemonParty>().Party = data.pokemons.Select(p => new Pokemon(p)).ToList();
 
-        foreach (var s in data.pokemons.SelectMany(p => p.skills))
-        {
-            Debug.Log($"[검사] 저장된 skillIndex: {s.skillIdx}, pp: {s.pp}");
-            var sb = SkillDB.GetSkillByIdx(s.skillIdx);
-            if (sb == null)
-                Debug.LogError($"[RestoreState] SkillBase 찾을 수 없음! index: {s.skillIdx}");
-            else
-                Debug.Log($"[RestoreState] SkillBase 로딩 성공: {sb.SkillName}");
-        }
+        // foreach (var s in data.pokemons.SelectMany(p => p.skills))
+        // {
+        //     Debug.Log($"[검사] 저장된 skillIndex: {s.skillIdx}, pp: {s.pp}");
+        //     var sb = SkillDB.GetSkillByIdx(s.skillIdx);
+        //     if (sb == null)
+        //         Debug.LogError($"[RestoreState] SkillBase 찾을 수 없음! index: {s.skillIdx}");
+        //     else
+        //         Debug.Log($"[RestoreState] SkillBase 로딩 성공: {sb.SkillName}");
+        // }
         // GameManager.Inst.gold = data.gold;
         // GameManager.Inst.CurrentStageIndex = data.stageIndex;
     }

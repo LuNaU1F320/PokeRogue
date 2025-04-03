@@ -71,7 +71,7 @@ public class BattleSystem : MonoBehaviour
     }
     private void Start()
     {
-        player = GameManager.Inst.playerCtrl;
+        player = FindObjectOfType<PlayerCtrl>();
         state = BattleState.Start;
         currentAction = 0;
         PlayerImage.sprite = player.TrainerSprite;
@@ -196,6 +196,7 @@ public class BattleSystem : MonoBehaviour
         escapeAttempts = 0;
         partyScreen.Init();
         ActionSelection();
+        yield return null;
     }
     void BattleOver(bool won)
     {
@@ -1090,6 +1091,7 @@ public class BattleSystem : MonoBehaviour
                     if (savingSystem != null)
                     {
                         savingSystem.SaveGame();
+                        playerParty.Party.Clear();
                         // Debug.Log("저장 완료!");
                         SceneManager.LoadScene("LobbyScene");
                         // Debug.Log("저장 후 나가기");

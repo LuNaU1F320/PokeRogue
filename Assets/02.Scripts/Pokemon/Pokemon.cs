@@ -52,7 +52,7 @@ public class Pokemon
         _base = pBase;
         level = pLevel;
 
-        // Init();
+        Init();
     }
     public void Init()
     {
@@ -93,34 +93,8 @@ public class Pokemon
         {
             Status = null;
         }
-
         Skills = saveData.skills.Select(s => new Skill(s)).ToList();
-        // Skills = saveData.skills.Select(s =>
-        // {
-        //     Debug.Log($"[검사] 불러오는 skillIndex: {s.skillIdx}");
-        //     var skill = new Skill(s);
-        //     if (skill.SkillBase == null)
-        //     {
-        //         Debug.LogError($"[Skill 생성 실패] SkillBase not found for index: {s.skillIdx}");
-        //     }
-        //     return skill;
-        // }).ToList();
-
-
-        // Skills = new List<Skill>();
-        // foreach (var skill in _base.LearnableSkills)
-        // {
-        //     if (skill.Level <= PokemonLevel)
-        //     {
-        //         Skills.Add(new Skill(skill.SkillBase));
-        //     }
-        //     if (Skills.Count >= PokemonBase.MaxNumOfSkills)
-        //     {
-        //         break;
-        //     }
-        // }
-
-        CalculateStats();
+        CalculateStats(applyToHp: false);
         StatusCngMsg = new Queue<string>();
         ResetRankup();
         VolatileStatus = null;
@@ -178,22 +152,26 @@ public class Pokemon
             pokemonGen = 9;
         }
     }
-    void CalculateStats()
+    void CalculateStats(bool applyToHp = true)
     {
         Stats = new Dictionary<Stat, int>
-        {
-            { Stat.Attack, Mathf.FloorToInt((P_Base.Attack * PokemonLevel) / 100f) + 5 },
-            { Stat.Defence, Mathf.FloorToInt((P_Base.Defence * PokemonLevel) / 100f) + 5 },
-            { Stat.SpAttack, Mathf.FloorToInt((P_Base.SpAttack * PokemonLevel) / 100f) + 5 },
-            { Stat.SpDefence, Mathf.FloorToInt((P_Base.SpDefence * PokemonLevel) / 100f) + 5 },
-            { Stat.Speed, Mathf.FloorToInt((P_Base.Speed * PokemonLevel) / 100f) + 5 }
-        };
+    {
+        { Stat.Attack, Mathf.FloorToInt((P_Base.Attack * PokemonLevel) / 100f) + 5 },
+        { Stat.Defence, Mathf.FloorToInt((P_Base.Defence * PokemonLevel) / 100f) + 5 },
+        { Stat.SpAttack, Mathf.FloorToInt((P_Base.SpAttack * PokemonLevel) / 100f) + 5 },
+        { Stat.SpDefence, Mathf.FloorToInt((P_Base.SpDefence * PokemonLevel) / 100f) + 5 },
+        { Stat.Speed, Mathf.FloorToInt((P_Base.Speed * PokemonLevel) / 100f) + 5 }
+    };
 
         int oldMaxHp = MaxHp;
         MaxHp = Mathf.FloorToInt((P_Base.MaxHp * PokemonLevel) / 100f) + 10 + PokemonLevel;
 
-        PokemonHp += MaxHp - oldMaxHp;
+        if (applyToHp)
+        {
+            PokemonHp += MaxHp - oldMaxHp;
+        }
     }
+
     public void ResetRankup()
     {
         Rankup = new Dictionary<Stat, int>()

@@ -32,14 +32,6 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         Inst = this;
-        // SkillDB.Init();
-        // PokemonDB.Init();
-        // ConditionsDB.Init();
-        var test = SkillDB.GetSkillByIdx(33);
-        if (test == null)
-            Debug.LogError("[수동 테스트] GetSkillByIndex(33) → null");
-        else
-            Debug.Log($"[수동 테스트] index 33 → {test.SkillName}");
         Time.timeScale = GameSpeed;
         playerCtrl = FindObjectOfType<PlayerCtrl>();
     }
@@ -72,7 +64,6 @@ public class GameManager : MonoBehaviour
         var wildPokemon = mapArea.GetRandomWildPokemon();
 
         var refWildPokemon = new Pokemon(wildPokemon.P_Base, wildPokemon.PokemonLevel);
-        refWildPokemon.Init();
 
         battleSystem.StartBattle(PlayerParty, refWildPokemon);
     }

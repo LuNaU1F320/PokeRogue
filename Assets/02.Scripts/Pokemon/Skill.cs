@@ -15,8 +15,9 @@ public class Skill
     }
     public Skill(SkillSaveData saveData)
     {
-        // SkillDB.GetSkillByName(saveData.skillName);
-        SkillDB.GetSkillByIdx(saveData.skillIdx);
+        // Debug.Log($"[Skill 생성 시도] index: {saveData.skillIdx}, pp: {saveData.pp}");
+        SkillBase = SkillDB.GetSkillByIdx(saveData.skillIdx);
+        // SkillDB.GetSkillByIdx(saveData.skillIdx);
 
         PP = saveData.pp;
     }

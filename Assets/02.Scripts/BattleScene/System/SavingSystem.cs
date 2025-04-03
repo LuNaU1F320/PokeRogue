@@ -37,7 +37,7 @@ public class SavingSystem : MonoBehaviour
         if (player != null)
         {
             player.RestoreState(data);
-            Debug.Log("[SavingSystem] 불러오기 완료!");
+            // Debug.Log("[SavingSystem] 불러오기 완료!");
         }
         else
         {

@@ -34,16 +34,6 @@ public class PokemonParty : MonoBehaviour
         //     }
         // }
     }
-    void Start()
-    {
-        // if (Party != null)
-        // {
-        //     foreach (var pokemon in party)
-        //     {
-        //         pokemon.Init();
-        //     }
-        // }
-    }
     public Pokemon GetHealthyPokemon()
     {
         return party.Where(x => x.PokemonHp > 0).FirstOrDefault();

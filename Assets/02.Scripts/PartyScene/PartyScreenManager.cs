@@ -237,7 +237,6 @@ public class PartyScreenManager : MonoBehaviour
         if (currentPartyIndex < PartyPokemon_Img.Count)
         {
             Pokemon newPokemon = new Pokemon(_base, 5);
-            newPokemon.Init();
             if (PokemonValue + newPokemon.P_Base.Cost > 10)
             {
                 Debug.LogWarning("포켓몬 가치를 초과하여 추가할 수 없습니다.");
