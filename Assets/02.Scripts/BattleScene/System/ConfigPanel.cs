@@ -183,15 +183,17 @@ public class ConfigPanel : MonoBehaviour
     }
     private void SaveOptions()
     {
-        GlobalValue.SaveSetting(selectedOptions);
+        // GlobalValue.SaveSetting(selectedOptions);
+        SavingSystem.Instance.SaveConfig(selectedOptions);
     }
     private void LoadOptions()
     {
-        List<int> loaded = GlobalValue.LoadSetting(configRows.Count);
+        List<int> loaded = SavingSystem.Instance.LoadConfig(configRows.Count);
+
+        // List<int> loaded = GlobalValue.LoadSetting(configRows.Count);
         for (int i = 0; i < loaded.Count; i++)
         {
             selectedOptions[i] = loaded[i];
-            // Debug.Log(i + " : " + selectedOptions[i]);
         }
         ChangeGameSpeed(selectedOptions[0]);
         ChangeHpBarSpeed(selectedOptions[1]);

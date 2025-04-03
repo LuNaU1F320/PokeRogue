@@ -67,6 +67,15 @@ public class LobbyManager : MonoBehaviour
             }
             if (currentSelection == 1)  //NewGame
             {
+                SavingSystem.Instance.LoadGame();
+                GlobalValue.UserGold = 0;
+                GlobalValue.CurStage = 1;
+                PlayerCtrl player = FindObjectOfType<PlayerCtrl>();
+                if (player != null)
+                {
+                    player.GetComponent<PokemonParty>().Party.Clear();
+                }
+                GlobalValue.SetBasicStartPokemon();
                 LoadingManager.LoadScene("PartyScene");
             }
             if (currentSelection == 2)  //LoadGame

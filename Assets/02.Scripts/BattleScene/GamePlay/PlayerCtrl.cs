@@ -19,7 +19,7 @@ public class PlayerCtrl : MonoBehaviour, ISaveable
             PokemonDB.Init();
             SkillDB.Init();
             ConditionsDB.Init();
-            GlobalValue.LoadGameInfo();
+            // GlobalValue.LoadGameInfo();
             DontDestroyOnLoad(this.gameObject);
 
             party = GetComponent<PokemonParty>();
@@ -40,37 +40,47 @@ public class PlayerCtrl : MonoBehaviour, ISaveable
     }
     public object CaptureState()
     {
-        return new PlayerSaveData
+        // return new PlayerSaveData
+        // {
+        //     saveParty = GetComponent<PokemonParty>().Party.Select(p => p.GetSaveData()).ToList(),
+        //     // gold = GameManager.Inst.gold,
+        //     // stageIndex = GameManager.Inst.CurrentStageIndex
+        // };
+        var saveData = new PlayerSaveData()
         {
-            pokemons = GetComponent<PokemonParty>().Party.Select(p => p.GetSaveData()).ToList(),
-            // gold = GameManager.Inst.gold,
-            // stageIndex = GameManager.Inst.CurrentStageIndex
+            saveParty = GetComponent<PokemonParty>().Party.Select(p => p.GetSaveData()).ToList(),
+
+            userGold = GlobalValue.UserGold,
+            curStage = GlobalValue.CurStage,
+            myPokemonKeys = GlobalValue.MyPokemon.Keys.ToList(),
+            myPokemonValues = GlobalValue.MyPokemon.Values.ToList()
         };
+        return saveData;
     }
 
     public void RestoreState(object state)
     {
         var data = (PlayerSaveData)state;
-        GetComponent<PokemonParty>().Party = data.pokemons.Select(p => new Pokemon(p)).ToList();
+        GetComponent<PokemonParty>().Party = data.saveParty.Select(s => new Pokemon(s)).ToList();
 
-        // foreach (var s in data.pokemons.SelectMany(p => p.skills))
-        // {
-        //     Debug.Log($"[검사] 저장된 skillIndex: {s.skillIdx}, pp: {s.pp}");
-        //     var sb = SkillDB.GetSkillByIdx(s.skillIdx);
-        //     if (sb == null)
-        //         Debug.LogError($"[RestoreState] SkillBase 찾을 수 없음! index: {s.skillIdx}");
-        //     else
-        //         Debug.Log($"[RestoreState] SkillBase 로딩 성공: {sb.SkillName}");
-        // }
-        // GameManager.Inst.gold = data.gold;
-        // GameManager.Inst.CurrentStageIndex = data.stageIndex;
+        // 글로벌값 복원
+        GlobalValue.UserGold = data.userGold;
+        GlobalValue.CurStage = data.curStage;
+        GlobalValue.MyPokemon = new Dictionary<int, GlobalValue.MyPokemonData>();
+        for (int i = 0; i < data.myPokemonKeys.Count; i++)
+        {
+            GlobalValue.MyPokemon[data.myPokemonKeys[i]] = data.myPokemonValues[i];
+        }
+        Debug.LogWarning(GlobalValue.CurStage);
     }
 }
 
 [System.Serializable]
 public class PlayerSaveData
 {
-    public List<PokemonSaveData> pokemons;
-    public int gold;
-    public int stageIndex;
+    public List<PokemonSaveData> saveParty;
+    public int userGold;
+    public int curStage;
+    public List<int> myPokemonKeys;
+    public List<GlobalValue.MyPokemonData> myPokemonValues;
 }

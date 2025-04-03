@@ -44,7 +44,14 @@ public class GameManager : MonoBehaviour
         {
             return;
         }
-        StageCount = 1;
+        if (GlobalValue.CurStage == 0)
+        {
+            StageCount = 1;
+        }
+        else
+        {
+            StageCount = GlobalValue.CurStage;
+        }
         UserGold = 1000;
         Stage_Text.text = $"마을 - {StageCount}";
         Gold_Text.text = $"￡{UserGold}";

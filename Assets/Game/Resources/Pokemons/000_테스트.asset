@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 271878df85541a1469db368301d2282b, type: 3}
   m_Name: "000_\uD14C\uC2A4\uD2B8"
   m_EditorClassIdentifier: 
-  pokemonIndex: 149
-  pokemonName: "\uB9DD\uB098\uB1FD"
+  pokemonIndex: 16
+  pokemonName: "\uD14C\uC2A4\uD2B8"
   cost: 0
   pokemonDescription: 
   pokemonType1: 17
@@ -26,7 +26,7 @@ MonoBehaviour:
   speed: 80
   expYield: 50000
   growthRate: 4
-  catchRate: 45
+  catchRate: 255
   learnableSkills:
   - skillBase: {fileID: 11400000, guid: 32e9bab98680973499ca0ae992185aa8, type: 2}
     level: 0
@@ -69,4 +69,4 @@ MonoBehaviour:
   - skillBase: {fileID: 11400000, guid: c243c90b128667e40a978dd9e0eea047, type: 2}
     level: 80
   evolutions: []
-  evolutionBase: {fileID: 11400000, guid: 543971bd057d7b94d9c26139647ab2f7, type: 2}
+  evolutionBase: {fileID: 11400000, guid: aa2985ab00d1ca14bb13b78f58ddc8c8, type: 2}
