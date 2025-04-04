@@ -24,6 +24,15 @@ public class PartyMemberUI : MonoBehaviour
             hpbar_Text.text = $"{SetPokemon.PokemonHp}/{SetPokemon.MaxHp}";
         }
         pokemonDotSprite.sprite = Resources.Load<Sprite>($"Image/Pokemon/PokemonDot/{SetPokemon.PokemonGen}/{SetPokemon.P_Base.PokemonIndex}");
+
+        // var spritePath = $"Image/Pokemon/PokemonDot/{SetPokemon.PokemonGen}/{SetPokemon.P_Base.PokemonIndex}";
+        // Debug.Log($"📦 Sprite 로드 경로: {spritePath}");
+
+        // var sprite = Resources.Load<Sprite>(spritePath);
+        // if (sprite == null)
+        // {
+        //     Debug.LogError($"❌ 스프라이트 로드 실패! 값들 - Gen: {SetPokemon.PokemonGen}, Index: {SetPokemon.P_Base.PokemonIndex}");
+        // }
     }
     public void SetSelected(bool selected, int memberIndex)
     {

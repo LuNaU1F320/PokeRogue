@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pokemonIndex: 16
   pokemonName: "\uAD6C\uAD6C"
+  cost: 1
   pokemonDescription: 
   pokemonType1: 1
   pokemonType2: 11
@@ -55,3 +56,9 @@ MonoBehaviour:
     level: 49
   - skillBase: {fileID: 11400000, guid: 32e9bab98680973499ca0ae992185aa8, type: 2}
     level: 53
+  evolutions:
+  - evolesInto: {fileID: 11400000, guid: 7e5b633307f0df144a6bc4ad5a729567, type: 2}
+    requiredLevel: 18
+  - evolesInto: {fileID: 11400000, guid: 3cfb511743561d1488e80357e5c4ed8d, type: 2}
+    requiredLevel: 36
+  evolutionBase: {fileID: 11400000}

@@ -68,10 +68,11 @@ public class BattleSystem : MonoBehaviour
     private void Awake()
     {
         Inst = this;
+        player = FindObjectOfType<PlayerCtrl>();
     }
     private void Start()
     {
-        player = FindObjectOfType<PlayerCtrl>();
+        // player = FindObjectOfType<PlayerCtrl>();
         state = BattleState.Start;
         currentAction = 0;
         PlayerImage.sprite = player.TrainerSprite;
@@ -201,7 +202,6 @@ public class BattleSystem : MonoBehaviour
     void BattleOver(bool won)
     {
         state = BattleState.BattleOver;
-        StopAllCoroutines();
         // StartCoroutine(playerParty.CheckForEvolutions());
         GameManager.Inst.EndBattle(won);
     }
@@ -244,21 +244,222 @@ public class BattleSystem : MonoBehaviour
     }
 
     #region BattleSystem
+    // IEnumerator RunTurns(BattleAction playerAction)
+    // {
+    //     state = BattleState.RunningTurn;
+    //     if (playerAction == BattleAction.Skill)
+    //     {
+
+    //         playerUnit.BattlePokemon.CurrentSkill = playerUnit.BattlePokemon.Skills[currentSkill];
+    //         enemyUnit.BattlePokemon.CurrentSkill = enemyUnit.BattlePokemon.GetRandomSkill();
+
+    //         int playerPriority = playerUnit.BattlePokemon.CurrentSkill.SkillBase.Priority;
+    //         int enemyPriority = enemyUnit.BattlePokemon.CurrentSkill.SkillBase.Priority;
+
+    //         if (playerUnit.BattlePokemon.CurrentSkill == null)
+    //         {
+    //             Debug.LogError("❌ CurrentSkill이 설정되지 않았습니다! 스킬 선택 없이 실행되려 하고 있어요.");
+    //             yield break; // 그냥 턴 무시하고 끝냄
+    //         }
+
+    //         // 스피드 체크
+    //         bool playerTurnFirst = true;
+    //         //우선도 체크
+    //         if (enemyPriority > playerPriority)
+    //         {
+    //             playerTurnFirst = false;
+    //         }
+    //         else if (playerPriority == enemyPriority)
+    //         {
+    //             if (playerUnit.BattlePokemon.Speed == enemyUnit.BattlePokemon.Speed)
+    //             {
+    //                 playerTurnFirst = UnityEngine.Random.Range(0, 2) == 0;
+    //             }
+    //             playerTurnFirst = playerUnit.BattlePokemon.Speed > enemyUnit.BattlePokemon.Speed;
+    //         }
+
+    //         var firstUnit = playerTurnFirst ? playerUnit : enemyUnit;
+    //         var secondUnit = playerTurnFirst ? enemyUnit : playerUnit;
+
+
+    //         var secondPokemon = secondUnit.BattlePokemon;
+
+    //         //선턴
+    //         yield return RunSkill(firstUnit, secondUnit, firstUnit.BattlePokemon.CurrentSkill);
+    //         yield return RunAfterTrun(firstUnit);
+    //         // if (state == BattleState.BattleOver)
+    //         // {
+    //         //     yield break;
+    //         // }
+    //         if (secondUnit.BattlePokemon.PokemonHp <= 0)
+    //         {
+    //             yield return HandlePokemonFainted(secondUnit);
+    //             yield return CheckForBattleOver(secondUnit);
+    //             yield break;
+    //         }
+    //         if (secondPokemon.PokemonHp > 0)
+    //         {
+    //             //후턴
+    //             yield return RunSkill(secondUnit, firstUnit, secondUnit.BattlePokemon.CurrentSkill);
+    //             yield return RunAfterTrun(secondUnit);
+    //             if (state == BattleState.BattleOver)
+    //             {
+    //                 yield break;
+    //             }
+    //         }
+    //         yield return RunSkill(secondUnit, firstUnit, secondUnit.BattlePokemon.CurrentSkill);
+    //         yield return RunAfterTrun(secondUnit);
+
+    //         if (firstUnit.BattlePokemon.PokemonHp <= 0)
+    //         {
+    //             yield return HandlePokemonFainted(firstUnit);
+    //             yield return CheckForBattleOver(firstUnit);
+    //             yield break;
+    //         }
+    //     }
+    //     else
+    //     {
+    //         if (playerAction == BattleAction.SwitchPokemon)
+    //         {
+    //             var selectedPokemon = playerParty.Party[currentMember];
+    //             state = BattleState.Busy;
+    //             yield return SwitchPokemon(selectedPokemon);
+    //         }
+    //         else if (playerAction == BattleAction.UseItem)
+    //         {
+    //             dialogBox.EnableActionSelector(false);
+    //             yield return ThrowPokeball();
+    //         }
+    //         else if (playerAction == BattleAction.Run)
+    //         {
+    //             yield return TryToRun();
+    //         }
+
+    //         var enemySkill = enemyUnit.BattlePokemon.GetRandomSkill();
+    //         yield return RunSkill(enemyUnit, playerUnit, enemySkill);
+    //         yield return RunAfterTrun(enemyUnit);
+    //         if (state == BattleState.BattleOver)
+    //         {
+    //             yield break;
+    //         }
+    //     }
+
+    //     if (state != BattleState.BattleOver)
+    //     {
+    //         ActionSelection();
+    //     }
+    // }
+
+    // IEnumerator RunTurns(BattleAction playerAction)
+    // {
+    //     state = BattleState.RunningTurn;
+    //     if (playerAction == BattleAction.Skill)
+    //     {
+    //         playerUnit.BattlePokemon.CurrentSkill = playerUnit.BattlePokemon.Skills[currentSkill];
+    //         enemyUnit.BattlePokemon.CurrentSkill = enemyUnit.BattlePokemon.GetRandomSkill();
+
+    //         if (playerUnit.BattlePokemon.CurrentSkill == null || enemyUnit.BattlePokemon.CurrentSkill == null)
+    //         {
+    //             Debug.LogError("❌ 스킬이 설정되지 않았습니다!");
+    //             yield break;
+    //         }
+
+    //         int playerPriority = playerUnit.BattlePokemon.CurrentSkill.SkillBase.Priority;
+    //         int enemyPriority = enemyUnit.BattlePokemon.CurrentSkill.SkillBase.Priority;
+
+    //         bool playerTurnFirst;
+    //         if (enemyPriority > playerPriority)
+    //             playerTurnFirst = false;
+    //         else if (playerPriority > enemyPriority)
+    //             playerTurnFirst = true;
+    //         else
+    //             playerTurnFirst = playerUnit.BattlePokemon.Speed == enemyUnit.BattlePokemon.Speed
+    //                 ? UnityEngine.Random.Range(0, 2) == 0
+    //                 : playerUnit.BattlePokemon.Speed > enemyUnit.BattlePokemon.Speed;
+
+    //         var firstUnit = playerTurnFirst ? playerUnit : enemyUnit;
+    //         var secondUnit = playerTurnFirst ? enemyUnit : playerUnit;
+
+    //         // 선턴
+    //         yield return RunSkill(firstUnit, secondUnit, firstUnit.BattlePokemon.CurrentSkill);
+    //         yield return RunAfterTrun(firstUnit);
+    //         if (secondUnit.BattlePokemon.PokemonHp <= 0)
+    //         {
+    //             yield return HandlePokemonFainted(secondUnit);
+    //             yield return CheckForBattleOver(secondUnit);
+    //             yield break;
+    //         }
+
+    //         // 후턴
+    //         if (secondUnit.BattlePokemon.PokemonHp > 0)
+    //         {
+    //             yield return RunSkill(secondUnit, firstUnit, secondUnit.BattlePokemon.CurrentSkill);
+    //             yield return RunAfterTrun(secondUnit);
+    //             if (firstUnit.BattlePokemon.PokemonHp <= 0)
+    //             {
+    //                 yield return HandlePokemonFainted(firstUnit);
+    //                 yield return CheckForBattleOver(firstUnit);
+    //                 yield break;
+    //             }
+    //         }
+    //     }
+    //     else
+    //     {
+    //         if (playerAction == BattleAction.SwitchPokemon)
+    //         {
+    //             var selectedPokemon = playerParty.Party[currentMember];
+    //             state = BattleState.Busy;
+    //             yield return SwitchPokemon(selectedPokemon);
+    //         }
+    //         else if (playerAction == BattleAction.UseItem)
+    //         {
+    //             dialogBox.EnableActionSelector(false);
+    //             yield return ThrowPokeball();
+    //         }
+    //         else if (playerAction == BattleAction.Run)
+    //         {
+    //             yield return TryToRun();
+    //         }
+
+    //         if (state != BattleState.BattleOver)
+    //         {
+    //             var enemySkill = enemyUnit.BattlePokemon.GetRandomSkill();
+    //             if (enemySkill != null)
+    //             {
+    //                 yield return RunSkill(enemyUnit, playerUnit, enemySkill);
+    //                 yield return RunAfterTrun(enemyUnit);
+    //             }
+    //         }
+    //     }
+
+    //     if (state != BattleState.BattleOver)
+    //     {
+    //         ActionSelection();
+    //     }
+    // }
+
     IEnumerator RunTurns(BattleAction playerAction)
     {
+        Debug.Log("🌀 RunTurns 시작");
         state = BattleState.RunningTurn;
+
         if (playerAction == BattleAction.Skill)
         {
+            Debug.Log("▶ 플레이어가 Skill을 선택함");
+
             playerUnit.BattlePokemon.CurrentSkill = playerUnit.BattlePokemon.Skills[currentSkill];
             enemyUnit.BattlePokemon.CurrentSkill = enemyUnit.BattlePokemon.GetRandomSkill();
+
+            if (playerUnit.BattlePokemon.CurrentSkill == null || enemyUnit.BattlePokemon.CurrentSkill == null)
+            {
+                Debug.LogError("❌ CurrentSkill이 null입니다. 스킬 설정 실패!");
+                yield break;
+            }
 
             int playerPriority = playerUnit.BattlePokemon.CurrentSkill.SkillBase.Priority;
             int enemyPriority = enemyUnit.BattlePokemon.CurrentSkill.SkillBase.Priority;
 
-
-            // 스피드 체크
             bool playerTurnFirst = true;
-            //우선도 체크
             if (enemyPriority > playerPriority)
             {
                 playerTurnFirst = false;
@@ -269,50 +470,75 @@ public class BattleSystem : MonoBehaviour
                 {
                     playerTurnFirst = UnityEngine.Random.Range(0, 2) == 0;
                 }
-                playerTurnFirst = playerUnit.BattlePokemon.Speed > enemyUnit.BattlePokemon.Speed;
+                else
+                {
+                    playerTurnFirst = playerUnit.BattlePokemon.Speed > enemyUnit.BattlePokemon.Speed;
+                }
             }
 
             var firstUnit = playerTurnFirst ? playerUnit : enemyUnit;
             var secondUnit = playerTurnFirst ? enemyUnit : playerUnit;
 
+            var targetOfFirst = secondUnit;
+            var targetOfSecond = firstUnit;
 
-            var secondPokemon = secondUnit.BattlePokemon;
+            Debug.Log($"🎯 선공자: {(firstUnit == playerUnit ? "플레이어" : "상대")}");
+            Debug.Log($"🛡️ 후공자: {(secondUnit == playerUnit ? "플레이어" : "상대")}");
 
-            //선턴
-            yield return RunSkill(firstUnit, secondUnit, firstUnit.BattlePokemon.CurrentSkill);
+            // 1. 선공자 행동
+            yield return RunSkill(firstUnit, targetOfFirst, firstUnit.BattlePokemon.CurrentSkill);
             yield return RunAfterTrun(firstUnit);
-            // if (state == BattleState.BattleOver)
-            // {
-            //     yield break;
-            // }
-            if (secondUnit.BattlePokemon.PokemonHp <= 0)
+
+            if (state == BattleState.BattleOver)
             {
-                yield return HandlePokemonFainted(secondUnit);
-                yield return CheckForBattleOver(secondUnit);
+                Debug.Log("🏁 선공자 행동 후 전투 종료됨");
                 yield break;
             }
-            // if (secondPokemon.PokemonHp > 0)
-            // {
-            //     //후턴
-            //     yield return RunSkill(secondUnit, firstUnit, secondUnit.BattlePokemon.CurrentSkill);
-            //     yield return RunAfterTrun(secondUnit);
-            //     if (state == BattleState.BattleOver)
-            //     {
-            //         yield break;
-            //     }
-            // }
-            yield return RunSkill(secondUnit, firstUnit, secondUnit.BattlePokemon.CurrentSkill);
-            yield return RunAfterTrun(secondUnit);
 
-            if (firstUnit.BattlePokemon.PokemonHp <= 0)
+            // 선공자가 공격한 대상 쓰러짐 확인
+            if (targetOfFirst.BattlePokemon == null || targetOfFirst.BattlePokemon.PokemonHp <= 0)
             {
-                yield return HandlePokemonFainted(firstUnit);
-                yield return CheckForBattleOver(firstUnit);
+                Debug.Log("⚠️ 선공자가 공격한 대상 쓰러짐");
+                yield return HandlePokemonFainted(targetOfFirst);
+                yield return CheckForBattleOver(targetOfFirst);
                 yield break;
+            }
+
+            // 2. 후공자 행동 (자기와 대상 모두 살아 있을 때만)
+            if (
+                secondUnit.BattlePokemon != null &&
+                secondUnit.BattlePokemon.PokemonHp > 0 &&
+                targetOfSecond.BattlePokemon != null &&
+                targetOfSecond.BattlePokemon.PokemonHp > 0
+            )
+            {
+                Debug.Log("🎮 후공자 행동 시작");
+                yield return RunSkill(secondUnit, targetOfSecond, secondUnit.BattlePokemon.CurrentSkill);
+                yield return RunAfterTrun(secondUnit);
+
+                if (state == BattleState.BattleOver)
+                {
+                    Debug.Log("🏁 후공자 행동 후 전투 종료됨");
+                    yield break;
+                }
+
+                if (targetOfSecond.BattlePokemon != null && targetOfSecond.BattlePokemon.PokemonHp <= 0)
+                {
+                    Debug.Log("⚠️ 후공자가 공격한 대상 쓰러짐");
+                    yield return HandlePokemonFainted(targetOfSecond);
+                    yield return CheckForBattleOver(targetOfSecond);
+                    yield break;
+                }
+            }
+            else
+            {
+                Debug.Log("⛔ 후공자 또는 대상이 쓰러진 상태. 후공 행동 생략.");
             }
         }
         else
         {
+            Debug.Log($"▶ 플레이어가 {playerAction} 선택");
+
             if (playerAction == BattleAction.SwitchPokemon)
             {
                 var selectedPokemon = playerParty.Party[currentMember];
@@ -329,20 +555,53 @@ public class BattleSystem : MonoBehaviour
                 yield return TryToRun();
             }
 
-            var enemySkill = enemyUnit.BattlePokemon.GetRandomSkill();
-            yield return RunSkill(enemyUnit, playerUnit, enemySkill);
-            yield return RunAfterTrun(enemyUnit);
             if (state == BattleState.BattleOver)
             {
+                Debug.Log("🏁 아이템/교체/도망 후 전투 종료됨");
                 yield break;
+            }
+
+            // 적 턴
+            Debug.Log("👾 적 턴 시작");
+            var enemySkill = enemyUnit.BattlePokemon.GetRandomSkill();
+
+            if (enemyUnit.BattlePokemon == null || enemyUnit.BattlePokemon.PokemonHp <= 0)
+            {
+                Debug.LogWarning("❗ 적 포켓몬이 쓰러졌음. 적 턴 스킵.");
+            }
+            else
+            {
+                yield return RunSkill(enemyUnit, playerUnit, enemySkill);
+                yield return RunAfterTrun(enemyUnit);
+
+                if (state == BattleState.BattleOver)
+                {
+                    Debug.Log("🏁 적 턴 종료 후 전투 종료됨");
+                    yield break;
+                }
+
+                if (playerUnit.BattlePokemon.PokemonHp <= 0)
+                {
+                    Debug.Log("⚠️ 플레이어 포켓몬 쓰러짐");
+                    yield return HandlePokemonFainted(playerUnit);
+                    yield return CheckForBattleOver(playerUnit);
+                    yield break;
+                }
             }
         }
 
         if (state != BattleState.BattleOver)
         {
+            Debug.Log("🔁 다음 턴 선택창으로 이동: ActionSelection()");
             ActionSelection();
         }
+
+        Debug.Log("✅ RunTurns 종료");
     }
+
+
+
+
     IEnumerator RunSkill(BattleUnit sourceUnit, BattleUnit targetUnit, Skill skill)
     {
         bool canRunSkill = sourceUnit.BattlePokemon.OnBeforeSkill();
@@ -660,6 +919,8 @@ public class BattleSystem : MonoBehaviour
             {
                 yield return playerParty.CheckForEvolutions();
                 yield return new WaitForSeconds(0.5f); // 진화 마무리 대기
+
+                StopAllCoroutines();
                 BattleOver(true);
             }
             else
@@ -674,6 +935,7 @@ public class BattleSystem : MonoBehaviour
                 else
                 {
                     yield return playerParty.CheckForEvolutions();
+
                     BattleOver(true);
                 }
             }

@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pokemonIndex: 17
   pokemonName: "\uD53C\uC8E4"
+  cost: 0
   pokemonDescription: 
   pokemonType1: 1
   pokemonType2: 11
@@ -59,3 +60,7 @@ MonoBehaviour:
     level: 57
   - skillBase: {fileID: 11400000, guid: 32e9bab98680973499ca0ae992185aa8, type: 2}
     level: 62
+  evolutions:
+  - evolesInto: {fileID: 11400000, guid: 3cfb511743561d1488e80357e5c4ed8d, type: 2}
+    requiredLevel: 36
+  evolutionBase: {fileID: 11400000, guid: aa2985ab00d1ca14bb13b78f58ddc8c8, type: 2}

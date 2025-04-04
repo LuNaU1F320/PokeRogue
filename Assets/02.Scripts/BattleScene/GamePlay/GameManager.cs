@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public enum GameState
@@ -18,9 +19,7 @@ public class GameManager : MonoBehaviour
     PokemonParty PlayerParty;
     [SerializeField] MapArea mapArea;
     [SerializeField] Text Stage_Text;
-    private int StageCount;
     [SerializeField] Text Gold_Text;
-    private int UserGold;
     [HideInInspector] public bool isRun = true;
     [SerializeField] float GameSpeed = 1.0f;
 
@@ -39,22 +38,19 @@ public class GameManager : MonoBehaviour
     void Start()
     {
         PlayerParty = FindObjectOfType<PokemonParty>().GetComponent<PokemonParty>();
-        StartBattle();
         if (battleSystem == null || PlayerParty == null || mapArea == null)
         {
             return;
         }
         if (GlobalValue.CurStage == 0)
         {
-            StageCount = 1;
+            GlobalValue.CurStage = 1;
         }
-        else
-        {
-            StageCount = GlobalValue.CurStage;
-        }
-        UserGold = 1000;
-        Stage_Text.text = $"마을 - {StageCount}";
-        Gold_Text.text = $"￡{UserGold}";
+        GlobalValue.UserGold = 1000;
+        Stage_Text.text = $"마을 - {GlobalValue.CurStage}";
+        Gold_Text.text = $"￡{GlobalValue.UserGold}";
+
+        StartBattle();
         // OnEncountered += StartBattle;
         // battleSystem.OnBattleOver += EndBattle;
         // EvolutionManager.Inst.OnStartEvolution += () => state = GameState.Evolution;
@@ -87,22 +83,36 @@ public class GameManager : MonoBehaviour
     {
         if (won)
         {
-            StopAllCoroutines();
-            StageCount++;
-            Stage_Text.text = $"마을 - {StageCount}";
+            // StopAllCoroutines();
+            GlobalValue.CurStage++;
+            Stage_Text.text = $"마을 - {GlobalValue.CurStage}";
             // StartCoroutine(PlayerParty.CheckForEvolutions());
             StartBattle();
         }
         else
         {
             Debug.Log("전투에서 패배했습니다...");
+            playerCtrl.party.Party.Clear();
+            GlobalValue.CurStage = 1;
+            GlobalValue.UserGold = 1000;
+            playerCtrl.CaptureState();
+            var savingSystem = FindObjectOfType<SavingSystem>();
+            if (savingSystem != null)
+            {
+                savingSystem.SaveGame();
+            }
+            else
+            {
+                Debug.Log("저장 실패...");
+            }
+            SceneManager.LoadScene("LobbyScene");
         }
     }
     public void AddGold()
     {
-        UserGold += ((StageCount + 10) / 10) * 1000;
+        GlobalValue.UserGold += ((GlobalValue.CurStage + 10) / 10) * 1000;
 
-        Gold_Text.text = $"￡{UserGold}";
+        Gold_Text.text = $"￡{GlobalValue.UserGold}";
     }
     public string GetCorrectParticle(string name, string particleType)    //은는이가
     {

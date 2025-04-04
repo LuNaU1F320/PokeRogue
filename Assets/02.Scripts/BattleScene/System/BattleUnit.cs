@@ -44,6 +44,7 @@ public class BattleUnit : MonoBehaviour
         }
 
         StopAllCoroutines(); // 이전 애니메이션 중단
+        // StopCoroutine(PlayAnimation());
         sprites.Clear();
         animationFrames.Clear(); // 이전 프레임 리스트 초기화
 

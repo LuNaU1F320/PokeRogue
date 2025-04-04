@@ -85,6 +85,7 @@ public class Pokemon
         PokemonHp = saveData.hp;
         level = saveData.level;
         PokemonExp = saveData.exp;
+        pokemonGen = saveData.gen;
         if (saveData.statusID != null)
         {
             Status = ConditionsDB.Conditions[saveData.statusID.Value];
@@ -107,6 +108,7 @@ public class Pokemon
             hp = PokemonHp,
             level = PokemonLevel,
             exp = PokemonExp,
+            gen = pokemonGen,
             statusID = Status?.Id,
             skills = Skills.Select(s => s.GetSaveData()).ToList()
         };
@@ -529,6 +531,7 @@ public class PokemonSaveData
     public int hp;
     public int level;
     public int exp;
+    public int gen;
     public ConditionID? statusID;
     public List<SkillSaveData> skills;
 }

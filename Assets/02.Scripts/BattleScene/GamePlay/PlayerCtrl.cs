@@ -9,7 +9,7 @@ public class PlayerCtrl : MonoBehaviour, ISaveable
     [SerializeField] Sprite sprite;
     [SerializeField] string name;
     // List<PokemonSaveData> pokemons;
-    private PokemonParty party;
+    public PokemonParty party;
 
     void Awake()
     {
@@ -19,7 +19,6 @@ public class PlayerCtrl : MonoBehaviour, ISaveable
             PokemonDB.Init();
             SkillDB.Init();
             ConditionsDB.Init();
-            // GlobalValue.LoadGameInfo();
             DontDestroyOnLoad(this.gameObject);
 
             party = GetComponent<PokemonParty>();
@@ -40,12 +39,6 @@ public class PlayerCtrl : MonoBehaviour, ISaveable
     }
     public object CaptureState()
     {
-        // return new PlayerSaveData
-        // {
-        //     saveParty = GetComponent<PokemonParty>().Party.Select(p => p.GetSaveData()).ToList(),
-        //     // gold = GameManager.Inst.gold,
-        //     // stageIndex = GameManager.Inst.CurrentStageIndex
-        // };
         var saveData = new PlayerSaveData()
         {
             saveParty = GetComponent<PokemonParty>().Party.Select(p => p.GetSaveData()).ToList(),
@@ -71,7 +64,6 @@ public class PlayerCtrl : MonoBehaviour, ISaveable
         {
             GlobalValue.MyPokemon[data.myPokemonKeys[i]] = data.myPokemonValues[i];
         }
-        Debug.LogWarning(GlobalValue.CurStage);
     }
 }
 

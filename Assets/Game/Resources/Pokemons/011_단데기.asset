@@ -38,5 +38,7 @@ MonoBehaviour:
     level: 1
   - skillBase: {fileID: 11400000, guid: f7f7495b624a8e544b98a41dd833c0cc, type: 2}
     level: 1
-  evolutions: []
-  evolutionBase: {fileID: 0}
+  evolutions:
+  - evolesInto: {fileID: 11400000, guid: 77b8fa1ec5d0514439e362912f576541, type: 2}
+    requiredLevel: 10
+  evolutionBase: {fileID: 11400000, guid: 0d44a7ebdc20f574fa5610c9ff790815, type: 2}

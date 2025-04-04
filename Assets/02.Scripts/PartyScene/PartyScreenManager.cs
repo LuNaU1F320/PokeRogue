@@ -59,10 +59,10 @@ public class PartyScreenManager : MonoBehaviour
     }
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.X))
-        {
-            SceneManager.LoadScene("BattleScene");
-        }
+        // if (Input.GetKeyDown(KeyCode.X))
+        // {
+        //     SceneManager.LoadScene("BattleScene");
+        // }
         HandleScreenCusor();
     }
     void GeneratePokemonNodes()
@@ -160,6 +160,11 @@ public class PartyScreenManager : MonoBehaviour
         {
             if (currentSelection == lastIndex)
             {
+                if (PokemonValue == 0)
+                {
+                    Debug.Log("선택안됨");
+                    return;
+                }
                 SceneManager.LoadScene("BattleScene");
             }
             else

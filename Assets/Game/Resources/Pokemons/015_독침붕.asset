@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pokemonIndex: 15
   pokemonName: "\uB3C5\uCE68\uBD95"
+  cost: 0
   pokemonDescription: 
   pokemonType1: 15
   pokemonType2: 8
@@ -63,3 +64,5 @@ MonoBehaviour:
     level: 41
   - skillBase: {fileID: 11400000, guid: 8152182360748f047913984ad961777b, type: 2}
     level: 44
+  evolutions: []
+  evolutionBase: {fileID: 11400000, guid: 134f202a04c9398428b118de659306a3, type: 2}

@@ -11,7 +11,9 @@ public class LobbyManager : MonoBehaviour
     [SerializeField] GameObject LoadingPanel;
     [SerializeField] Image LoadingBar;
     [SerializeField] Text LoadingText;
+    [SerializeField] GameObject Tutorial_Panel;
     int currentSelection = 0;
+
     void Awake()
     {
         // SkillDB.Init();
@@ -20,13 +22,29 @@ public class LobbyManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        bool isFirstPlay = !PlayerPrefs.HasKey("FirstPlay");
 
+        if (isFirstPlay)
+        {
+            Tutorial_Panel.SetActive(true);
+        }
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (Tutorial_Panel.activeSelf && Input.GetKeyDown(KeyCode.Backspace))
+        {
+            OnTutorialFinished();
+
+        }
         HandleActionSelection();
+    }
+    void OnTutorialFinished()
+    {
+        PlayerPrefs.SetInt("FirstPlay", 1);
+        PlayerPrefs.Save();
+        Tutorial_Panel.SetActive(false);
     }
     void HandleActionSelection()
     {
@@ -57,7 +75,16 @@ public class LobbyManager : MonoBehaviour
                 if (File.Exists(savePath))
                 {
                     FindObjectOfType<SavingSystem>().LoadGame();
-                    LoadingManager.LoadScene("BattleScene");
+                    var playerCtrl = FindObjectOfType<PlayerCtrl>();
+
+                    // 2. party 또는 party.Party가 null/비었는지 확인
+                    if (playerCtrl == null || playerCtrl.party == null || playerCtrl.party.Party == null || playerCtrl.party.Party.Count == 0)
+                    {
+                        Debug.Log("세이브에는 파티가 없습니다. 로딩하지 않습니다.");
+                        return;
+                    }
+                    // LoadingManager.LoadScene("BattleScene");
+                    SceneManager.LoadScene("BattleScene");
                 }
                 else
                 {
