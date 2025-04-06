@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using Cysharp.Threading.Tasks;
 
 public class BattleDialogBox : MonoBehaviour
 {
@@ -29,50 +30,39 @@ public class BattleDialogBox : MonoBehaviour
 
     // public IEnumerator TypeDialog(string dialog)
     // {
-    //     dialogText.text = "";
-    //     isTyping = true;
+    //     dialogQueue.Enqueue(dialog);
 
-    //     foreach (var letter in dialog.ToCharArray())
+    //     if (!isRunningDialog)
     //     {
-    //         dialogText.text += letter;
-    //         yield return new WaitForSecondsRealtime(1f / lettersPerSecond);
-    //     }
-
-    //     isTyping = false;
-    //     dialogText.text += " ▼";
-
-    //     // // 입력 대기
-    //     yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
-    // }
-    // public IEnumerator TypeDialog(string dialog)
-    // {
-    //     dialogText.text = "";
-    //     isTyping = true;
-
-    //     // 여러 줄 처리: \n로 나눠서 한 줄씩 출력 후 Space 대기
-    //     var lines = dialog.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
-
-    //     for (int i = 0; i < lines.Length; i++)
-    //     {
-    //         dialogText.text = "";
-    //         foreach (var letter in lines[i])
+    //         isRunningDialog = true;
+    //         while (dialogQueue.Count > 0)
     //         {
-    //             dialogText.text += letter;
-    //             yield return new WaitForSecondsRealtime(1f / lettersPerSecond);
-    //         }
+    //             string nextDialog = dialogQueue.Dequeue();
+    //             dialogText.text = "";
+    //             isTyping = true;
 
-    //         isTyping = false;
-    //         dialogText.text += " ▼";
-    //         yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+    //             foreach (var letter in nextDialog.ToCharArray())
+    //             {
+    //                 dialogText.text += letter;
+    //                 yield return new WaitForSeconds(1f / lettersPerSecond);
+    //             }
+
+    //             isTyping = false;
+    //             dialogText.text += " ▼";
+
+    //             yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+    //         }
+    //         isRunningDialog = false;
     //     }
     // }
-    public IEnumerator TypeDialog(string dialog)
+    public async UniTask TypeDialog(string dialog)
     {
         dialogQueue.Enqueue(dialog);
 
         if (!isRunningDialog)
         {
             isRunningDialog = true;
+
             while (dialogQueue.Count > 0)
             {
                 string nextDialog = dialogQueue.Dequeue();
@@ -82,81 +72,39 @@ public class BattleDialogBox : MonoBehaviour
                 foreach (var letter in nextDialog.ToCharArray())
                 {
                     dialogText.text += letter;
-                    yield return new WaitForSeconds(1f / lettersPerSecond);
+                    await UniTask.Delay(TimeSpan.FromSeconds(1f / lettersPerSecond));
                 }
 
                 isTyping = false;
                 dialogText.text += " ▼";
 
-                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+                await UniTask.WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
             }
+
             isRunningDialog = false;
         }
     }
-    // public IEnumerator TypeDialog(string dialog)
+
+
+    // public IEnumerator TypeDialogMulti(string[] dialogs)
     // {
-    //     dialogQueue.Enqueue(dialog);
-
-    //     if (!isRunningDialog)
+    //     foreach (string dialog in dialogs)
     //     {
-    //         isRunningDialog = true;
+    //         dialogText.text = "";
+    //         isTyping = true;
 
-    //         while (dialogQueue.Count > 0)
+    //         foreach (var letter in dialog.ToCharArray())
     //         {
-    //             string nextDialog = dialogQueue.Dequeue();
-    //             dialogText.text = "";
-    //             isTyping = true;
-
-    //             bool skip = false;
-
-    //             // 타이핑 하나하나
-    //             foreach (var letter in nextDialog)
-    //             {
-    //                 if (Input.GetKeyDown(KeyCode.Space))
-    //                 {
-    //                     skip = true;
-    //                     break;
-    //                 }
-
-    //                 dialogText.text += letter;
-    //                 yield return new WaitForSecondsRealtime(1f / lettersPerSecond);
-    //             }
-
-    //             // skip했으면 나머지 글자 그냥 붙이기
-    //             if (skip)
-    //             {
-    //                 dialogText.text = nextDialog;
-    //             }
-
-    //             isTyping = false;
-    //             dialogText.text += " ▼";
-
-    //             // ✅ 여기서 반드시 다시 스페이스 입력을 기다려야 함
-    //             yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+    //             dialogText.text += letter;
+    //             yield return new WaitForSecondsRealtime(1f / lettersPerSecond);
     //         }
 
-    //         isRunningDialog = false;
+    //         isTyping = false;
+    //         dialogText.text += " ▼";
+
+    //         yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
     //     }
     // }
-    public IEnumerator TypeDialogMulti(string[] dialogs)
-    {
-        foreach (string dialog in dialogs)
-        {
-            dialogText.text = "";
-            isTyping = true;
-
-            foreach (var letter in dialog.ToCharArray())
-            {
-                dialogText.text += letter;
-                yield return new WaitForSecondsRealtime(1f / lettersPerSecond);
-            }
-
-            isTyping = false;
-            dialogText.text += " ▼";
-
-            yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
-        }
-    }
     public void EnableDialogText(bool enabled)
     {
         dialogText.enabled = enabled;

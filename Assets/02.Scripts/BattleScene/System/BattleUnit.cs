@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using SimpleJSON;
 using System;
 
@@ -42,6 +41,8 @@ public class BattleUnit : MonoBehaviour
         {
             spriteRenderer = gameObject.AddComponent<SpriteRenderer>();
         }
+        spriteRenderer.color = new Color(1f, 1f, 1f, 1f);
+
 
         StopAllCoroutines(); // 이전 애니메이션 중단
         // StopCoroutine(PlayAnimation());
@@ -134,5 +135,94 @@ public class BattleUnit : MonoBehaviour
             yield return new WaitForSeconds(frameRate);
         }
     }
+    #region BattleAnim
 
+    // public void PlayAttackAnimation()
+    // {
+    //     if (animator != null)
+    //         animator.SetTrigger("Attack");
+    // }
+
+
+    //공격 애니메이션: 앞으로 이동 후 복귀
+    public void PlayAttackAnimation()
+    {
+        StartCoroutine(PlayAttackAnimationCoroutine());
+    }
+
+    private IEnumerator PlayAttackAnimationCoroutine()
+    {
+        Vector3 originalPos = transform.localPosition;
+        float moveDistance = 0.2f;
+        float speed = 10f;
+
+        Vector3 targetPos = isPlayerUnit ?
+            originalPos + new Vector3(moveDistance, 0, 0) :
+            originalPos + new Vector3(-moveDistance, 0, 0);
+
+        float progress = 0f;
+        while (progress < 1f)
+        {
+            transform.localPosition = Vector3.Lerp(originalPos, targetPos, progress);
+            progress += Time.deltaTime * speed;
+            yield return null;
+        }
+
+        progress = 0f;
+        while (progress < 1f)
+        {
+            transform.localPosition = Vector3.Lerp(targetPos, originalPos, progress);
+            progress += Time.deltaTime * speed;
+            yield return null;
+        }
+
+        transform.localPosition = originalPos;
+    }
+
+    //피격 애니메이션: 반짝이며 투명도 변경
+    public void PlayHitAnimation()
+    {
+        StartCoroutine(PlayHitAnimationCoroutine());
+    }
+
+    private IEnumerator PlayHitAnimationCoroutine()
+    {
+        Color originalColor = spriteRenderer.color;
+        for (int i = 0; i < 2; i++)
+        {
+            spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0.3f);
+            yield return new WaitForSeconds(0.1f);
+            spriteRenderer.color = originalColor;
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+
+    //쓰러짐 애니메이션: 아래로 약간 내려가며 페이드아웃
+    public void PlayFaintAnimation()
+    {
+        StartCoroutine(PlayFaintAnimationCoroutine());
+    }
+
+    private IEnumerator PlayFaintAnimationCoroutine()
+    {
+        Vector3 originalPos = transform.localPosition;
+        Vector3 targetPos = originalPos + new Vector3(0, -0.3f, 0);
+        float duration = 0.5f;
+        float time = 0f;
+
+        Color originalColor = spriteRenderer.color;
+
+        while (time < duration)
+        {
+            float t = time / duration;
+            transform.localPosition = Vector3.Lerp(originalPos, targetPos, t);
+            spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, 1f - t);
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.localPosition = targetPos;
+        spriteRenderer.color = new Color(originalColor.r, originalColor.g, originalColor.b, 0f);
+    }
+    #endregion
 }

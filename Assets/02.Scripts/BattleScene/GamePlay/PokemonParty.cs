@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System;
+using Cysharp.Threading.Tasks;
 
 public class PokemonParty : MonoBehaviour
 {
@@ -22,17 +23,6 @@ public class PokemonParty : MonoBehaviour
             party = value;
             OnUpdated?.Invoke();
         }
-    }
-    private void Awake()
-    {
-        // DontDestroyOnLoad(this.gameObject);
-        // if (Party != null)
-        // {
-        //     foreach (var pokemon in party)
-        //     {
-        //         pokemon.Init();
-        //     }
-        // }
     }
     public Pokemon GetHealthyPokemon()
     {
@@ -55,7 +45,26 @@ public class PokemonParty : MonoBehaviour
         party.Remove(removePokemon);
     }
 
-    public IEnumerator CheckForEvolutions()
+    // public IEnumerator CheckForEvolutions()
+    // {
+    //     foreach (var pokemon in party)
+    //     {
+    //         var evolution = pokemon.CheckForEvolution();
+    //         if (evolution != null)
+    //         {
+    //             BattleSystem.Inst.state = BattleState.Evolution;
+
+    //             yield return EvolutionManager.Inst.Evolve(pokemon, evolution);
+
+    //             yield return new WaitForSeconds(0.5f);
+
+    //             BattleSystem.Inst.state = BattleState.Busy;
+    //         }
+    //     }
+    //     OnUpdated?.Invoke();
+    // }
+    // 파티 내 모든 포켓몬의 진화 조건을 확인하고 진화 연출을 실행함
+    public async UniTask CheckForEvolutionsAsync()
     {
         foreach (var pokemon in party)
         {
@@ -64,18 +73,13 @@ public class PokemonParty : MonoBehaviour
             {
                 BattleSystem.Inst.state = BattleState.Evolution;
 
-                yield return EvolutionManager.Inst.Evolve(pokemon, evolution);
-
-                yield return new WaitForSeconds(0.5f);
+                await EvolutionManager.Inst.EvolveAsync(pokemon, evolution);
+                await UniTask.Delay(500); // 진화 마무리 시간 대기
 
                 BattleSystem.Inst.state = BattleState.Busy;
             }
         }
+
         OnUpdated?.Invoke();
     }
-
-    // public static PokemonParty GetPlayerParty()
-    // {
-    //     return PlayerCtrl.Instance?.Party;
-    // }
 }

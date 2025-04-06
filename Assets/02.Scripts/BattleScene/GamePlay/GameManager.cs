@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Cysharp.Threading.Tasks;
 
 public enum GameState
 {
@@ -50,11 +51,7 @@ public class GameManager : MonoBehaviour
         Stage_Text.text = $"마을 - {GlobalValue.CurStage}";
         Gold_Text.text = $"￡{GlobalValue.UserGold}";
 
-        StartBattle();
-        // OnEncountered += StartBattle;
-        // battleSystem.OnBattleOver += EndBattle;
-        // EvolutionManager.Inst.OnStartEvolution += () => state = GameState.Evolution;
-        // EvolutionManager.Inst.OnCompleteEvolution += () => state = GameState.None;
+        StartBattle().Forget();
     }
 
     // Update is called once per frame
@@ -62,23 +59,24 @@ public class GameManager : MonoBehaviour
     {
 
     }
-    void StartBattle()
+    public async UniTask StartBattle()
     {
         var wildPokemon = mapArea.GetRandomWildPokemon();
 
         var refWildPokemon = new Pokemon(wildPokemon.P_Base, wildPokemon.PokemonLevel);
 
-        battleSystem.StartBattle(PlayerParty, refWildPokemon);
+        // battleSystem.StartBattle(PlayerParty, refWildPokemon);
+        await battleSystem.StartBattle(PlayerParty, refWildPokemon);
     }
-    public void StartTrainerBattle(TrainerCtrl trainer)
-    {
-        battleSystem.gameObject.SetActive(true);
+    // public void StartTrainerBattle(TrainerCtrl trainer)
+    // {
+    //     battleSystem.gameObject.SetActive(true);
 
-        var playerParty = GetComponent<PokemonParty>();
-        var trainerParty = trainer.GetComponent<PokemonParty>();
+    //     var playerParty = GetComponent<PokemonParty>();
+    //     var trainerParty = trainer.GetComponent<PokemonParty>();
 
-        battleSystem.StartTrainerBattle(playerParty, trainerParty);
-    }
+    //     battleSystem.StartTrainerBattle(playerParty, trainerParty);
+    // }
     public void EndBattle(bool won)
     {
         if (won)
@@ -87,7 +85,7 @@ public class GameManager : MonoBehaviour
             GlobalValue.CurStage++;
             Stage_Text.text = $"마을 - {GlobalValue.CurStage}";
             // StartCoroutine(PlayerParty.CheckForEvolutions());
-            StartBattle();
+            StartBattle().Forget();
         }
         else
         {

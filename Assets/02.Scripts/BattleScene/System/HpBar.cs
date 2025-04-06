@@ -1,6 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 public class HpBar : MonoBehaviour
 {
@@ -11,17 +11,31 @@ public class HpBar : MonoBehaviour
     {
         health.transform.localScale = new Vector3(hpNormalized, 1.0f);
     }
-    public IEnumerator SetHpSmooth(float newhp)
+    // public IEnumerator SetHpSmooth(float newhp)
+    // {
+    //     float curHp = health.transform.localScale.x;
+    //     float changeAmt = curHp - newhp;
+
+    //     while (curHp - newhp > Mathf.Epsilon)
+    //     {
+    //         curHp -= changeAmt * Time.deltaTime * HpBarSpeed;
+    //         health.transform.localScale = new Vector3(curHp, 1.0f);
+    //         yield return null;
+    //     }
+    //     health.transform.localScale = new Vector3(newhp, 1.0f);
+    // }
+    public async UniTask SetHpSmooth(float newHp)
     {
         float curHp = health.transform.localScale.x;
-        float changeAmt = curHp - newhp;
+        float changeAmt = curHp - newHp;
 
-        while (curHp - newhp > Mathf.Epsilon)
+        while (curHp - newHp > Mathf.Epsilon)
         {
             curHp -= changeAmt * Time.deltaTime * HpBarSpeed;
             health.transform.localScale = new Vector3(curHp, 1.0f);
-            yield return null;
+            await UniTask.Yield(); // 다음 프레임까지 대기
         }
-        health.transform.localScale = new Vector3(newhp, 1.0f);
+
+        health.transform.localScale = new Vector3(newHp, 1.0f);
     }
 }

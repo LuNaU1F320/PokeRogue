@@ -1,6 +1,8 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using Cysharp.Threading.Tasks;
+using System;
 
 public class BattleHud : MonoBehaviour
 {
@@ -156,18 +158,44 @@ public class BattleHud : MonoBehaviour
         float normalizeExp = GetNormalizedExp();
         ExpBar.fillAmount = normalizeExp;
     }
-    public IEnumerator SetExpSmooth(bool reset = false)
+    // public IEnumerator SetExpSmooth(bool reset = false)
+    // {
+    //     if (ExpBar == null)
+    //     {
+    //         yield break;
+    //     }
+    //     if (reset == true)
+    //     {
+    //         ExpBar.fillAmount = 0f;
+    //     }
+    //     float currentExp = ExpBar.fillAmount; // 현재 경험치 바 상태
+    //     float targetExp = GetNormalizedExp(); // 목표 경험치 바 상태
+    //     float duration = 0.5f / Mathf.Max(GlobalValue.ExpBarSpeed, 0.01f);
+    //     float elapsedTime = 0f;
+
+    //     while (elapsedTime < duration)
+    //     {
+    //         elapsedTime += Time.deltaTime;
+    //         ExpBar.fillAmount = Mathf.Lerp(currentExp, targetExp, elapsedTime / duration);
+    //         yield return null;
+    //     }
+
+    //     ExpBar.fillAmount = targetExp; // 최종 값 보정
+    //     yield return new WaitForSeconds(duration);
+    // }
+    public async UniTask SetExpSmooth(bool reset = false)
     {
         if (ExpBar == null)
         {
-            yield break;
+            return;
         }
-        if (reset == true)
+        if (reset)
         {
             ExpBar.fillAmount = 0f;
         }
-        float currentExp = ExpBar.fillAmount; // 현재 경험치 바 상태
-        float targetExp = GetNormalizedExp(); // 목표 경험치 바 상태
+
+        float currentExp = ExpBar.fillAmount;
+        float targetExp = GetNormalizedExp();
         float duration = 0.5f / Mathf.Max(GlobalValue.ExpBarSpeed, 0.01f);
         float elapsedTime = 0f;
 
@@ -175,12 +203,13 @@ public class BattleHud : MonoBehaviour
         {
             elapsedTime += Time.deltaTime;
             ExpBar.fillAmount = Mathf.Lerp(currentExp, targetExp, elapsedTime / duration);
-            yield return null;
+            await UniTask.Yield();
         }
 
-        ExpBar.fillAmount = targetExp; // 최종 값 보정
-        yield return new WaitForSeconds(duration);
+        ExpBar.fillAmount = targetExp;
+        await UniTask.Delay(TimeSpan.FromSeconds(duration));
     }
+
     public void SetLevel()
     {
         levelTxt.text = "" + _pokemon.PokemonLevel;
@@ -193,32 +222,59 @@ public class BattleHud : MonoBehaviour
         float normalizeExp = (float)(_pokemon.PokemonExp - curLevelExp) / (nextLevelExp - curLevelExp);
         return Mathf.Clamp01(normalizeExp);
     }
-    public IEnumerator UpdateHp()
+    // public IEnumerator UpdateHp()
+    // {
+    //     if (_pokemon.IsHpChanged)
+    //     {
+
+    //         StartCoroutine(hpbar.SetHpSmooth((float)_pokemon.PokemonHp / _pokemon.MaxHp));
+    //         if (hpbar_Text != null)
+    //         {
+    //             StartCoroutine(AnimateTextHp(_pokemon.startHp, _pokemon.PokemonHp));
+    //         }
+    //         yield return null;
+    //         _pokemon.IsHpChanged = false;
+    //     }
+    // }
+    public async UniTask UpdateHpAsync()
     {
         if (_pokemon.IsHpChanged)
         {
+            var barTask = hpbar.SetHpSmooth((float)_pokemon.PokemonHp / _pokemon.MaxHp);
+            var textTask = hpbar_Text != null
+                ? AnimateTextHpAsync(_pokemon.startHp, _pokemon.PokemonHp)
+                : UniTask.CompletedTask;
 
-            StartCoroutine(hpbar.SetHpSmooth((float)_pokemon.PokemonHp / _pokemon.MaxHp));
-            if (hpbar_Text != null)
-            {
-                StartCoroutine(AnimateTextHp(_pokemon.startHp, _pokemon.PokemonHp));
-            }
-            yield return null;
+            await UniTask.WhenAll(barTask, textTask);
+
             _pokemon.IsHpChanged = false;
         }
     }
-    public IEnumerator AnimateTextHp(int startNumber, int endNumber, float animationDuration = 1f /*, Text TextObject = null, string numType = ""*/)
-    {
-        float elapsedTime = 0f;
+    // public IEnumerator AnimateTextHp(int startNumber, int endNumber, float animationDuration = 1f /*, Text TextObject = null, string numType = ""*/)
+    // {
+    //     float elapsedTime = 0f;
 
-        while (elapsedTime < animationDuration)
+    //     while (elapsedTime < animationDuration)
+    //     {
+    //         elapsedTime += Time.deltaTime;
+    //         float progress = elapsedTime / animationDuration;
+    //         int currentNumber = Mathf.RoundToInt(Mathf.Lerp(startNumber, endNumber, progress));
+    //         hpbar_Text.text = currentNumber.ToString() + "/" + _pokemon.MaxHp.ToString();
+    //         yield return null;
+    //     }
+    //     hpbar_Text.text = endNumber.ToString() + "/" + _pokemon.MaxHp.ToString();
+    // }
+    public async UniTask AnimateTextHpAsync(int startHp, int endHp)
+    {
+        int currentHp = startHp;
+        while (currentHp > endHp)
         {
-            elapsedTime += Time.deltaTime;
-            float progress = elapsedTime / animationDuration;
-            int currentNumber = Mathf.RoundToInt(Mathf.Lerp(startNumber, endNumber, progress));
-            hpbar_Text.text = currentNumber.ToString() + "/" + _pokemon.MaxHp.ToString();
-            yield return null;
+            currentHp--;
+            hpbar_Text.text = $"{currentHp} / {_pokemon.MaxHp}";
+            await UniTask.Delay(TimeSpan.FromSeconds(0.02f));
         }
-        hpbar_Text.text = endNumber.ToString() + "/" + _pokemon.MaxHp.ToString();
+
+        hpbar_Text.text = $"{endHp} / {_pokemon.MaxHp}";
     }
+
 }

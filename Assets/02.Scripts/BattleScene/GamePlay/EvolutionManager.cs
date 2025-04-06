@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using SimpleJSON;
 using System;
+using Cysharp.Threading.Tasks;
 
 public class EvolutionManager : MonoBehaviour
 {
@@ -22,16 +23,37 @@ public class EvolutionManager : MonoBehaviour
     {
         Inst = this;
     }
-    public IEnumerator Evolve(Pokemon pokemon, Evolution evolution)
-    {
-        // OnStartEvolution?.Invoke();
+    // public IEnumerator Evolve(Pokemon pokemon, Evolution evolution)
+    // {
+    //     // OnStartEvolution?.Invoke();
 
+    //     EvolutionPanel.SetActive(true);
+
+    //     setPokemonIdx = pokemon.P_Base.PokemonIndex;
+    //     SetUpPokemonSprite();
+
+    //     yield return new WaitForSeconds(3.0f);
+
+    //     var oldPokemon = pokemon.P_Base;
+    //     pokemon.Evolve(evolution);
+
+    //     setPokemonIdx = pokemon.P_Base.PokemonIndex;
+    //     SetUpPokemonSprite();
+
+    //     yield return dialogBox.TypeDialog($"{oldPokemon.PokemonName}{GameManager.Inst.GetCorrectParticle(oldPokemon.PokemonName, "topic")} {pokemon.P_Base.PokemonName}{GameManager.Inst.GetCorrectParticle(pokemon.P_Base.PokemonName, "objectTo")} 진화했다!");
+
+    //     EvolutionPanel.SetActive(false);
+    // }
+    // 비동기 방식의 포켓몬 진화 처리
+    public async UniTask EvolveAsync(Pokemon pokemon, Evolution evolution)
+    {
+        // Evolution 시작 UI
         EvolutionPanel.SetActive(true);
 
         setPokemonIdx = pokemon.P_Base.PokemonIndex;
         SetUpPokemonSprite();
 
-        yield return new WaitForSeconds(3.0f);
+        await UniTask.Delay(TimeSpan.FromSeconds(3.0f));
 
         var oldPokemon = pokemon.P_Base;
         pokemon.Evolve(evolution);
@@ -39,11 +61,9 @@ public class EvolutionManager : MonoBehaviour
         setPokemonIdx = pokemon.P_Base.PokemonIndex;
         SetUpPokemonSprite();
 
-        yield return dialogBox.TypeDialog($"{oldPokemon.PokemonName}{GameManager.Inst.GetCorrectParticle(oldPokemon.PokemonName, "topic")} {pokemon.P_Base.PokemonName}{GameManager.Inst.GetCorrectParticle(pokemon.P_Base.PokemonName, "objectTo")} 진화했다!");
+        await dialogBox.TypeDialog($"{oldPokemon.PokemonName}{GameManager.Inst.GetCorrectParticle(oldPokemon.PokemonName, "topic")} {pokemon.P_Base.PokemonName}{GameManager.Inst.GetCorrectParticle(pokemon.P_Base.PokemonName, "objectTo")} 진화했다!");
 
         EvolutionPanel.SetActive(false);
-
-        // OnCompleteEvolution?.Invoke();
     }
     void SetUpPokemonSprite()
     {
