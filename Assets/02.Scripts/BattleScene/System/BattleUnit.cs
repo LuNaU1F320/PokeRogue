@@ -72,9 +72,6 @@ public class BattleUnit : MonoBehaviour
         {
             StartCoroutine(PlayAnimation());
         }
-
-        // Debug.Log($"Loaded {sprites.Count} sprites.");
-        // Debug.Log($"Loaded {animationFrames.Count} animationFrames.");
     }
     public void LoadSprites(TextAsset pokIdxjson, Texture2D pokIdxsprite)
     {

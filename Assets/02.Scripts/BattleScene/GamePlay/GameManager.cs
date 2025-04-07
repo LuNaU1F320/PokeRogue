@@ -51,7 +51,7 @@ public class GameManager : MonoBehaviour
         Stage_Text.text = $"마을 - {GlobalValue.CurStage}";
         Gold_Text.text = $"￡{GlobalValue.UserGold}";
 
-        StartBattle().Forget();
+        StartBattle();
     }
 
     // Update is called once per frame
@@ -59,14 +59,14 @@ public class GameManager : MonoBehaviour
     {
 
     }
-    public async UniTask StartBattle()
+    void StartBattle()
     {
         var wildPokemon = mapArea.GetRandomWildPokemon();
 
         var refWildPokemon = new Pokemon(wildPokemon.P_Base, wildPokemon.PokemonLevel);
 
         // battleSystem.StartBattle(PlayerParty, refWildPokemon);
-        await battleSystem.StartBattle(PlayerParty, refWildPokemon);
+        battleSystem.StartBattle(PlayerParty, refWildPokemon);
     }
     // public void StartTrainerBattle(TrainerCtrl trainer)
     // {
@@ -85,7 +85,7 @@ public class GameManager : MonoBehaviour
             GlobalValue.CurStage++;
             Stage_Text.text = $"마을 - {GlobalValue.CurStage}";
             // StartCoroutine(PlayerParty.CheckForEvolutions());
-            StartBattle().Forget();
+            StartBattle();
         }
         else
         {

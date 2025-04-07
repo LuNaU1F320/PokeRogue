@@ -222,59 +222,59 @@ public class BattleHud : MonoBehaviour
         float normalizeExp = (float)(_pokemon.PokemonExp - curLevelExp) / (nextLevelExp - curLevelExp);
         return Mathf.Clamp01(normalizeExp);
     }
-    // public IEnumerator UpdateHp()
-    // {
-    //     if (_pokemon.IsHpChanged)
-    //     {
-
-    //         StartCoroutine(hpbar.SetHpSmooth((float)_pokemon.PokemonHp / _pokemon.MaxHp));
-    //         if (hpbar_Text != null)
-    //         {
-    //             StartCoroutine(AnimateTextHp(_pokemon.startHp, _pokemon.PokemonHp));
-    //         }
-    //         yield return null;
-    //         _pokemon.IsHpChanged = false;
-    //     }
-    // }
-    public async UniTask UpdateHpAsync()
+    public IEnumerator UpdateHp()
     {
         if (_pokemon.IsHpChanged)
         {
-            var barTask = hpbar.SetHpSmooth((float)_pokemon.PokemonHp / _pokemon.MaxHp);
-            var textTask = hpbar_Text != null
-                ? AnimateTextHpAsync(_pokemon.startHp, _pokemon.PokemonHp)
-                : UniTask.CompletedTask;
 
-            await UniTask.WhenAll(barTask, textTask);
-
+            StartCoroutine(hpbar.SetHpSmooth((float)_pokemon.PokemonHp / _pokemon.MaxHp));
+            if (hpbar_Text != null)
+            {
+                StartCoroutine(AnimateTextHp(_pokemon.startHp, _pokemon.PokemonHp));
+            }
+            yield return null;
             _pokemon.IsHpChanged = false;
         }
     }
-    // public IEnumerator AnimateTextHp(int startNumber, int endNumber, float animationDuration = 1f /*, Text TextObject = null, string numType = ""*/)
+    // public async UniTask UpdateHp()
     // {
-    //     float elapsedTime = 0f;
-
-    //     while (elapsedTime < animationDuration)
+    //     if (_pokemon.IsHpChanged)
     //     {
-    //         elapsedTime += Time.deltaTime;
-    //         float progress = elapsedTime / animationDuration;
-    //         int currentNumber = Mathf.RoundToInt(Mathf.Lerp(startNumber, endNumber, progress));
-    //         hpbar_Text.text = currentNumber.ToString() + "/" + _pokemon.MaxHp.ToString();
-    //         yield return null;
-    //     }
-    //     hpbar_Text.text = endNumber.ToString() + "/" + _pokemon.MaxHp.ToString();
-    // }
-    public async UniTask AnimateTextHpAsync(int startHp, int endHp)
-    {
-        int currentHp = startHp;
-        while (currentHp > endHp)
-        {
-            currentHp--;
-            hpbar_Text.text = $"{currentHp} / {_pokemon.MaxHp}";
-            await UniTask.Delay(TimeSpan.FromSeconds(0.02f));
-        }
+    //         var barTask = hpbar.SetHpSmooth((float)_pokemon.PokemonHp / _pokemon.MaxHp);
+    //         var textTask = hpbar_Text != null
+    //             ? AnimateTextHpAsync(_pokemon.startHp, _pokemon.PokemonHp)
+    //             : UniTask.CompletedTask;
 
-        hpbar_Text.text = $"{endHp} / {_pokemon.MaxHp}";
+    //         await UniTask.WhenAll(barTask, textTask);
+
+    //         _pokemon.IsHpChanged = false;
+    //     }
+    // }
+    public IEnumerator AnimateTextHp(int startNumber, int endNumber, float animationDuration = 1f /*, Text TextObject = null, string numType = ""*/)
+    {
+        float elapsedTime = 0f;
+
+        while (elapsedTime < animationDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float progress = elapsedTime / animationDuration;
+            int currentNumber = Mathf.RoundToInt(Mathf.Lerp(startNumber, endNumber, progress));
+            hpbar_Text.text = currentNumber.ToString() + "/" + _pokemon.MaxHp.ToString();
+            yield return null;
+        }
+        hpbar_Text.text = endNumber.ToString() + "/" + _pokemon.MaxHp.ToString();
     }
+    // public async UniTask AnimateTextHpAsync(int startHp, int endHp)
+    // {
+    //     int currentHp = startHp;
+    //     while (currentHp > endHp)
+    //     {
+    //         currentHp--;
+    //         hpbar_Text.text = $"{currentHp} / {_pokemon.MaxHp}";
+    //         await UniTask.Delay(TimeSpan.FromSeconds(0.02f));
+    //     }
+
+    //     hpbar_Text.text = $"{endHp} / {_pokemon.MaxHp}";
+    // }
 
 }

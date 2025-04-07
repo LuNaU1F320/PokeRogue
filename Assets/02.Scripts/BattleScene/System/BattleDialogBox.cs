@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
-using Cysharp.Threading.Tasks;
+// using Cysharp.Threading.Tasks;
 
 public class BattleDialogBox : MonoBehaviour
 {
     [SerializeField] Text dialogText;
     [SerializeField] Color highlightedColor;
-    [SerializeField] int lettersPerSecond;
+    [SerializeField] int lettersPerSecond = 1;
 
     [SerializeField] GameObject skillSelector;
     [SerializeField] GameObject actionSelector;
@@ -24,87 +24,65 @@ public class BattleDialogBox : MonoBehaviour
     [SerializeField] Image categoryKeyImg;
     [SerializeField] Text ppText;
     [SerializeField] Text skillDetailText;
-    bool isTyping = false;
     private Queue<string> dialogQueue = new Queue<string>();
     private bool isRunningDialog = false;
 
-    // public IEnumerator TypeDialog(string dialog)
-    // {
-    //     dialogQueue.Enqueue(dialog);
-
-    //     if (!isRunningDialog)
-    //     {
-    //         isRunningDialog = true;
-    //         while (dialogQueue.Count > 0)
-    //         {
-    //             string nextDialog = dialogQueue.Dequeue();
-    //             dialogText.text = "";
-    //             isTyping = true;
-
-    //             foreach (var letter in nextDialog.ToCharArray())
-    //             {
-    //                 dialogText.text += letter;
-    //                 yield return new WaitForSeconds(1f / lettersPerSecond);
-    //             }
-
-    //             isTyping = false;
-    //             dialogText.text += " ▼";
-
-    //             yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
-    //         }
-    //         isRunningDialog = false;
-    //     }
-    // }
-    public async UniTask TypeDialog(string dialog)
+    public IEnumerator TypeDialog(string dialog)
     {
         dialogQueue.Enqueue(dialog);
 
         if (!isRunningDialog)
         {
             isRunningDialog = true;
-
             while (dialogQueue.Count > 0)
             {
                 string nextDialog = dialogQueue.Dequeue();
                 dialogText.text = "";
-                isTyping = true;
 
                 foreach (var letter in nextDialog.ToCharArray())
                 {
                     dialogText.text += letter;
-                    await UniTask.Delay(TimeSpan.FromSeconds(1f / lettersPerSecond));
+                    yield return new WaitForSeconds(1f / lettersPerSecond);
                 }
 
-                isTyping = false;
                 dialogText.text += " ▼";
 
-                await UniTask.WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
             }
-
             isRunningDialog = false;
         }
     }
-
-
-    // public IEnumerator TypeDialogMulti(string[] dialogs)
+    // public async UniTask TypeDialog(string dialog)
     // {
-    //     foreach (string dialog in dialogs)
-    //     {
-    //         dialogText.text = "";
-    //         isTyping = true;
+    //     dialogQueue.Enqueue(dialog);
 
-    //         foreach (var letter in dialog.ToCharArray())
+    //     if (!isRunningDialog)
+    //     {
+    //         isRunningDialog = true;
+    //         // var prevState = BattleSystem.Inst.state;
+    //         // BattleSystem.Inst.state = BattleState.Dialog;
+
+    //         while (dialogQueue.Count > 0)
     //         {
-    //             dialogText.text += letter;
-    //             yield return new WaitForSecondsRealtime(1f / lettersPerSecond);
+    //             string nextDialog = dialogQueue.Dequeue();
+    //             dialogText.text = "";
+
+    //             foreach (var letter in nextDialog.ToCharArray())
+    //             {
+    //                 dialogText.text += letter;
+    //                 await UniTask.Delay(TimeSpan.FromSeconds(1f / lettersPerSecond));
+    //             }
+
+    //             dialogText.text += " ▼";
+
+    //             await UniTask.WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
     //         }
 
-    //         isTyping = false;
-    //         dialogText.text += " ▼";
-
-    //         yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+    //         isRunningDialog = false;
+    //         // BattleSystem.Inst.state = prevState;
     //     }
     // }
+
     public void EnableDialogText(bool enabled)
     {
         dialogText.enabled = enabled;
