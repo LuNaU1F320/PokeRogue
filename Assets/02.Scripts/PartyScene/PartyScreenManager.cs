@@ -16,12 +16,13 @@ public class PartyScreenManager : MonoBehaviour
     [SerializeField] GameObject StartCheck_Img;
 
     private List<Pokemon> selectedPokemons = new List<Pokemon>();
-    [SerializeField] PokemonParty playerParty;
+    PokemonParty playerParty;
     [SerializeField] List<Image> PartyPokemon_Img;
     [SerializeField] Sprite DefaultParty_Sprite;
 
     [SerializeField] Text PokemonIdx_Text;
     [SerializeField] Text PokemonName_Text;
+    [SerializeField] Text PokemonCost_Text;
     [SerializeField] SpriteRenderer Pokemon_Sprite;
     [SerializeField] Text PokemonValue_Text;
     int PokemonValue = 0;
@@ -43,6 +44,11 @@ public class PartyScreenManager : MonoBehaviour
     int previousSelection = -1; // 마지막 노드에 들어가기 전 위치 저장 변수
     GameObject lastNodeImageObject;
 
+    [SerializeField] Image PokemonTypeImg1;
+    [SerializeField] Image PokemonTypeImg2;
+
+    [SerializeField] ConfigPanel configPanel;
+
     private void Awake()
     {
         // PokemonDB.Init();
@@ -56,14 +62,32 @@ public class PartyScreenManager : MonoBehaviour
         GeneratePokemonNodes();
         PokemonValue = 0;
         PokemonValue_Text.text = "0/10";
+
+        configPanel.StartSetting();
     }
     void Update()
     {
-        // if (Input.GetKeyDown(KeyCode.X))
-        // {
-        //     SceneManager.LoadScene("BattleScene");
-        // }
-        HandleScreenCusor();
+        if (!configPanel.gameObject.activeSelf)
+        {
+            HandleScreenCusor();
+        }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (configPanel.gameObject.activeSelf)
+            {
+                if (configPanel.state == ConfigState.Config_Right)
+                {
+                    if (Input.GetKeyDown(KeyCode.Escape))
+                    {
+                        configPanel.gameObject.SetActive(false);
+                    }
+                }
+            }
+            else
+            {
+                configPanel.gameObject.SetActive(true);
+            }
+        }
     }
     void GeneratePokemonNodes()
     {
@@ -207,7 +231,18 @@ public class PartyScreenManager : MonoBehaviour
                         _base = PokemonDB.GetPokemonByIndex(setPokemonIdx);
                         if (_base != null)
                         {
-                            PokemonName_Text.text = _base.PokemonName;
+                            if (nodeComponent.IsCatch)
+                            {
+                                PokemonName_Text.text = _base.PokemonName;
+                                PokemonCost_Text.text = _base.Cost.ToString();
+                                SetPokemonType(true);
+                            }
+                            else
+                            {
+                                PokemonName_Text.text = "???";
+                                PokemonCost_Text.text = "???";
+                                SetPokemonType(false);
+                            }
                         }
                         SetUpPokemonSprite();
 
@@ -366,6 +401,79 @@ public class PartyScreenManager : MonoBehaviour
             Pokemon_Sprite.sprite = animationFrames[currentFrame];
             currentFrame = (currentFrame + 1) % animationFrames.Count; // 루프를 위해 모듈로 연산
             yield return new WaitForSeconds(frameRate);
+        }
+    }
+    void SetPokemonType(bool isCatch = false)
+    {
+        if (isCatch)
+        {
+            if (_base.Type2 == PokemonType.None)
+            {
+                Sprite[] pokemonTypeSprites = Resources.LoadAll<Sprite>("Image/SkillType");
+                if (PokemonTypeImg1 != null)
+                {
+                    PokemonTypeImg1.gameObject.SetActive(true);
+                    PokemonTypeImg2.gameObject.SetActive(false);
+                    string onlypokType = _base.Type1.ToString();
+                    Sprite typeTargetSprite = System.Array.Find(pokemonTypeSprites, sprite => sprite.name == onlypokType);
+                    if (typeTargetSprite != null)
+                    {
+                        PokemonTypeImg1.sprite = typeTargetSprite;
+                    }
+                    else
+                    {
+                        Debug.LogError($"스프라이트를 찾을 수 없습니다");
+                        foreach (var sprite in pokemonTypeSprites)
+                        {
+                            Debug.Log($"스프라이트 이름: {sprite.name}");
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (PokemonTypeImg1 != null && PokemonTypeImg2 != null)
+                {
+                    Sprite[] pokemonTypeSprites = Resources.LoadAll<Sprite>("Image/SkillType");
+                    PokemonTypeImg1.gameObject.SetActive(true);
+                    PokemonTypeImg2.gameObject.SetActive(true);
+                    string pokType1 = _base.Type1.ToString();
+                    string pokType2 = _base.Type2.ToString();
+                    Sprite type2TargetSprite1 = System.Array.Find(pokemonTypeSprites, sprite => sprite.name == pokType1);
+                    Sprite type2TargetSprite2 = System.Array.Find(pokemonTypeSprites, sprite => sprite.name == pokType2);
+                    if (type2TargetSprite1 != null && type2TargetSprite2 != null)
+                    {
+                        PokemonTypeImg1.sprite = type2TargetSprite1;
+                        PokemonTypeImg2.sprite = type2TargetSprite2;
+                    }
+                    else
+                    {
+                        Debug.LogError("듀얼타입 스프라이트 로딩 실패");
+                    }
+                }
+            }
+        }
+        else
+        {
+            Sprite[] pokemonTypeSprites = Resources.LoadAll<Sprite>("Image/SkillType");
+            if (PokemonTypeImg1 != null)
+            {
+                PokemonTypeImg1.gameObject.SetActive(true);
+                PokemonTypeImg2.gameObject.SetActive(false);
+                Sprite typeTargetSprite = System.Array.Find(pokemonTypeSprites, sprite => sprite.name == "None");
+                if (typeTargetSprite != null)
+                {
+                    PokemonTypeImg1.sprite = typeTargetSprite;
+                }
+                else
+                {
+                    Debug.LogError($"스프라이트를 찾을 수 없습니다");
+                    foreach (var sprite in pokemonTypeSprites)
+                    {
+                        Debug.Log($"스프라이트 이름: {sprite.name}");
+                    }
+                }
+            }
         }
     }
     #endregion

@@ -12,13 +12,8 @@ public class LobbyManager : MonoBehaviour
     [SerializeField] Image LoadingBar;
     [SerializeField] Text LoadingText;
     [SerializeField] GameObject Tutorial_Panel;
+    [SerializeField] ConfigPanel configPanel;
     int currentSelection = 0;
-
-    void Awake()
-    {
-        // SkillDB.Init();
-        // PokemonDB.Init();
-    }
     // Start is called before the first frame update
     void Start()
     {
@@ -28,6 +23,8 @@ public class LobbyManager : MonoBehaviour
         {
             Tutorial_Panel.SetActive(true);
         }
+
+        configPanel.StartSetting();
     }
 
     // Update is called once per frame
@@ -38,7 +35,29 @@ public class LobbyManager : MonoBehaviour
             OnTutorialFinished();
 
         }
-        HandleActionSelection();
+
+        if (!configPanel.gameObject.activeSelf)
+        {
+            HandleActionSelection();
+        }
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (configPanel.gameObject.activeSelf)
+            {
+                if (configPanel.state == ConfigState.Config_Right)
+                {
+                    if (Input.GetKeyDown(KeyCode.Escape))
+                    {
+                        configPanel.gameObject.SetActive(false);
+                    }
+                }
+            }
+            else
+            {
+                SavingSystem.Instance.LoadGame();
+                configPanel.gameObject.SetActive(true);
+            }
+        }
     }
     void OnTutorialFinished()
     {
@@ -67,9 +86,8 @@ public class LobbyManager : MonoBehaviour
         UpdateActionSelection(currentSelection);
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
         {
-            if (currentSelection == 0)  //Continue
+            if (currentSelection == 0)
             {
-                // Debug.Log("Continue");
                 string savePath = Path.Combine(Application.persistentDataPath, "save.json");
 
                 if (File.Exists(savePath))
@@ -83,8 +101,8 @@ public class LobbyManager : MonoBehaviour
                         Debug.Log("세이브에는 파티가 없습니다. 로딩하지 않습니다.");
                         return;
                     }
-                    // LoadingManager.LoadScene("BattleScene");
-                    SceneManager.LoadScene("BattleScene");
+                    LoadingManager.LoadScene("BattleScene");
+                    // SceneManager.LoadScene("BattleScene");
                 }
                 else
                 {
@@ -109,13 +127,16 @@ public class LobbyManager : MonoBehaviour
             {
                 Debug.Log("LoadGame");
             }
-            if (currentSelection == 3)  //DailyRun
+            if (currentSelection == 3)
             {
-                Debug.Log("DailyRun");
+                SavingSystem.Instance.LoadGame();
+                configPanel.state = ConfigState.Setting;
+                configPanel.SettingPanel.SetActive(true);
+                configPanel.gameObject.SetActive(true);
             }
-            if (currentSelection == 4)  //Settings
+            if (currentSelection == 4)
             {
-                Debug.Log("Settings");
+                Application.Quit();
             }
         }
     }
@@ -132,59 +153,5 @@ public class LobbyManager : MonoBehaviour
                 SelectionTexts[i].color = Color.white;
             }
         }
-    }
-
-    private IEnumerator LoadGameSceneAsync(string SceneName)
-    {
-        LoadingPanel.SetActive(true);
-
-        AsyncOperation asyncOperation = SceneManager.LoadSceneAsync(SceneName);
-
-        float Progress = asyncOperation.progress;
-
-        int ProgressPercent = Mathf.RoundToInt(Progress * 100f);
-
-        while (!asyncOperation.isDone)
-        {
-            LoadingBar.fillAmount = ProgressPercent / 100;
-            LoadingText.text = ProgressPercent.ToString();
-            yield return null;
-        }
-
-        LoadingPanel.SetActive(false);
-    }
-    IEnumerator LoadScene(string SceneName)
-    {
-
-        LoadingPanel.SetActive(true);
-        yield return null;
-        AsyncOperation op = SceneManager.LoadSceneAsync(SceneName);
-        op.allowSceneActivation = false;
-        float timer = 0.0f;
-        while (!op.isDone)
-        {
-            yield return null;
-            timer += Time.deltaTime;
-            if (op.progress < 0.9f)
-            {
-                LoadingBar.fillAmount = Mathf.Lerp(LoadingBar.fillAmount, op.progress, timer);
-                LoadingText.text = op.progress.ToString();
-                if (LoadingBar.fillAmount >= op.progress)
-                {
-                    timer = 0f;
-                }
-            }
-            else
-            {
-                LoadingBar.fillAmount = Mathf.Lerp(LoadingBar.fillAmount, 1f, timer);
-                if (LoadingBar.fillAmount == 1.0f)
-                {
-                    op.allowSceneActivation = true;
-                    yield break;
-                }
-            }
-        }
-
-        LoadingPanel.SetActive(false);
     }
 }

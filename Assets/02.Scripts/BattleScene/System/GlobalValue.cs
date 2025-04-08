@@ -5,15 +5,9 @@ using SimpleJSON;
 
 public class GlobalValue
 {
-
     public static int UserGold;
     public static int CurStage = 1;
 
-    // public struct MyPokemonData
-    // {
-    //     public int PokemonIdx;
-    //     public bool IsShiny;
-    // }
     [System.Serializable]
     public class MyPokemonData
     {
@@ -25,90 +19,6 @@ public class GlobalValue
     public static float GameSpeed = 1f;
     public static float HpBarSpeed = 1.0f;
     public static float ExpBarSpeed = 1.0f;
-
-
-    // public static void SaveGameInfo()
-    // {
-    //     PlayerPrefs.SetInt("UserGold", UserGold);
-    //     PlayerPrefs.SetInt("CurStage", CurStage);
-
-
-    //     // JSON 객체 생성
-    //     JSONNode json = new JSONObject();
-    //     foreach (var kvp in MyPokemon)
-    //     {
-    //         JSONNode pokemonNode = new JSONObject();
-    //         pokemonNode["PokemonIdx"] = kvp.Value.PokemonIdx;
-    //         pokemonNode["IsShiny"] = kvp.Value.IsShiny;
-
-    //         json[kvp.Key.ToString()] = pokemonNode;
-    //     }
-
-    //     PlayerPrefs.SetString("MyPokemon", json.ToString());
-    //     // Debug.Log("저장된 JSON 데이터: " + PlayerPrefs.GetString("MyPokemon", ""));
-
-    //     PlayerPrefs.Save();
-    // }
-    // public static void LoadGameInfo()
-    // {
-    //     if (MyPokemon == null)
-    //     {
-    //         MyPokemon = new Dictionary<int, MyPokemonData>();
-    //     }
-
-    //     UserGold = PlayerPrefs.GetInt("UserGold", 0);
-    //     CurStage = PlayerPrefs.GetInt("CurStage", 1);
-
-
-    //     string myPokemonJson = PlayerPrefs.GetString("MyPokemon", "");
-    //     // Debug.Log("로드된 JSON 데이터: " + myPokemonJson);  // JSON 출력
-
-    //     if (!string.IsNullOrEmpty(myPokemonJson))
-    //     {
-    //         JSONNode json = JSON.Parse(myPokemonJson);
-
-    //         if (MyPokemon == null)
-    //         {
-    //             MyPokemon = new Dictionary<int, MyPokemonData>();
-    //         }
-    //         else
-    //         {
-    //             MyPokemon.Clear();
-    //         }
-
-    //         foreach (KeyValuePair<string, JSONNode> kvp in json)
-    //         {
-    //             int pokemonIdx = kvp.Value["PokemonIdx"].AsInt;
-    //             bool isShiny = kvp.Value["IsShiny"].AsBool;
-
-    //             MyPokemon[int.Parse(kvp.Key)] = new MyPokemonData
-    //             {
-    //                 PokemonIdx = pokemonIdx,
-    //                 IsShiny = isShiny
-    //             };
-    //         }
-    //     }
-
-    //     SetBasicStartPokemon();
-    // }
-    // public static void SaveSetting(List<int> selectedOptions)
-    // {
-    //     for (int i = 0; i < selectedOptions.Count; i++)
-    //     {
-    //         PlayerPrefs.SetInt("Option_" + i, selectedOptions[i]);
-    //     }
-
-    //     PlayerPrefs.Save();
-    // }
-    // public static List<int> LoadSetting(int optionCount)
-    // {
-    //     List<int> indices = new List<int>();
-    //     for (int i = 0; i < optionCount; i++)
-    //     {
-    //         indices.Add(PlayerPrefs.GetInt("Option_" + i, 0));
-    //     }
-    //     return indices;
-    // }
 
     public static void CatchPokemon(PokemonBase pokemon, bool isShiny)
     {

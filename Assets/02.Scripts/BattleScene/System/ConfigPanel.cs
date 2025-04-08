@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 public enum ConfigState
 {
@@ -9,29 +10,40 @@ public enum ConfigState
 }
 public class ConfigPanel : MonoBehaviour
 {
+    public static ConfigPanel Inst;
     [HideInInspector] public ConfigState state = ConfigState.Config_Right;
-    [SerializeField] public GameObject Panel;
     [SerializeField] Color highlightedColor;
-    // [SerializeField] public GameObject Config_Right;
     [SerializeField] List<Text> configTexts;
-    [SerializeField] GameObject SettingPanel;
-    [SerializeField] private Image selectionFrame; // 현재 선택된 행을 강조할 테두리 이미지
+    [SerializeField] GameObject Config_Right;
+    [SerializeField] public GameObject SettingPanel;
+    [SerializeField] private Image selectionFrame;
 
     [SerializeField] private List<Transform> configRows;
     private List<List<Text>> configOptions = new List<List<Text>>();
     private List<int> selectedOptions = new List<int>(); // 각 행별로 선택된 옵션 인덱스 저장
+    private int currentConfig;
     private int currentRow = 0;
 
-    void Start()
+    [HideInInspector] public PlayerCtrl playerCtrl;
+
+    void Awake()
     {
-        Panel.SetActive(false);
-        SettingPanel.SetActive(false);
+        Inst = this;
+        playerCtrl = FindObjectOfType<PlayerCtrl>();
+    }
+    public void StartSetting()
+    {
+        state = ConfigState.Config_Right;
         InitializeConfigOptions();
         LoadOptions();
         UpdateSelection();
     }
     public void Update()
     {
+        if (state == ConfigState.Config_Right)
+        {
+            HandleConfigSelection();
+        }
         if (state == ConfigState.Setting && SettingPanel.activeSelf)
         {
             if (Input.GetKeyDown(KeyCode.UpArrow))
@@ -53,8 +65,6 @@ public class ConfigPanel : MonoBehaviour
 
             if (Input.GetKey(KeyCode.Backspace))
             {
-                // SaveOptions(); // Backspace 눌렀을 때 값 저장
-                // GlobalValue.SaveSetting();
                 SaveOptions();
                 SettingPanel.SetActive(false);
                 state = ConfigState.Config_Right;
@@ -132,7 +142,6 @@ public class ConfigPanel : MonoBehaviour
         UpdateSelection(); // UI 업데이트
     }
     #region  SettingPanel
-
     private void ChangeGameSpeed(int optionIndex)
     {
         float[] speeds = { 1f, 1.5f, 2f, 2.5f, 3f, 4f, 5f };
@@ -181,9 +190,64 @@ public class ConfigPanel : MonoBehaviour
             }
         }
     }
+    #region Config
+    void HandleConfigSelection()
+    {
+        if (state == ConfigState.Config_Right)
+        {
+            if (Input.GetKeyDown(KeyCode.UpArrow))
+            {
+                --currentConfig;
+            }
+            if (Input.GetKeyDown(KeyCode.DownArrow))
+            {
+                ++currentConfig;
+            }
+            currentConfig = Mathf.Clamp(currentConfig, 0, 5);
+            ConfigSelection(currentConfig);
+            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
+            {
+                if (currentConfig == 0)
+                {//게임설정
+                    SettingSelection();
+                }
+                else if (currentConfig == 1)
+                {//도감
+                    Debug.Log("도감");
+                }
+                else if (currentConfig == 2)
+                {//데이터관리
+                    Debug.Log("데이터 관리");
+                }
+                else if (currentConfig == 3)
+                {//커뮤니티
+                    Debug.Log("커뮤니티");
+                }
+                else if (currentConfig == 4)
+                {//저장 후 나가기
+                    var savingSystem = FindObjectOfType<SavingSystem>();
+                    if (savingSystem != null)
+                    {
+                        savingSystem.SaveGame();
+                        playerCtrl.party.Party.Clear();
+                        SceneManager.LoadScene("LobbyScene");
+                    }
+                    else
+                    {
+                        Debug.LogWarning("SavingSystem을 찾지 못했어요… 저장 실패!");
+                    }
+                }
+                else if (currentConfig == 5)
+                {//로그아웃
+                    Debug.Log("로그아웃");
+                }
+            }
+        }
+    }
+    #endregion
+
     private void SaveOptions()
     {
-        // GlobalValue.SaveSetting(selectedOptions);
         SavingSystem.Instance.SaveConfig(selectedOptions);
     }
     private void LoadOptions()

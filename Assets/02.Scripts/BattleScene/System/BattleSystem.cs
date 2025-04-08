@@ -7,6 +7,7 @@ using UnityEngine.UI;
 
 public enum BattleState
 {
+    None,
     Start,
     ActionSelection,
     SkillSelection,
@@ -36,21 +37,17 @@ public class BattleSystem : MonoBehaviour
     [SerializeField] GameObject Pokeball;
     [SerializeField] GameObject ConfirmBox;
 
-    [SerializeField] SpriteRenderer PlayerSprite;
-    [SerializeField] SpriteRenderer TrainerSprite;
-
     //Party
     [SerializeField] PartyScreen partyScreen;
     [SerializeField] SkillSelectScreen skillSelectScreen;
 
     [HideInInspector] public BattleState state;
-    BattleState? preState;
+    BattleState preState;
     int currentAction = 0;
     int currentSkill = 0;
     int currentMember = 0;
     int currentSelection = 0;
     int currentConfirm = 0;
-    int currentConfig = 0;
     int skillCount = 0;
     int escapeAttempts = 0;
 
@@ -60,23 +57,23 @@ public class BattleSystem : MonoBehaviour
     bool isTrainerBattle = false;
 
     PlayerCtrl player;
-    [SerializeField] Image PlayerImage;
+    Image PlayerImage;
     TrainerCtrl trainer;
 
     SkillBase skillToLearn;
 
     private void Awake()
     {
-        // Inst = this;
-        player = FindObjectOfType<PlayerCtrl>();
+        Inst = this;
+        // player = FindObjectOfType<PlayerCtrl>();
     }
     private void Start()
     {
-        // player = FindObjectOfType<PlayerCtrl>();
+        player = GameManager.Inst.playerCtrl;
         state = BattleState.Start;
         currentAction = 0;
-        PlayerImage.sprite = player.TrainerSprite;
-        PlayerImage.gameObject.SetActive(false);
+        // PlayerImage.sprite = player.TrainerSprite;
+        // PlayerImage.gameObject.SetActive(false);
     }
     public void StartBattle(PokemonParty playerParty, Pokemon wildPokemon)
     {
@@ -125,32 +122,25 @@ public class BattleSystem : MonoBehaviour
         {
             HandleConfirmBoxSelection();
         }
-        else if (state == BattleState.ConfigSelection)
-        {
-            HandleConfigSelection();
-        }
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            // Debug.Log(state);
             if (state == BattleState.ConfigSelection)
             {
                 if (configPanel.state == ConfigState.Config_Right)
                 {
                     if (Input.GetKeyDown(KeyCode.Escape))
                     {
-                        configPanel.Panel.SetActive(false);
-                        state = preState ?? BattleState.RunningTurn;
+                        configPanel.gameObject.SetActive(false);
+                        state = preState;
                     }
                 }
             }
             else
             {
-                configPanel.Panel.SetActive(true);
+                configPanel.gameObject.SetActive(true);
                 preState = state;
                 state = BattleState.ConfigSelection;
-                currentConfig = 0;
-                configPanel.state = ConfigState.Config_Right;
             }
         }
         if (Input.GetKeyDown(KeyCode.G))
@@ -186,11 +176,11 @@ public class BattleSystem : MonoBehaviour
             playerUnit.gameObject.SetActive(false);
             enemyUnit.gameObject.SetActive(false);
 
-            PlayerSprite.gameObject.SetActive(true);
-            TrainerSprite.gameObject.SetActive(true);
+            PlayerImage.gameObject.SetActive(true);
+            // PlayerImage.gameObject.SetActive(true);
 
-            PlayerSprite.sprite = player.TrainerSprite;
-            TrainerSprite.sprite = trainer.TrainerSprite;
+            PlayerImage.sprite = player.TrainerSprite;
+            // PlayerImage.sprite = trainer.TrainerSprite;
 
             yield return dialogBox.TypeDialog($"{trainer.TrainerName}{/*은는이가*/""}이 배틀을 걸어왔다!");
         }
@@ -926,7 +916,7 @@ public class BattleSystem : MonoBehaviour
 
             if (preState == BattleState.ActionSelection)
             {
-                preState = null;
+                preState = BattleState.None;
                 StartCoroutine(RunTurns(BattleAction.SwitchPokemon));
                 dialogBox.EnableActionSelector(false);
             }
@@ -1117,63 +1107,6 @@ public class BattleSystem : MonoBehaviour
         else
         {
             return true;
-        }
-    }
-    #endregion
-    #region Config
-    void HandleConfigSelection()
-    {
-        if (configPanel.state == ConfigState.Config_Right)
-        {
-            if (Input.GetKeyDown(KeyCode.UpArrow))
-            {
-                --currentConfig;
-            }
-            if (Input.GetKeyDown(KeyCode.DownArrow))
-            {
-                ++currentConfig;
-            }
-            currentConfig = Mathf.Clamp(currentConfig, 0, 5);
-            configPanel.ConfigSelection(currentConfig);
-            if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
-            {
-                if (currentConfig == 0)
-                {//게임설정
-                    configPanel.SettingSelection();
-                }
-                else if (currentConfig == 1)
-                {//도감
-                    Debug.Log("도감");
-                }
-                else if (currentConfig == 2)
-                {//데이터관리
-                    Debug.Log("데이터 관리");
-                }
-                else if (currentConfig == 3)
-                {//커뮤니티
-                    Debug.Log("커뮤니티");
-                }
-                else if (currentConfig == 4)
-                {//저장 후 나가기
-                    var savingSystem = FindObjectOfType<SavingSystem>();
-                    if (savingSystem != null)
-                    {
-                        savingSystem.SaveGame();
-                        playerParty.Party.Clear();
-                        // Debug.Log("저장 완료!");
-                        SceneManager.LoadScene("LobbyScene");
-                        // Debug.Log("저장 후 나가기");
-                    }
-                    else
-                    {
-                        Debug.LogWarning("SavingSystem을 찾지 못했어요… 저장 실패!");
-                    }
-                }
-                else if (currentConfig == 5)
-                {//로그아웃
-                    Debug.Log("로그아웃");
-                }
-            }
         }
     }
     #endregion

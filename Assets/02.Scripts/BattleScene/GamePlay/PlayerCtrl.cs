@@ -6,9 +6,8 @@ using UnityEngine;
 public class PlayerCtrl : MonoBehaviour, ISaveable
 {
     public static PlayerCtrl Instance { get; private set; }
-    [SerializeField] Sprite sprite;
-    [SerializeField] string name;
-    // List<PokemonSaveData> pokemons;
+    [SerializeField] public Sprite TrainerSprite;
+    [SerializeField] public string name;
     public PokemonParty party;
 
     void Awake()
@@ -33,10 +32,6 @@ public class PlayerCtrl : MonoBehaviour, ISaveable
     {
         get => name;
     }
-    public Sprite TrainerSprite
-    {
-        get => sprite;
-    }
     public object CaptureState()
     {
         var saveData = new PlayerSaveData()
@@ -48,6 +43,7 @@ public class PlayerCtrl : MonoBehaviour, ISaveable
             myPokemonKeys = GlobalValue.MyPokemon.Keys.ToList(),
             myPokemonValues = GlobalValue.MyPokemon.Values.ToList()
         };
+
         return saveData;
     }
 

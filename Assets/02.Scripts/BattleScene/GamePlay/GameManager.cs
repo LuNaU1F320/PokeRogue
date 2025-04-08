@@ -15,7 +15,8 @@ public enum GameState
 
 public class GameManager : MonoBehaviour
 {
-    public PlayerCtrl playerCtrl;
+    public static GameManager Inst { get; private set; }
+    [HideInInspector] public PlayerCtrl playerCtrl;
     [SerializeField] BattleSystem battleSystem;
     PokemonParty PlayerParty;
     [SerializeField] MapArea mapArea;
@@ -23,10 +24,10 @@ public class GameManager : MonoBehaviour
     [SerializeField] Text Gold_Text;
     [HideInInspector] public bool isRun = true;
     [SerializeField] float GameSpeed = 1.0f;
+    [SerializeField] ConfigPanel configPanel;
 
     GameState state;
 
-    public static GameManager Inst { get; private set; }
 
 
     private void Awake()
@@ -50,6 +51,8 @@ public class GameManager : MonoBehaviour
         GlobalValue.UserGold = 1000;
         Stage_Text.text = $"마을 - {GlobalValue.CurStage}";
         Gold_Text.text = $"￡{GlobalValue.UserGold}";
+
+        configPanel.StartSetting();
 
         StartBattle();
     }

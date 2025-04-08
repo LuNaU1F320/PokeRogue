@@ -56,6 +56,16 @@ public class SavingSystem : MonoBehaviour
         {
             player.RestoreState(data);
             Debug.Log("[SavingSystem] 불러오기 완료!");
+
+            // Debug.Log($"[SavingSystem] MyPokemon 복원 결과: {GlobalValue.MyPokemon?.Count ?? -1}개");
+
+            // if (GlobalValue.MyPokemon != null)
+            // {
+            //     foreach (var kvp in GlobalValue.MyPokemon)
+            //     {
+            //         Debug.Log($" - ID: {kvp.Key}, IsShiny: {kvp.Value.IsShiny}");
+            //     }
+            // }
         }
         else
         {
