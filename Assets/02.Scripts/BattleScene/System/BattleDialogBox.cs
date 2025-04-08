@@ -27,31 +27,33 @@ public class BattleDialogBox : MonoBehaviour
     private Queue<string> dialogQueue = new Queue<string>();
     private bool isRunningDialog = false;
 
-    public IEnumerator TypeDialog(string dialog)
-    {
-        dialogQueue.Enqueue(dialog);
+    // public IEnumerator TypeDialog(string dialog)
+    // {
+    //     dialogQueue.Enqueue(dialog);
 
-        if (!isRunningDialog)
-        {
-            isRunningDialog = true;
-            while (dialogQueue.Count > 0)
-            {
-                string nextDialog = dialogQueue.Dequeue();
-                dialogText.text = "";
+    //     if (!isRunningDialog)
+    //     {
+    //         isRunningDialog = true;
+    //         while (dialogQueue.Count > 0)
+    //         {
+    //             string nextDialog = dialogQueue.Dequeue();
+    //             dialogText.text = "";
 
-                foreach (var letter in nextDialog.ToCharArray())
-                {
-                    dialogText.text += letter;
-                    yield return new WaitForSeconds(1f / lettersPerSecond);
-                }
+    //             foreach (var letter in nextDialog.ToCharArray())
+    //             {
+    //                 dialogText.text += letter;
+    //                 yield return new WaitForSeconds(1f / lettersPerSecond);
+    //             }
 
-                dialogText.text += " ▼";
+    //             dialogText.text += " ▼";
 
-                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
-            }
-            isRunningDialog = false;
-        }
-    }
+    //             yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+    //         }
+    //         isRunningDialog = false;
+    //     }
+    // }
+
+
     // public async UniTask TypeDialog(string dialog)
     // {
     //     dialogQueue.Enqueue(dialog);
@@ -82,7 +84,40 @@ public class BattleDialogBox : MonoBehaviour
     //         // BattleSystem.Inst.state = prevState;
     //     }
     // }
+    public IEnumerator TypeDialog(string dialog)
+    {
+        dialogQueue.Enqueue(dialog);
+        Debug.Log($"대화 큐에 추가: {dialog}. 큐 크기: {dialogQueue.Count}");
 
+        if (!isRunningDialog)
+        {
+            isRunningDialog = true;
+            while (dialogQueue.Count > 0)
+            {
+                string nextDialog = dialogQueue.Dequeue();
+                dialogText.text = "";
+                Debug.Log($"대화 출력 시작: {nextDialog}");
+
+                foreach (var letter in nextDialog.ToCharArray())
+                {
+                    dialogText.text += letter;
+                    yield return new WaitForSeconds(1f / lettersPerSecond);
+                }
+
+                dialogText.text += " ▼";
+                Debug.Log($"대화 출력 완료, Space 입력 대기: {nextDialog}");
+
+                yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+            }
+            isRunningDialog = false;
+            Debug.Log("모든 대화 출력 완료");
+        }
+    }
+
+    public bool IsDialogRunning()
+    {
+        return isRunningDialog || dialogQueue.Count > 0;
+    }
     public void EnableDialogText(bool enabled)
     {
         dialogText.enabled = enabled;

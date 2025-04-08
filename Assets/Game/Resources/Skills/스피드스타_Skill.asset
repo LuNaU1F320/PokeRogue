@@ -19,7 +19,7 @@ MonoBehaviour:
   categoryKey: 1
   skillPower: 60
   skillAccuracy: 0
-  alwaysHits: 0
+  alwaysHits: 1
   skillPP: 20
   priority: 0
   effects:

@@ -2,8 +2,8 @@ using System.Collections;
 using System;
 using UnityEngine;
 using System.Linq;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 public enum BattleState
 {
@@ -18,7 +18,8 @@ public enum BattleState
     ConfirmBox,
     Evolution,
     BattleOver,
-    ConfigSelection
+    ConfigSelection,
+    Dialog
 }
 public enum BattleAction
 {
@@ -62,10 +63,13 @@ public class BattleSystem : MonoBehaviour
 
     SkillBase skillToLearn;
 
+    private Stack<BattleState> stateStack = new Stack<BattleState>(); // 상태 스택 추가
+    private bool isStateLocked = false; // 상태 락 플래그
+
+
     private void Awake()
     {
         Inst = this;
-        // player = FindObjectOfType<PlayerCtrl>();
     }
     private void Start()
     {
@@ -98,102 +102,188 @@ public class BattleSystem : MonoBehaviour
     }
     public void Update()
     {
-        if (state == BattleState.BattleOver || state == BattleState.Evolution)
-        {
-            return;
-        }
-        if (state == BattleState.ActionSelection)
-        {
-            HandleActionSelection();
-        }
-        else if (state == BattleState.SkillSelection)
-        {
-            HandleSkillSelection();
-        }
-        else if (state == BattleState.PartyScreen)
-        {
-            HandlePartyScreenSelection();
-        }
-        else if (state == BattleState.SkillToForget)
-        {
-            HandleLearnSkillSelection();
-        }
-        else if (state == BattleState.ConfirmBox)
-        {
-            HandleConfirmBoxSelection();
-        }
+        // if (state == BattleState.BattleOver || state == BattleState.Evolution)
+        // {
+        //     return;
+        // }
+        // if (state == BattleState.ActionSelection)
+        // {
+        //     HandleActionSelection();
+        // }
+        // else if (state == BattleState.SkillSelection)
+        // {
+        //     HandleSkillSelection();
+        // }
+        // else if (state == BattleState.PartyScreen)
+        // {
+        //     HandlePartyScreenSelection();
+        // }
+        // else if (state == BattleState.SkillToForget)
+        // {
+        //     HandleLearnSkillSelection();
+        // }
+        // else if (state == BattleState.ConfirmBox)
+        // {
+        //     HandleConfirmBoxSelection();
+        // }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        // if (Input.GetKeyDown(KeyCode.Escape))
+        // {
+        //     if (state == BattleState.ConfigSelection)
+        //     {
+        //         if (configPanel.state == ConfigState.Config_Right)
+        //         {
+        //             if (Input.GetKeyDown(KeyCode.Escape))
+        //             {
+        //                 configPanel.gameObject.SetActive(false);
+        //                 state = preState;
+        //             }
+        //         }
+        //     }
+        //     else
+        //     {
+        //         configPanel.gameObject.SetActive(true);
+        //         preState = state;
+        //         state = BattleState.ConfigSelection;
+        //     }
+        // }
+        // if (Input.GetKeyDown(KeyCode.G))
+        // {
+        //     Debug.Log(currentMember);
+        // }
+        // if (Input.GetKeyDown(KeyCode.F))
+        // {
+        //     Debug.Log(playerUnit.BattlePokemon.Attack);
+        //     Debug.Log(playerUnit.BattlePokemon.Rankup[0]);
+        // }
+        // if (Input.GetKeyDown(KeyCode.T))
+        // {
+        //     Debug.Log($"{playerUnit.BattlePokemon.PokemonGen}");
+        // }
         {
-            if (state == BattleState.ConfigSelection)
+            if (state == BattleState.BattleOver || state == BattleState.Evolution)
             {
-                if (configPanel.state == ConfigState.Config_Right)
+                return;
+            }
+
+            // 상태별 입력 처리
+            switch (state)
+            {
+                case BattleState.ActionSelection:
+                    HandleActionSelection();
+                    break;
+                case BattleState.SkillSelection:
+                    HandleSkillSelection();
+                    break;
+                case BattleState.PartyScreen:
+                    HandlePartyScreenSelection();
+                    break;
+                case BattleState.SkillToForget:
+                    HandleLearnSkillSelection();
+                    break;
+                case BattleState.ConfirmBox:
+                    HandleConfirmBoxSelection();
+                    break;
+            }
+
+            // 설정 패널 열기
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                if (state == BattleState.ConfigSelection)
                 {
-                    if (Input.GetKeyDown(KeyCode.Escape))
+                    if (configPanel.state == ConfigState.Config_Right)
                     {
                         configPanel.gameObject.SetActive(false);
-                        state = preState;
+                        RevertToPreviousState();
                     }
                 }
+                else
+                {
+                    configPanel.gameObject.SetActive(true);
+                    ChangeState(BattleState.ConfigSelection);
+                }
             }
-            else
+
+
+            // 디버깅용 입력 (기존 코드 유지)
+            if (Input.GetKeyDown(KeyCode.G))
             {
-                configPanel.gameObject.SetActive(true);
-                preState = state;
-                state = BattleState.ConfigSelection;
+                Debug.Log(currentMember);
             }
-        }
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            Debug.Log(currentMember);
-        }
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            Debug.Log(playerUnit.BattlePokemon.Attack);
-            Debug.Log(playerUnit.BattlePokemon.Rankup[0]);
-        }
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            Debug.Log($"{playerUnit.BattlePokemon.PokemonGen}");
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                Debug.Log(playerUnit.BattlePokemon.Attack);
+                Debug.Log(playerUnit.BattlePokemon.Rankup[0]);
+            }
+            if (Input.GetKeyDown(KeyCode.T))
+            {
+                Debug.Log($"{playerUnit.BattlePokemon.PokemonGen}");
+            }
         }
     }
 
     public IEnumerator SetUpBattle()
     {
-        if (isTrainerBattle == false)
+        LockState();
+        try
         {
-            playerUnit.SetUp(playerParty.GetHealthyPokemon());
-            enemyUnit.SetUp(wildPokemon);
+            if (isTrainerBattle == false)
+            {
+                playerUnit.SetUp(playerParty.GetHealthyPokemon());
+                enemyUnit.SetUp(wildPokemon);
 
-            dialogBox.SetSkillNames(playerUnit.BattlePokemon.Skills);
+                dialogBox.SetSkillNames(playerUnit.BattlePokemon.Skills);
 
-            skillCount = playerUnit.BattlePokemon.Skills.Count;
+                skillCount = playerUnit.BattlePokemon.Skills.Count;
 
-            yield return dialogBox.TypeDialog($"앗! 야생 {enemyUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(enemyUnit.BattlePokemon.P_Base.PokemonName, "subject")} \n튀어나왔다!");
+                yield return dialogBox.TypeDialog($"앗! 야생 {enemyUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(enemyUnit.BattlePokemon.P_Base.PokemonName, "subject")} \n튀어나왔다!");
+            }
+            else
+            {
+                playerUnit.gameObject.SetActive(false);
+                enemyUnit.gameObject.SetActive(false);
+
+                PlayerImage.gameObject.SetActive(true);
+                // PlayerImage.gameObject.SetActive(true);
+
+                PlayerImage.sprite = player.TrainerSprite;
+                // PlayerImage.sprite = trainer.TrainerSprite;
+
+                yield return dialogBox.TypeDialog($"{trainer.TrainerName}{/*은는이가*/""}이 배틀을 걸어왔다!");
+            }
+
+            // ActionSelection();
+            // yield return null;
+            // ChangeState(BattleState.ActionSelection);
+            escapeAttempts = 0;
+            partyScreen.Init();
+
+            // ActionSelection 호출 및 완료 대기
+            yield return StartCoroutine(ActionSelectionCoroutine());
         }
-        else
+        finally
         {
-            playerUnit.gameObject.SetActive(false);
-            enemyUnit.gameObject.SetActive(false);
-
-            PlayerImage.gameObject.SetActive(true);
-            // PlayerImage.gameObject.SetActive(true);
-
-            PlayerImage.sprite = player.TrainerSprite;
-            // PlayerImage.sprite = trainer.TrainerSprite;
-
-            yield return dialogBox.TypeDialog($"{trainer.TrainerName}{/*은는이가*/""}이 배틀을 걸어왔다!");
+            UnlockState(); // 설정 완료 후 락 해제
         }
-        escapeAttempts = 0;
-        partyScreen.Init();
-        ActionSelection();
-        yield return null;
     }
     void BattleOver(bool won)
     {
-        state = BattleState.BattleOver;
-        // StartCoroutine(playerParty.CheckForEvolutions());
+        // state = BattleState.BattleOver;
+        ChangeState(BattleState.BattleOver, false);
         GameManager.Inst.EndBattle(won);
+    }
+    // ActionSelection을 코루틴으로 변경
+    private IEnumerator ActionSelectionCoroutine()
+    {
+        // 이미 ActionSelection 상태라면 중복 설정 방지
+        if (state != BattleState.ActionSelection)
+        {
+            ChangeState(BattleState.ActionSelection);
+        }
+
+        dialogBox.EnableActionSelector(true);
+        yield return dialogBox.TypeDialog($"{playerUnit.BattlePokemon.P_Base.PokemonName}{GetCorrectParticle(playerUnit.BattlePokemon.P_Base.PokemonName, "topic")} 무엇을 할까?");
+        Debug.Log("ActionSelection 텍스트 출력 완료, 입력 대기 중");
     }
     void ActionSelection()
     {
@@ -236,167 +326,170 @@ public class BattleSystem : MonoBehaviour
     #region BattleSystem
     IEnumerator RunTurns(BattleAction playerAction)
     {
-        Debug.Log("🌀 RunTurns 시작");
         state = BattleState.RunningTurn;
-
-        if (playerAction == BattleAction.Skill)
+        ChangeState(BattleState.RunningTurn, false); // 스택에 추가하지 않음
+        try
         {
-            Debug.Log("▶ 플레이어가 Skill을 선택함");
-
-            playerUnit.BattlePokemon.CurrentSkill = playerUnit.BattlePokemon.Skills[currentSkill];
-            enemyUnit.BattlePokemon.CurrentSkill = enemyUnit.BattlePokemon.GetRandomSkill();
-
-            if (playerUnit.BattlePokemon.CurrentSkill == null || enemyUnit.BattlePokemon.CurrentSkill == null)
+            if (playerAction == BattleAction.Skill)
             {
-                Debug.LogError("❌ CurrentSkill이 null입니다. 스킬 설정 실패!");
-                yield break;
-            }
+                playerUnit.BattlePokemon.CurrentSkill = playerUnit.BattlePokemon.Skills[currentSkill];
+                enemyUnit.BattlePokemon.CurrentSkill = enemyUnit.BattlePokemon.GetRandomSkill();
 
-            int playerPriority = playerUnit.BattlePokemon.CurrentSkill.SkillBase.Priority;
-            int enemyPriority = enemyUnit.BattlePokemon.CurrentSkill.SkillBase.Priority;
-
-            bool playerTurnFirst = true;
-            if (enemyPriority > playerPriority)
-            {
-                playerTurnFirst = false;
-            }
-            else if (playerPriority == enemyPriority)
-            {
-                if (playerUnit.BattlePokemon.Speed == enemyUnit.BattlePokemon.Speed)
+                if (playerUnit.BattlePokemon.CurrentSkill == null || enemyUnit.BattlePokemon.CurrentSkill == null)
                 {
-                    playerTurnFirst = UnityEngine.Random.Range(0, 2) == 0;
+                    yield break;
+                }
+                int playerPriority = playerUnit.BattlePokemon.CurrentSkill.SkillBase.Priority;
+                int enemyPriority = enemyUnit.BattlePokemon.CurrentSkill.SkillBase.Priority;
+
+                int playerSpeed = playerUnit.BattlePokemon.Speed;
+                int enemySpeed = enemyUnit.BattlePokemon.Speed;
+
+                Debug.Log($"🕊️ 플레이어 스킬 우선도: {playerPriority}, 속도: {playerSpeed}");
+                Debug.Log($"🐍 적 스킬 우선도: {enemyPriority}, 속도: {enemySpeed}");
+
+                // 스피드 체크
+                bool playerTurnFirst = true;
+                //우선도 체크
+                if (enemyPriority > playerPriority)
+                {
+                    playerTurnFirst = false;
+                }
+                else if (playerPriority == enemyPriority)
+                {
+                    if (playerSpeed == enemySpeed)
+                    {
+                        playerTurnFirst = UnityEngine.Random.Range(0, 2) == 0;
+                        Debug.Log($"⚖️ 속도 같음 → 랜덤 결정: {(playerTurnFirst ? "플레이어" : "적")} 선공");
+                    }
+                    else
+                    {
+                        playerTurnFirst = playerSpeed > enemySpeed;
+                        Debug.Log($"⚖️ 우선도 같음 → 속도 비교로 결정: {(playerTurnFirst ? "플레이어" : "적")} 선공");
+                    }
+                }
+
+                var firstUnit = playerTurnFirst ? playerUnit : enemyUnit;
+                var secondUnit = playerTurnFirst ? enemyUnit : playerUnit;
+
+                var targetOfFirst = secondUnit;
+                var targetOfSecond = firstUnit;
+
+                // 1. 선공자 행동
+                yield return RunSkill(firstUnit, targetOfFirst, firstUnit.BattlePokemon.CurrentSkill);
+                yield return RunAfterTrun(firstUnit);
+
+                if (state == BattleState.BattleOver)
+                {
+                    Debug.Log("🏁 선공자 행동 후 전투 종료됨");
+                    yield break;
+                }
+
+                // 선공자가 공격한 대상 쓰러짐 확인
+                if (targetOfFirst.BattlePokemon == null || targetOfFirst.BattlePokemon.PokemonHp <= 0)
+                {
+                    yield return HandlePokemonFainted(targetOfFirst);
+                    yield return CheckForBattleOver(targetOfFirst);
+                    yield break;
+                }
+
+                // 2. 후공자 행동 (자기와 대상 모두 살아 있을 때만)
+                if (
+                    secondUnit.BattlePokemon != null &&
+                    secondUnit.BattlePokemon.PokemonHp > 0 &&
+                    targetOfSecond.BattlePokemon != null &&
+                    targetOfSecond.BattlePokemon.PokemonHp > 0
+                )
+                {
+                    Debug.Log("🎮 후공자 행동 시작");
+                    yield return RunSkill(secondUnit, targetOfSecond, secondUnit.BattlePokemon.CurrentSkill);
+                    yield return RunAfterTrun(secondUnit);
+
+                    if (state == BattleState.BattleOver)
+                    {
+                        Debug.Log("🏁 후공자 행동 후 전투 종료됨");
+                        yield break;
+                    }
+
+                    if (targetOfSecond.BattlePokemon != null && targetOfSecond.BattlePokemon.PokemonHp <= 0)
+                    {
+                        yield return HandlePokemonFainted(targetOfSecond);
+                        yield return CheckForBattleOver(targetOfSecond);
+                        yield break;
+                    }
                 }
                 else
                 {
-                    playerTurnFirst = playerUnit.BattlePokemon.Speed > enemyUnit.BattlePokemon.Speed;
-                }
-            }
-
-            var firstUnit = playerTurnFirst ? playerUnit : enemyUnit;
-            var secondUnit = playerTurnFirst ? enemyUnit : playerUnit;
-
-            var targetOfFirst = secondUnit;
-            var targetOfSecond = firstUnit;
-
-            Debug.Log($"🎯 선공자: {(firstUnit == playerUnit ? "플레이어" : "상대")}");
-            Debug.Log($"🛡️ 후공자: {(secondUnit == playerUnit ? "플레이어" : "상대")}");
-
-            // 1. 선공자 행동
-            yield return RunSkill(firstUnit, targetOfFirst, firstUnit.BattlePokemon.CurrentSkill);
-            yield return RunAfterTrun(firstUnit);
-
-            if (state == BattleState.BattleOver)
-            {
-                Debug.Log("🏁 선공자 행동 후 전투 종료됨");
-                yield break;
-            }
-
-            // 선공자가 공격한 대상 쓰러짐 확인
-            if (targetOfFirst.BattlePokemon == null || targetOfFirst.BattlePokemon.PokemonHp <= 0)
-            {
-                Debug.Log("⚠️ 선공자가 공격한 대상 쓰러짐");
-                yield return HandlePokemonFainted(targetOfFirst);
-                yield return CheckForBattleOver(targetOfFirst);
-                yield break;
-            }
-
-            // 2. 후공자 행동 (자기와 대상 모두 살아 있을 때만)
-            if (
-                secondUnit.BattlePokemon != null &&
-                secondUnit.BattlePokemon.PokemonHp > 0 &&
-                targetOfSecond.BattlePokemon != null &&
-                targetOfSecond.BattlePokemon.PokemonHp > 0
-            )
-            {
-                Debug.Log("🎮 후공자 행동 시작");
-                yield return RunSkill(secondUnit, targetOfSecond, secondUnit.BattlePokemon.CurrentSkill);
-                yield return RunAfterTrun(secondUnit);
-
-                if (state == BattleState.BattleOver)
-                {
-                    Debug.Log("🏁 후공자 행동 후 전투 종료됨");
-                    yield break;
-                }
-
-                if (targetOfSecond.BattlePokemon != null && targetOfSecond.BattlePokemon.PokemonHp <= 0)
-                {
-                    Debug.Log("⚠️ 후공자가 공격한 대상 쓰러짐");
-                    yield return HandlePokemonFainted(targetOfSecond);
-                    yield return CheckForBattleOver(targetOfSecond);
-                    yield break;
+                    Debug.Log("⛔ 후공자 또는 대상이 쓰러진 상태. 후공 행동 생략.");
                 }
             }
             else
             {
-                Debug.Log("⛔ 후공자 또는 대상이 쓰러진 상태. 후공 행동 생략.");
-            }
-        }
-        else
-        {
-            Debug.Log($"▶ 플레이어가 {playerAction} 선택");
+                Debug.Log($"▶ 플레이어가 {playerAction} 선택");
 
-            if (playerAction == BattleAction.SwitchPokemon)
-            {
-                var selectedPokemon = playerParty.Party[currentMember];
-                state = BattleState.Busy;
-                yield return SwitchPokemon(selectedPokemon);
-            }
-            else if (playerAction == BattleAction.UseItem)
-            {
-                dialogBox.EnableActionSelector(false);
-                yield return ThrowPokeball();
-            }
-            else if (playerAction == BattleAction.Run)
-            {
-                yield return TryToRun();
-            }
-
-            if (state == BattleState.BattleOver)
-            {
-                Debug.Log("🏁 아이템/교체/도망 후 전투 종료됨");
-                yield break;
-            }
-
-            // 적 턴
-            Debug.Log("👾 적 턴 시작");
-            var enemySkill = enemyUnit.BattlePokemon.GetRandomSkill();
-
-            if (enemyUnit.BattlePokemon == null || enemyUnit.BattlePokemon.PokemonHp <= 0)
-            {
-                Debug.LogWarning("❗ 적 포켓몬이 쓰러졌음. 적 턴 스킵.");
-            }
-            else
-            {
-                yield return RunSkill(enemyUnit, playerUnit, enemySkill);
-                yield return RunAfterTrun(enemyUnit);
+                if (playerAction == BattleAction.SwitchPokemon)
+                {
+                    var selectedPokemon = playerParty.Party[currentMember];
+                    state = BattleState.Busy;
+                    yield return SwitchPokemon(selectedPokemon);
+                }
+                else if (playerAction == BattleAction.UseItem)
+                {
+                    dialogBox.EnableActionSelector(false);
+                    yield return ThrowPokeball();
+                }
+                else if (playerAction == BattleAction.Run)
+                {
+                    yield return TryToRun();
+                }
 
                 if (state == BattleState.BattleOver)
                 {
-                    Debug.Log("🏁 적 턴 종료 후 전투 종료됨");
-                }
-
-                if (playerUnit.BattlePokemon.PokemonHp <= 0)
-                {
-                    Debug.Log("⚠️ 플레이어 포켓몬 쓰러짐");
-                    yield return HandlePokemonFainted(playerUnit);
-                    yield return CheckForBattleOver(playerUnit);
+                    Debug.Log("🏁 아이템/교체/도망 후 전투 종료됨");
                     yield break;
                 }
+
+                // 적 턴
+                Debug.Log("👾 적 턴 시작");
+                var enemySkill = enemyUnit.BattlePokemon.GetRandomSkill();
+
+                if (enemyUnit.BattlePokemon == null || enemyUnit.BattlePokemon.PokemonHp <= 0)
+                {
+                    Debug.LogWarning("❗ 적 포켓몬이 쓰러졌음. 적 턴 스킵.");
+                }
+                else
+                {
+                    yield return RunSkill(enemyUnit, playerUnit, enemySkill);
+                    yield return RunAfterTrun(enemyUnit);
+
+                    if (state == BattleState.BattleOver)
+                    {
+                        Debug.Log("🏁 적 턴 종료 후 전투 종료됨");
+                    }
+
+                    if (playerUnit.BattlePokemon.PokemonHp <= 0)
+                    {
+                        Debug.Log("⚠️ 플레이어 포켓몬 쓰러짐");
+                        yield return HandlePokemonFainted(playerUnit);
+                        yield return CheckForBattleOver(playerUnit);
+                        yield break;
+                    }
+                }
             }
-        }
 
-        if (state != BattleState.BattleOver)
+            if (state != BattleState.BattleOver)
+            {
+                Debug.Log("🔁 다음 턴 선택창으로 이동: ActionSelection()");
+                ActionSelection();
+            }
+
+            Debug.Log("✅ RunTurns 종료");
+        }
+        finally
         {
-            Debug.Log("🔁 다음 턴 선택창으로 이동: ActionSelection()");
-            ActionSelection();
+            UnlockState(); // 턴 종료 후 상태 락 해제
         }
-
-        Debug.Log("✅ RunTurns 종료");
     }
-
-
-
-
     IEnumerator RunSkill(BattleUnit sourceUnit, BattleUnit targetUnit, Skill skill)
     {
         bool canRunSkill = sourceUnit.BattlePokemon.OnBeforeSkill();
@@ -493,10 +586,12 @@ public class BattleSystem : MonoBehaviour
         {
             yield break;
         }
+
         yield return new WaitUntil(() => state == BattleState.RunningTurn);
         yield return new WaitForSeconds(1.2f);
-        //상태이상 처리
+
         sourceUnit.BattlePokemon.OnAfterTurn();
+
         yield return ShowStatusChanges(sourceUnit.BattlePokemon);
         yield return sourceUnit.BattleHud.UpdateHp();
         if (sourceUnit.BattlePokemon.PokemonHp <= 0)
@@ -511,6 +606,9 @@ public class BattleSystem : MonoBehaviour
 
             // yield return new WaitForSeconds(2.0f);
         }
+
+        yield return new WaitForSeconds(1.0f);
+
     }
     IEnumerator RunSkillEffects(SkillEffects effects, Pokemon sourceUnit, Pokemon targetUnit, SkillTarget skillTarget)
     {
@@ -768,6 +866,7 @@ public class BattleSystem : MonoBehaviour
         }
     }
     #endregion
+    #region HandleSelection
     void HandleActionSelection()
     {
         if (Input.GetKeyDown(KeyCode.DownArrow))
@@ -858,23 +957,25 @@ public class BattleSystem : MonoBehaviour
                 dialogBox.EnableSkillSelector(false);
                 dialogBox.EnableDialogText(true);
                 StartCoroutine(dialogBox.TypeDialog($"기술의 남은 포인트가 없다!"));
-                ActionSelection();
+                // ActionSelection();
+                ChangeState(BattleState.ActionSelection); // 상태 전환 메서드 사용
                 return;
             }
 
             dialogBox.EnableSkillSelector(false);
             dialogBox.EnableDialogText(true);
+            LockState(); // 턴 실행 중 상태 변경 방지
             StartCoroutine(RunTurns(BattleAction.Skill));
-            // Debug.Log($"playerUnit.BattlePokemon: {playerUnit.BattlePokemon?.P_Base?.PokemonName}");
-            // Debug.Log($"Skill[0]: {playerUnit.BattlePokemon?.Skills[0]?.SkillBase?.SkillName}");
         }
         else if (Input.GetKeyDown(KeyCode.Backspace))
         {
             dialogBox.EnableSkillSelector(false);
             dialogBox.EnableDialogText(true);
-            ActionSelection();
+            ChangeState(BattleState.ActionSelection); // 상태 전환 메서드 사용
+            // ActionSelection();
         }
     }
+    #endregion
     #region PartySystem
     void HandlePartyScreenSelection()
     {
@@ -1241,4 +1342,45 @@ public class BattleSystem : MonoBehaviour
                 throw new ArgumentException("Invalid particle type");
         }
     }
+
+    #region StateManage
+    // 상태 전환 메서드
+    private void ChangeState(BattleState newState, bool pushToStack = true)
+    {
+        if (isStateLocked)
+        {
+            Debug.LogWarning($"상태 변경 불가: 현재 상태 락 걸림 (현재: {state})");
+            return;
+        }
+
+        if (pushToStack && state != BattleState.None && state != BattleState.Dialog)
+        {
+            stateStack.Push(state);
+            Debug.Log($"상태 스택에 {state} 추가. 스택 크기: {stateStack.Count}");
+        }
+
+        state = newState;
+        Debug.Log($"상태 전환: {state}");
+    }
+
+    private void RevertToPreviousState()
+    {
+        if (stateStack.Count > 0)
+        {
+            BattleState previousState = stateStack.Pop();
+            ChangeState(previousState, false);
+            Debug.Log($"이전 상태로 복귀: {state}. 스택 크기: {stateStack.Count}");
+        }
+        else
+        {
+            Debug.LogWarning("복귀할 이전 상태 없음. 기본 상태로 전환.");
+            ChangeState(BattleState.ActionSelection, false);
+        }
+    }
+
+    private void LockState() { isStateLocked = true; Debug.Log("상태 락 설정"); }
+    private void UnlockState() { isStateLocked = false; Debug.Log("상태 락 해제"); }
+
+    #endregion
+
 }

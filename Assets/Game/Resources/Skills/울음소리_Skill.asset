@@ -23,8 +23,10 @@ MonoBehaviour:
   skillPP: 40
   priority: 0
   effects:
-    rankup: []
+    rankup:
+    - stat: 0
+      rank: -1
     status: 0
     volatileStatus: 0
   secondaryEffects: []
-  target: 1
+  target: 0

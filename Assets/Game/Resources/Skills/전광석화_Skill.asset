@@ -21,7 +21,7 @@ MonoBehaviour:
   skillAccuracy: 100
   alwaysHits: 0
   skillPP: 30
-  priority: 0
+  priority: 1
   effects:
     rankup: []
     status: 0
