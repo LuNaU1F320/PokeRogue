@@ -2756,7 +2756,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &525153726
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4775,7 +4775,7 @@ Canvas:
   m_VertexColorAlwaysGammaSpace: 0
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
-  m_SortingLayerID: -1729838883
+  m_SortingLayerID: -2142259329
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!1 &818044220
@@ -4807,14 +4807,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 254a56dbf8d781540a81922faf4872dd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerCtrl: {fileID: 0}
+  isRun: 1
   battleSystem: {fileID: 2067398449}
+  playerCtrl: {fileID: 0}
   mapArea: {fileID: 1639006112}
+  partyScreen: {fileID: 566295760}
+  skillSelectScreen: {fileID: 1297005689}
+  configPanel: {fileID: 1842356646}
+  ConfirmBox: {fileID: 259897168}
   Stage_Text: {fileID: 1559609162}
   Gold_Text: {fileID: 549918070}
-  isRun: 1
-  GameSpeed: 5
-  configPanel: {fileID: 1842356646}
+  dialogBox: {fileID: 2069456921}
+  currentSkill: 0
+  currentMember: 0
+  currentSelection: 0
+  currentConfirm: 0
 --- !u!4 &818044222
 Transform:
   m_ObjectHideFlags: 0
@@ -10412,13 +10419,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerUnit: {fileID: 638876065}
   enemyUnit: {fileID: 240452460}
-  dialogBox: {fileID: 2069456921}
-  configPanel: {fileID: 1842356646}
   Pokeball: {fileID: 1859345615760987476, guid: b0b212498e2ec4b4f9da938a56731382, type: 3}
-  ConfirmBox: {fileID: 259897168}
-  partyScreen: {fileID: 566295760}
-  skillSelectScreen: {fileID: 1297005689}
-  state: 0
+  cancelSelected: 0
 --- !u!1 &2068503570
 GameObject:
   m_ObjectHideFlags: 0
@@ -10633,7 +10635,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: -2142259329
-  m_SortingOrder: 1
+  m_SortingOrder: 3
   m_TargetDisplay: 0
 --- !u!1 &2085574108
 GameObject:

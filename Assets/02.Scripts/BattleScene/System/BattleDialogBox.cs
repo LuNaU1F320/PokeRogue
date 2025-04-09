@@ -26,69 +26,13 @@ public class BattleDialogBox : MonoBehaviour
     [SerializeField] Text skillDetailText;
     private Queue<string> dialogQueue = new Queue<string>();
     private bool isRunningDialog = false;
+    Coroutine blinkCoroutine;
 
-    // public IEnumerator TypeDialog(string dialog)
-    // {
-    //     dialogQueue.Enqueue(dialog);
-
-    //     if (!isRunningDialog)
-    //     {
-    //         isRunningDialog = true;
-    //         while (dialogQueue.Count > 0)
-    //         {
-    //             string nextDialog = dialogQueue.Dequeue();
-    //             dialogText.text = "";
-
-    //             foreach (var letter in nextDialog.ToCharArray())
-    //             {
-    //                 dialogText.text += letter;
-    //                 yield return new WaitForSeconds(1f / lettersPerSecond);
-    //             }
-
-    //             dialogText.text += " ▼";
-
-    //             yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
-    //         }
-    //         isRunningDialog = false;
-    //     }
-    // }
-
-
-    // public async UniTask TypeDialog(string dialog)
-    // {
-    //     dialogQueue.Enqueue(dialog);
-
-    //     if (!isRunningDialog)
-    //     {
-    //         isRunningDialog = true;
-    //         // var prevState = BattleSystem.Inst.state;
-    //         // BattleSystem.Inst.state = BattleState.Dialog;
-
-    //         while (dialogQueue.Count > 0)
-    //         {
-    //             string nextDialog = dialogQueue.Dequeue();
-    //             dialogText.text = "";
-
-    //             foreach (var letter in nextDialog.ToCharArray())
-    //             {
-    //                 dialogText.text += letter;
-    //                 await UniTask.Delay(TimeSpan.FromSeconds(1f / lettersPerSecond));
-    //             }
-
-    //             dialogText.text += " ▼";
-
-    //             await UniTask.WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
-    //         }
-
-    //         isRunningDialog = false;
-    //         // BattleSystem.Inst.state = prevState;
-    //     }
-    // }
     public IEnumerator TypeDialog(string dialog)
     {
+        BattleState prestate = GameManager.state;
+        GameManager.state = BattleState.Dialog;
         dialogQueue.Enqueue(dialog);
-        Debug.Log($"대화 큐에 추가: {dialog}. 큐 크기: {dialogQueue.Count}");
-
         if (!isRunningDialog)
         {
             isRunningDialog = true;
@@ -96,27 +40,34 @@ public class BattleDialogBox : MonoBehaviour
             {
                 string nextDialog = dialogQueue.Dequeue();
                 dialogText.text = "";
-                Debug.Log($"대화 출력 시작: {nextDialog}");
 
                 foreach (var letter in nextDialog.ToCharArray())
                 {
                     dialogText.text += letter;
                     yield return new WaitForSeconds(1f / lettersPerSecond);
                 }
-
-                dialogText.text += " ▼";
-                Debug.Log($"대화 출력 완료, Space 입력 대기: {nextDialog}");
+                blinkCoroutine = StartCoroutine(BlinkArrow());
+                // dialogText.text += " ▼";
 
                 yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
+                if (blinkCoroutine != null)
+                {
+                    StopCoroutine(blinkCoroutine);
+                }
             }
             isRunningDialog = false;
-            Debug.Log("모든 대화 출력 완료");
+            GameManager.state = prestate;
         }
     }
-
-    public bool IsDialogRunning()
+    IEnumerator BlinkArrow()
     {
-        return isRunningDialog || dialogQueue.Count > 0;
+        while (true)
+        {
+            dialogText.text = dialogText.text.Replace(" ▼", ""); // 없애기
+            yield return new WaitForSeconds(0.5f);
+            dialogText.text += " ▼"; // 추가
+            yield return new WaitForSeconds(0.5f);
+        }
     }
     public void EnableDialogText(bool enabled)
     {
@@ -200,7 +151,6 @@ public class BattleDialogBox : MonoBehaviour
         }
         skillDetailText.text = $"{(skill.SkillBase.SkillPower == 0 ? "-" : skill.SkillBase.SkillPower.ToString())}\n{(skill.SkillBase.SkillAccuracy == 0 ? "-" : skill.SkillBase.SkillAccuracy.ToString())}";
     }
-
     public void SetSkillNames(List<Skill> skills)
     {
         for (int i = 0; i < skillTexts.Count; i++)
