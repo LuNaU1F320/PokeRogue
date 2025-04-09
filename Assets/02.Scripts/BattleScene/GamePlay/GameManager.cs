@@ -74,7 +74,7 @@ public class GameManager : MonoBehaviour
     }
     void Update()
     {
-        // Debug.Log(state);
+        Debug.Log(state);
         if (state == BattleState.BattleOver || state == BattleState.Evolution)
         {
             return;
@@ -156,10 +156,12 @@ public class GameManager : MonoBehaviour
         if (won)
         {
             // StopAllCoroutines();
+            state = BattleState.None;
+            StopAllCoroutines(); // 🔥 여기서도 한 번 더 안전망
             GlobalValue.CurStage++;
             Stage_Text.text = $"마을 - {GlobalValue.CurStage}";
-            // StartCoroutine(PlayerParty.CheckForEvolutions());
-            StartBattle();
+            // StartBattle();
+            StartCoroutine(StartNextBattleWithDelay());
         }
         else
         {
@@ -179,6 +181,11 @@ public class GameManager : MonoBehaviour
             }
             SceneManager.LoadScene("LobbyScene");
         }
+    }
+    IEnumerator StartNextBattleWithDelay()
+    {
+        yield return new WaitForSeconds(0.5f); // 약간의 여유
+        StartBattle();
     }
     public void AddGold()
     {

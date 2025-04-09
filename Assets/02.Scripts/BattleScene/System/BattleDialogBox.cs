@@ -27,11 +27,15 @@ public class BattleDialogBox : MonoBehaviour
     private Queue<string> dialogQueue = new Queue<string>();
     private bool isRunningDialog = false;
     Coroutine blinkCoroutine;
+    BattleState prestate;
 
     public IEnumerator TypeDialog(string dialog)
     {
-        BattleState prestate = GameManager.state;
-        GameManager.state = BattleState.Dialog;
+        if (GameManager.state != BattleState.Dialog)
+        {
+            prestate = GameManager.state;
+            GameManager.state = BattleState.Dialog;
+        }
         dialogQueue.Enqueue(dialog);
         if (!isRunningDialog)
         {
@@ -56,7 +60,10 @@ public class BattleDialogBox : MonoBehaviour
                 }
             }
             isRunningDialog = false;
-            GameManager.state = prestate;
+            if (GameManager.state == BattleState.Dialog)
+            {
+                GameManager.state = prestate;
+            }
         }
     }
     IEnumerator BlinkArrow()

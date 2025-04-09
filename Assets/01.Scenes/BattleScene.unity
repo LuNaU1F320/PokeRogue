@@ -4822,6 +4822,7 @@ MonoBehaviour:
   currentMember: 0
   currentSelection: 0
   currentConfirm: 0
+  skillCount: 0
 --- !u!4 &818044222
 Transform:
   m_ObjectHideFlags: 0
@@ -8669,18 +8670,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   wildPokemons:
-  - _base: {fileID: 11400000, guid: 0d44a7ebdc20f574fa5610c9ff790815, type: 2}
-    level: 1
-    isShiny: 0
-  - _base: {fileID: 11400000, guid: 134f202a04c9398428b118de659306a3, type: 2}
-    level: 1
-    isShiny: 0
-  - _base: {fileID: 11400000, guid: aa2985ab00d1ca14bb13b78f58ddc8c8, type: 2}
-    level: 1
-    isShiny: 0
-  - _base: {fileID: 11400000, guid: 7f1a6ec1497717e419170669862df0a5, type: 2}
-    level: 1
-    isShiny: 0
   - _base: {fileID: 11400000, guid: f95136c88ccf5324d9c549449936bbf9, type: 2}
     level: 1
     isShiny: 0

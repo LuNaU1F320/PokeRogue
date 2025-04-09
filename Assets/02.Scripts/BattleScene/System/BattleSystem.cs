@@ -71,10 +71,7 @@ public class BattleSystem : MonoBehaviour
     }
     private void Start()
     {
-        // state = BattleState.Start;
-        // currentAction = 0;
-        // PlayerImage.sprite = player.TrainerSprite;
-        // PlayerImage.gameObject.SetActive(false);
+
     }
     public void StartBattle(PokemonParty playerParty, Pokemon wildPokemon)
     {
@@ -96,69 +93,6 @@ public class BattleSystem : MonoBehaviour
 
         StartCoroutine(SetUpBattle());
     }
-    /*
-    public void Update()
-    {
-        if (state == BattleState.BattleOver || state == BattleState.Evolution)
-        {
-            return;
-        }
-        if (state == BattleState.ActionSelection)
-        {
-            HandleActionSelection();
-        }
-        else if (state == BattleState.SkillSelection)
-        {
-            HandleSkillSelection();
-        }
-        else if (state == BattleState.PartyScreen)
-        {
-            HandlePartyScreenSelection();
-        }
-        else if (state == BattleState.SkillToForget)
-        {
-            HandleLearnSkillSelection();
-        }
-        else if (state == BattleState.ConfirmBox)
-        {
-            HandleConfirmBoxSelection();
-        }
-
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            if (state == BattleState.ConfigSelection)
-            {
-                if (configPanel.state == ConfigState.Config_Right)
-                {
-                    if (Input.GetKeyDown(KeyCode.Escape))
-                    {
-                        configPanel.gameObject.SetActive(false);
-                        state = preState;
-                    }
-                }
-            }
-            else
-            {
-                configPanel.gameObject.SetActive(true);
-                preState = state;
-                state = BattleState.ConfigSelection;
-            }
-        }
-        if (Input.GetKeyDown(KeyCode.G))
-        {
-            Debug.Log(currentMember);
-        }
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            Debug.Log(playerUnit.BattlePokemon.Attack);
-            Debug.Log(playerUnit.BattlePokemon.Rankup[0]);
-        }
-        if (Input.GetKeyDown(KeyCode.T))
-        {
-            Debug.Log($"{playerUnit.BattlePokemon.PokemonGen}");
-        }
-    }
-*/
     public IEnumerator SetUpBattle()
     {
         if (isTrainerBattle == false)
@@ -192,10 +126,8 @@ public class BattleSystem : MonoBehaviour
         if (GameManager.state == BattleState.Dialog)
         {
             StartCoroutine(new WaitUntil(() => GameManager.state != BattleState.Dialog));
-            GameManager.state = BattleState.BattleOver;
         }
         GameManager.state = BattleState.BattleOver;
-        StopAllCoroutines();
         GameManager.Inst.EndBattle(won);
     }
     void ChooseSkillToForget(Pokemon pokemon, SkillBase newSkill)
