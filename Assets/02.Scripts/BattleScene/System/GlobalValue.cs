@@ -20,6 +20,12 @@ public class GlobalValue
     public static float HpBarSpeed = 1.0f;
     public static float ExpBarSpeed = 1.0f;
 
+    [Header("Sound")]
+    public static float MasterVolume = 0.5f;
+    public static float BGMVolume = 0.5f;
+    public static float UIVolume = 0.5f;
+
+
     public static void CatchPokemon(PokemonBase pokemon, bool isShiny)
     {
         int id = pokemon.EvolutionBase.PokemonIndex;

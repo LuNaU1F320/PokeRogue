@@ -20,6 +20,7 @@ public class SavingSystem : MonoBehaviour
 
         Instance = this;
         DontDestroyOnLoad(gameObject);
+        InitializeGlobalConfig();
     }
 
 
@@ -79,36 +80,99 @@ public class SavingSystem : MonoBehaviour
     }
 
     #region Config
-    public void SaveConfig(List<int> selectedOptions)
+    public void SaveConfig(int tabIndex, List<int> selectedOptions)
     {
-        ConfigData configData = new ConfigData { selectedOptions = selectedOptions };
-        string json = JsonUtility.ToJson(configData, true);
+        ConfigDataSet dataSet;
 
+        if (File.Exists(configPath))
+        {
+            string existingJson = File.ReadAllText(configPath);
+            dataSet = JsonUtility.FromJson<ConfigDataSet>(existingJson);
+        }
+        else
+        {
+            dataSet = new ConfigDataSet();
+        }
+
+        while (dataSet.tabOptions.Count <= tabIndex)
+        {
+            dataSet.tabOptions.Add(new TabOptionData());
+        }
+
+        dataSet.tabOptions[tabIndex].selectedOptions = new List<int>(selectedOptions);
+
+        // 로그 확인
+        // Debug.Log($"[SavingSystem] tabOptions.Count = {dataSet.tabOptions.Count}");
+        // for (int i = 0; i < dataSet.tabOptions.Count; i++)
+        // {
+        //     Debug.Log($"탭 {i} 옵션: {string.Join(", ", dataSet.tabOptions[i].selectedOptions)}");
+        // }
+
+        string json = JsonUtility.ToJson(dataSet, true);
         File.WriteAllText(configPath, json);
-        Debug.Log("[SavingSystem] 설정 저장 완료!");
+        // Debug.Log($"[SavingSystem] 탭 {tabIndex} 설정 저장 완료!");
     }
 
-    public List<int> LoadConfig(int optionCount)
+    public List<int> LoadConfig(int tabIndex, int optionCount)
     {
         if (!File.Exists(configPath))
         {
-            Debug.LogWarning("[SavingSystem] 설정 파일이 없어요… 기본값으로 불러올게요…");
+            Debug.LogWarning("[SavingSystem] 설정 파일이 없어요… 기본값으로 불러올게요.");
             return Enumerable.Repeat(0, optionCount).ToList();
         }
 
         string json = File.ReadAllText(configPath);
-        ConfigData configData = JsonUtility.FromJson<ConfigData>(json);
+        ConfigDataSet dataSet = JsonUtility.FromJson<ConfigDataSet>(json);
 
-        // 혹시 저장된 옵션 개수가 부족할 경우 대비…
-        while (configData.selectedOptions.Count < optionCount)
-            configData.selectedOptions.Add(0);
+        if (tabIndex >= dataSet.tabOptions.Count)
+        {
+            Debug.LogWarning($"[SavingSystem] 탭 {tabIndex} 설정 없음. 기본값으로 불러옵니다.");
+            return Enumerable.Repeat(0, optionCount).ToList();
+        }
 
-        return configData.selectedOptions;
+        List<int> loaded = dataSet.tabOptions[tabIndex].selectedOptions;
+
+        while (loaded.Count < optionCount)
+            loaded.Add(0);
+
+        return loaded;
     }
     #endregion
+
+    private void InitializeGlobalConfig()
+    {
+        float[] volumeLevels = { 0.0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1.0f };
+        float[] gameSpeeds = { 1f, 1.5f, 2f, 2.5f, 3f, 4f, 5f };
+        float[] hpBarSpeeds = { 0.5f, 1.0f, 2.0f, 10.0f };
+        float[] expBarSpeeds = { 1.0f, 1.5f, 2.0f, 10.0f };
+
+        // 🎮 게임 설정 (탭 0)
+        var gameOptions = SavingSystem.Instance.LoadConfig(0, 3);
+        GlobalValue.GameSpeed = gameSpeeds[Mathf.Clamp(gameOptions[0], 0, gameSpeeds.Length - 1)];
+        GlobalValue.HpBarSpeed = hpBarSpeeds[Mathf.Clamp(gameOptions[1], 0, hpBarSpeeds.Length - 1)];
+        GlobalValue.ExpBarSpeed = expBarSpeeds[Mathf.Clamp(gameOptions[2], 0, expBarSpeeds.Length - 1)];
+
+        // 🔊 오디오 설정 (탭 2)
+        var audioOptions = SavingSystem.Instance.LoadConfig(2, 3);
+        GlobalValue.MasterVolume = volumeLevels[Mathf.Clamp(audioOptions[0], 0, volumeLevels.Length - 1)];
+        GlobalValue.BGMVolume = volumeLevels[Mathf.Clamp(audioOptions[1], 0, volumeLevels.Length - 1)];
+        GlobalValue.UIVolume = volumeLevels[Mathf.Clamp(audioOptions[2], 0, volumeLevels.Length - 1)];
+
+        // 🔁 즉시 사운드 반영
+        if (Sound_Manager.Instance != null)
+        {
+            Sound_Manager.Instance.SoundVolume();
+        }
+    }
 }
 [System.Serializable]
-class ConfigData
+public class TabOptionData
 {
     public List<int> selectedOptions = new();
 }
+[System.Serializable]
+public class ConfigDataSet
+{
+    public List<TabOptionData> tabOptions = new();
+}
+

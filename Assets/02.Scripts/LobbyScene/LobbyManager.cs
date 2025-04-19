@@ -25,6 +25,7 @@ public class LobbyManager : MonoBehaviour
         }
 
         configPanel.StartSetting();
+        Sound_Manager.Instance.PlayBGM("BGM/title");
     }
 
     // Update is called once per frame
@@ -33,7 +34,6 @@ public class LobbyManager : MonoBehaviour
         if (Tutorial_Panel.activeSelf && Input.GetKeyDown(KeyCode.Backspace))
         {
             OnTutorialFinished();
-
         }
 
         if (!configPanel.gameObject.activeSelf)
@@ -48,6 +48,7 @@ public class LobbyManager : MonoBehaviour
                 {
                     if (Input.GetKeyDown(KeyCode.Escape))
                     {
+                        Sound_Manager.Instance.PlayGUISound("UI/menu_open");
                         configPanel.gameObject.SetActive(false);
                     }
                 }
@@ -55,6 +56,7 @@ public class LobbyManager : MonoBehaviour
             else
             {
                 SavingSystem.Instance.LoadGame();
+                Sound_Manager.Instance.PlayGUISound("UI/menu_open");
                 configPanel.gameObject.SetActive(true);
             }
         }
@@ -74,6 +76,7 @@ public class LobbyManager : MonoBehaviour
             {
                 currentSelection = 0;
             }
+            Sound_Manager.Instance.PlayGUISound("UI/select");
         }
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
@@ -82,6 +85,7 @@ public class LobbyManager : MonoBehaviour
             {
                 currentSelection = 4;
             }
+            Sound_Manager.Instance.PlayGUISound("UI/select");
         }
         UpdateActionSelection(currentSelection);
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
@@ -99,15 +103,19 @@ public class LobbyManager : MonoBehaviour
                     if (playerCtrl == null || playerCtrl.party == null || playerCtrl.party.Party == null || playerCtrl.party.Party.Count == 0)
                     {
                         Debug.Log("세이브에는 파티가 없습니다. 로딩하지 않습니다.");
+                        Sound_Manager.Instance.PlayGUISound("UI/error");
                         return;
                     }
-                    LoadingManager.LoadScene("BattleScene");
-                    // SceneManager.LoadScene("BattleScene");
+                    else
+                    {
+                        Sound_Manager.Instance.PlayGUISound("UI/select");
+                        LoadingManager.LoadScene("BattleScene");
+                    }
                 }
                 else
                 {
+                    Sound_Manager.Instance.PlayGUISound("UI/error");
                     Debug.LogWarning("저장 파일이 없어요… 새 게임을 시작해야 해요!");
-                    // 선택지: NewGame으로 전환할 수도 있음
                 }
             }
             if (currentSelection == 1)  //NewGame
@@ -121,14 +129,17 @@ public class LobbyManager : MonoBehaviour
                     player.GetComponent<PokemonParty>().Party.Clear();
                 }
                 GlobalValue.SetBasicStartPokemon();
+                Sound_Manager.Instance.PlayGUISound("UI/select");
                 LoadingManager.LoadScene("PartyScene");
             }
             if (currentSelection == 2)  //LoadGame
             {
+                Sound_Manager.Instance.PlayGUISound("UI/select");
                 Debug.Log("LoadGame");
             }
             if (currentSelection == 3)
             {
+                Sound_Manager.Instance.PlayGUISound("UI/menu_open");
                 SavingSystem.Instance.LoadGame();
                 configPanel.state = ConfigState.Setting;
                 configPanel.SettingPanel.SetActive(true);
@@ -136,6 +147,7 @@ public class LobbyManager : MonoBehaviour
             }
             if (currentSelection == 4)
             {
+                Sound_Manager.Instance.PlayGUISound("UI/select");
                 Application.Quit();
             }
         }

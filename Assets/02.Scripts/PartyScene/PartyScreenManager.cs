@@ -49,13 +49,6 @@ public class PartyScreenManager : MonoBehaviour
 
     [SerializeField] ConfigPanel configPanel;
 
-    private void Awake()
-    {
-        // PokemonDB.Init();
-        // GlobalValue.LoadGameInfo();
-        // Debug.Log($"MyPokemon Count: {GlobalValue.MyPokemon.Count}");
-    }
-
     void Start()
     {
         playerParty = FindObjectOfType<PokemonParty>();
@@ -64,6 +57,7 @@ public class PartyScreenManager : MonoBehaviour
         PokemonValue_Text.text = "0/10";
 
         configPanel.StartSetting();
+        Sound_Manager.Instance.PlayBGM("BGM/menu");
     }
     void Update()
     {
@@ -79,12 +73,14 @@ public class PartyScreenManager : MonoBehaviour
                 {
                     if (Input.GetKeyDown(KeyCode.Escape))
                     {
+                        Sound_Manager.Instance.PlayGUISound("UI/menu_open");
                         configPanel.gameObject.SetActive(false);
                     }
                 }
             }
             else
             {
+                Sound_Manager.Instance.PlayGUISound("UI/menu_open");
                 configPanel.gameObject.SetActive(true);
             }
         }
@@ -151,6 +147,7 @@ public class PartyScreenManager : MonoBehaviour
             {
                 currentSelection++;
             }
+            Sound_Manager.Instance.PlayGUISound("UI/select");
         }
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
@@ -164,10 +161,12 @@ public class PartyScreenManager : MonoBehaviour
             {
                 currentSelection--;
             }
+            Sound_Manager.Instance.PlayGUISound("UI/select");
         }
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             currentSelection += rowSize;
+            Sound_Manager.Instance.PlayGUISound("UI/select");
         }
 
         // 위쪽 이동
@@ -177,6 +176,7 @@ public class PartyScreenManager : MonoBehaviour
             {
                 currentSelection -= rowSize;
             }
+            Sound_Manager.Instance.PlayGUISound("UI/select");
         }
         currentSelection = Mathf.Clamp(currentSelection, 0, lastIndex);
         UpdateScreenSelection();
@@ -187,8 +187,10 @@ public class PartyScreenManager : MonoBehaviour
                 if (PokemonValue == 0)
                 {
                     Debug.Log("선택안됨");
+                    Sound_Manager.Instance.PlayGUISound("UI/error");
                     return;
                 }
+                Sound_Manager.Instance.PlayGUISound("UI/select");
                 SceneManager.LoadScene("BattleScene");
             }
             else
@@ -198,6 +200,7 @@ public class PartyScreenManager : MonoBehaviour
                     if (selectPokemonNode.IsCatch == false)
                     {
                         Debug.Log("안댐");
+                        Sound_Manager.Instance.PlayGUISound("UI/error");
                         return;
                     }
                     SetPlayerParty(selectPokemonNode);
@@ -207,6 +210,7 @@ public class PartyScreenManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Backspace))
         {
+            Sound_Manager.Instance.PlayGUISound("UI/select");
             RemovePlayerParty();
         }
     }
@@ -274,6 +278,7 @@ public class PartyScreenManager : MonoBehaviour
     }
     public void SetPlayerParty(StartPokemonNode pokemon)
     {
+        Sound_Manager.Instance.PlayGUISound("UI/select");
         if (currentPartyIndex < PartyPokemon_Img.Count)
         {
             Pokemon newPokemon = new Pokemon(_base, 5);
