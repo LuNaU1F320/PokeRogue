@@ -137,9 +137,9 @@ public class GameManager : MonoBehaviour
     void StartBattle()
     {
         var wildPokemon = mapArea.GetRandomWildPokemon();
-
         var refWildPokemon = new Pokemon(wildPokemon.P_Base, wildPokemon.PokemonLevel);
 
+        Sound_Manager.Instance.PlayBGM("BGM/plains");
         battleSystem.StartBattle(playerCtrl.Party, refWildPokemon);
     }
     // public void StartTrainerBattle(TrainerCtrl trainer)
