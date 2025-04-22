@@ -106,15 +106,14 @@ public class GameManager : MonoBehaviour
             {
                 if (configPanel.state == ConfigState.Config_Right)
                 {
-                    if (Input.GetKeyDown(KeyCode.Escape))
-                    {
-                        configPanel.gameObject.SetActive(false);
-                        state = preState;
-                    }
+                    Sound_Manager.Instance.PlayGUISound("UI/menu_open");
+                    configPanel.gameObject.SetActive(false);
+                    state = preState;
                 }
             }
             else
             {
+                Sound_Manager.Instance.PlayGUISound("UI/menu_open");
                 configPanel.gameObject.SetActive(true);
                 preState = state;
                 state = BattleState.ConfigSelection;
@@ -253,6 +252,7 @@ public class GameManager : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
+            Sound_Manager.Instance.PlayGUISound("UI/select");
             if (currentAction < 2)
             {
                 currentAction = currentAction + 2;
@@ -260,6 +260,7 @@ public class GameManager : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
+            Sound_Manager.Instance.PlayGUISound("UI/select");
             if (currentAction < 3)
             {
                 ++currentAction;
@@ -267,6 +268,7 @@ public class GameManager : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
+            Sound_Manager.Instance.PlayGUISound("UI/select");
             if (1 < currentAction)
             {
                 currentAction = currentAction - 2;
@@ -274,6 +276,7 @@ public class GameManager : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
+            Sound_Manager.Instance.PlayGUISound("UI/select");
             if (0 < currentAction)
             {
                 --currentAction;
@@ -283,6 +286,7 @@ public class GameManager : MonoBehaviour
         dialogBox.UpdateActionSelection(currentAction);
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
         {
+            Sound_Manager.Instance.PlayGUISound("UI/select");
             if (currentAction == 0)
             {//싸운다
                 SkillSelection();
@@ -310,18 +314,22 @@ public class GameManager : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.DownArrow) && currentSkill + 2 < skillCount)
         {
+            Sound_Manager.Instance.PlayGUISound("UI/select");
             currentSkill += 2;
         }
         if (Input.GetKeyDown(KeyCode.RightArrow) && currentSkill + 1 < skillCount)
         {
+            Sound_Manager.Instance.PlayGUISound("UI/select");
             currentSkill++;
         }
         if (Input.GetKeyDown(KeyCode.UpArrow) && currentSkill - 2 >= 0)
         {
+            Sound_Manager.Instance.PlayGUISound("UI/select");
             currentSkill -= 2;
         }
         if (Input.GetKeyDown(KeyCode.LeftArrow) && currentSkill - 1 >= 0)
         {
+            Sound_Manager.Instance.PlayGUISound("UI/select");
             currentSkill--;
         }
 
@@ -343,6 +351,7 @@ public class GameManager : MonoBehaviour
                 skill = struggleSkill; // 발버둥 기술로 대체
             }
             */
+            Sound_Manager.Instance.PlayGUISound("UI/select");
             var skill = battleSystem.playerUnit.BattlePokemon.Skills[currentSkill];
             if (skill.PP == 0)
             {
@@ -360,6 +369,7 @@ public class GameManager : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.Backspace))
         {
+            Sound_Manager.Instance.PlayGUISound("UI/select");
             dialogBox.EnableSkillSelector(false);
             dialogBox.EnableDialogText(true);
             ActionSelection();
@@ -375,24 +385,29 @@ public class GameManager : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
+            Sound_Manager.Instance.PlayGUISound("UI/select");
             currentMember++;
         }
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
+            Sound_Manager.Instance.PlayGUISound("UI/select");
             currentMember++;
         }
         if (Input.GetKeyDown(KeyCode.UpArrow))
         {
+            Sound_Manager.Instance.PlayGUISound("UI/select");
             currentMember--;
         }
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
+            Sound_Manager.Instance.PlayGUISound("UI/select");
             currentMember = 0;
         }
         currentMember = Mathf.Clamp(currentMember, 0, playerParty.Party.Count - 1);
         partyScreen.UpdateMemberSelection(currentMember);
         if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space))
         {
+            Sound_Manager.Instance.PlayGUISound("UI/select");
             //포켓몬 교체
             var selectedMember = playerParty.Party[currentMember];
             if (selectedMember.PokemonHp <= 0)
@@ -413,6 +428,7 @@ public class GameManager : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.Backspace))
         {
+            Sound_Manager.Instance.PlayGUISound("UI/select");
             partyScreen.gameObject.SetActive(false);
             ActionSelection();
         }
@@ -427,10 +443,12 @@ public class GameManager : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
+            Sound_Manager.Instance.PlayGUISound("UI/select");
             currentSelection++;
         }
         else if (Input.GetKeyDown(KeyCode.UpArrow))
         {
+            Sound_Manager.Instance.PlayGUISound("UI/select");
             currentSelection--;
         }
 
@@ -439,11 +457,13 @@ public class GameManager : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
         {
+            Sound_Manager.Instance.PlayGUISound("UI/select");
             skillSelectScreen.gameObject.SetActive(false);
             state = BattleState.Busy;
         }
         else if (Input.GetKeyDown(KeyCode.Backspace))
         {
+            Sound_Manager.Instance.PlayGUISound("UI/select");
             skillSelectScreen.gameObject.SetActive(false);
             battleSystem.cancelSelected = true;
             state = BattleState.Busy;
@@ -455,16 +475,19 @@ public class GameManager : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.DownArrow))
         {
+            Sound_Manager.Instance.PlayGUISound("UI/select");
             currentConfirm++;
         }
         else if (Input.GetKeyDown(KeyCode.UpArrow))
         {
+            Sound_Manager.Instance.PlayGUISound("UI/select");
             currentConfirm--;
         }
         currentConfirm = Mathf.Clamp(currentConfirm, 0, 1);
         dialogBox.ConfirmBoxSelection(currentConfirm);
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
         {
+            Sound_Manager.Instance.PlayGUISound("UI/select");
             {
                 if (currentConfirm == 0)
                 {
@@ -484,6 +507,7 @@ public class GameManager : MonoBehaviour
         }
         else if (Input.GetKeyDown(KeyCode.Backspace))
         {
+            Sound_Manager.Instance.PlayGUISound("UI/select");
             ConfirmBox.SetActive(false);
 
             state = BattleState.Busy;
