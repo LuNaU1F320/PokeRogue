@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using SimpleJSON;
 using System;
-using Cysharp.Threading.Tasks;
 
 public class EvolutionManager : MonoBehaviour
 {

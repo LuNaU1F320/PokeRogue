@@ -85,69 +85,12 @@ public class ConfigPanel : MonoBehaviour
                 ChangeOption(1);
             }
 
-            if (Input.GetKeyDown(KeyCode.Backspace))
+            if (Input.GetKey(KeyCode.Backspace))
             {
-                if (currentTab == 1)
-                {
-                    int fullscreenIndex = Mathf.Clamp(selectedOptions[0], 0, 2);
-                    FullScreenMode newMode = FullScreenMode.Windowed;
-                    switch (fullscreenIndex)
-                    {
-                        case 0: newMode = FullScreenMode.Windowed; break;
-                        case 1: newMode = FullScreenMode.ExclusiveFullScreen; break;
-                        case 2: newMode = FullScreenMode.FullScreenWindow; break;
-                    }
-
-                    // 해상도 선택: 전체화면 모드에서는 currentResolutionIndex, 창 모드에서는 selectedOptions[1]
-                    int resolutionIndex = (newMode == FullScreenMode.Windowed) ? selectedOptions[1] : currentResolutionIndex;
-                    resolutionIndex = Mathf.Clamp(resolutionIndex, 0, resolutionOptions.Length - 1);
-                    Vector2Int res = resolutionOptions[resolutionIndex];
-
-                    Screen.SetResolution(res.x, res.y, newMode);
-                    Debug.Log($"[ConfigPanel] 수동 적용: {res.x}x{res.y}, 모드: {newMode}");
-                }
-                // else
-                {
-                    for (int i = 0; i < selectedOptions.Count; i++)
-                    {
-                        ApplyOptionValue(currentTab, i, selectedOptions[i]);
-                    }
-                }
-
                 SaveOptions();
                 Sound_Manager.Instance.PlayGUISound("UI/menu_open");
                 SettingPanel.SetActive(false);
                 state = ConfigState.Config_Right;
-            }
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                if (currentTab == 1)
-                {
-                    int fullscreenIndex = Mathf.Clamp(selectedOptions[0], 0, 2);
-                    FullScreenMode newMode = FullScreenMode.Windowed;
-                    switch (fullscreenIndex)
-                    {
-                        case 0: newMode = FullScreenMode.Windowed; break;
-                        case 1: newMode = FullScreenMode.ExclusiveFullScreen; break;
-                        case 2: newMode = FullScreenMode.FullScreenWindow; break;
-                    }
-
-                    // 해상도 선택: 전체화면 모드에서는 currentResolutionIndex, 창 모드에서는 selectedOptions[1]
-                    int resolutionIndex = (newMode == FullScreenMode.Windowed) ? selectedOptions[1] : currentResolutionIndex;
-                    resolutionIndex = Mathf.Clamp(resolutionIndex, 0, resolutionOptions.Length - 1);
-                    Vector2Int res = resolutionOptions[resolutionIndex];
-
-                    Screen.SetResolution(res.x, res.y, newMode);
-                    Debug.Log($"[ConfigPanel] 수동 적용: {res.x}x{res.y}, 모드: {newMode}");
-                }
-                // else
-                {
-                    for (int i = 0; i < selectedOptions.Count; i++)
-                    {
-                        ApplyOptionValue(currentTab, i, selectedOptions[i]);
-                    }
-                }
-                SaveOptions();
             }
         }
     }
@@ -191,7 +134,7 @@ public class ConfigPanel : MonoBehaviour
             }
 
             configOptions.Add(rowOptions);
-            selectedOptions.Add(0);
+            selectedOptions.Add(0); // 각 행의 기본 선택값 0
         }
     }
     private void UpdateSelection()
@@ -216,25 +159,84 @@ public class ConfigPanel : MonoBehaviour
         currentRow += direction;
         currentRow = Mathf.Clamp(currentRow, 0, configOptions.Count - 1);
         Vector3 newPos = selectionFrame.transform.position;
-        newPos.y = configRows[currentRow].position.y;
+        newPos.y = configRows[currentRow].position.y; // 선택된 행의 Y값을 가져옴
         selectionFrame.transform.position = newPos;
         Sound_Manager.Instance.PlayGUISound("UI/select");
 
-        UpdateSelection();
+        UpdateSelection(); // UI 업데이트
     }
+    // private void ChangeOption(int direction)
+    // {
+    //     int maxIndex = configOptions[currentRow].Count - 1;
+    //     selectedOptions[currentRow] += direction;
+    //     selectedOptions[currentRow] = Mathf.Clamp(selectedOptions[currentRow], 0, maxIndex);
 
+    //     if (currentRow == 0)
+    //     {
+    //         ChangeGameSpeed(selectedOptions[currentRow]);
+    //     }
+    //     else if (currentRow == 1)
+    //     {
+    //         ChangeHpBarSpeed(selectedOptions[currentRow]);
+    //     }
+    //     else if (currentRow == 2)
+    //     {
+    //         ChangeExpBarSpeed(selectedOptions[currentRow]);
+    //     }
+
+    //     UpdateSelection(); // UI 업데이트
+    // }
     private void ChangeOption(int direction)
     {
         int maxIndex = configOptions[currentRow].Count - 1;
         selectedOptions[currentRow] += direction;
         selectedOptions[currentRow] = Mathf.Clamp(selectedOptions[currentRow], 0, maxIndex);
         Sound_Manager.Instance.PlayGUISound("UI/select");
+
+        // // 탭 + 행 조합으로 처리
+        // if (currentTab == 0) // 게임 설정
+        // {
+        //     switch (currentRow)
+        //     {
+        //         case 0:
+        //             ChangeGameSpeed(selectedOptions[currentRow]);
+        //             break;
+        //         case 1:
+        //             ChangeHpBarSpeed(selectedOptions[currentRow]);
+        //             break;
+        //         case 2:
+        //             ChangeExpBarSpeed(selectedOptions[currentRow]);
+        //             break;
+        //     }
+        // }
+        // else if (currentTab == 1) // 디스플레이 설정
+        // {
+        //     switch (currentRow)
+        //     {
+        //         case 0:
+        //             // ChangeFullscreen(selectedOptions[currentRow]);
+        //             Debug.Log("FullScreen");
+        //             break;
+        //         case 1:
+        //             // ChangeResolution(selectedOptions[currentRow]);
+        //             Debug.Log("Resolution");
+        //             break;
+        //     }
+        // }
+        // else if (currentTab == 2) // 오디오 설정
+        // {
+        //     switch (currentRow)
+        //     {
+        //         case 0:
+        //             // ChangeBgmVolume(selectedOptions[currentRow]);
+        //             break;
+        //         case 1:
+        //             // ChangeSfxVolume(selectedOptions[currentRow]);
+        //             break;
+        //     }
+        // }
+        ApplyOptionValue(currentTab, currentRow, selectedOptions[currentRow]);
         UpdateSelection();
-        // ApplyOptionValue(currentTab, currentRow, selectedOptions[currentRow]);
-        if (currentTab != 1)
-        {
-            ApplyOptionValue(currentTab, currentRow, selectedOptions[currentRow]);
-        }
     }
 
     #region  SettingPanel
@@ -263,52 +265,6 @@ public class ConfigPanel : MonoBehaviour
             GlobalValue.ExpBarSpeed = speeds[optionIndex];
         }
     }
-    #endregion
-    #region Display
-
-    private int currentResolutionIndex = 0;
-    private readonly Vector2Int[] resolutionOptions = {
-    new Vector2Int(1920, 1080),
-    new Vector2Int(1280, 720),
-    new Vector2Int(854, 480),
-    new Vector2Int(640, 360)
-};
-
-
-    // private void ChangeFullscreenMode(int index)
-    // {
-    //     index = Mathf.Clamp(index, 0, 2);
-
-    //     FullScreenMode newMode = FullScreenMode.Windowed;
-
-    //     switch (index)
-    //     {
-    //         case 0: newMode = FullScreenMode.Windowed; break;
-    //         case 1: newMode = FullScreenMode.ExclusiveFullScreen; break;
-    //         case 2: newMode = FullScreenMode.FullScreenWindow; break;
-    //     }
-
-    //     Vector2Int res = resolutionOptions[Mathf.Clamp(currentResolutionIndex, 0, resolutionOptions.Length - 1)];
-    //     Screen.SetResolution(res.x, res.y, newMode);
-
-    //     Debug.Log($"[ConfigPanel] 창 모드 설정됨 → {newMode} @ {res.x}x{res.y}");
-    // }
-    // private void ChangeResolution(int index)
-    // {
-    //     index = Mathf.Clamp(index, 0, resolutionOptions.Length - 1);
-    //     currentResolutionIndex = index;
-
-    //     if (Screen.fullScreenMode == FullScreenMode.Windowed)
-    //     {
-    //         Vector2Int res = resolutionOptions[index];
-    //         Screen.SetResolution(res.x, res.y, FullScreenMode.Windowed);
-    //         Debug.Log($"[ConfigPanel] 해상도 변경: {res.x}x{res.y}");
-    //     }
-    //     else
-    //     {
-    //         Debug.LogWarning("[ConfigPanel] 해상도는 창 모드에서만 변경할 수 있어요!");
-    //     }
-    // }
     #endregion
     #region Sound
     private readonly float[] volumeLevels = { 0.0f, 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f, 0.8f, 0.9f, 1.0f };
@@ -452,14 +408,11 @@ public class ConfigPanel : MonoBehaviour
         }
         else if (tab == 1) // 디스플레이 설정
         {
-            // switch (row)
-            // {
-            //     case 0: ChangeFullscreenMode(value); break;
-            //     case 1:
-            //         selectedOptions[row] = Mathf.Clamp(value, 0, resolutionOptions.Length - 1);
-            //         ChangeResolution(selectedOptions[row]);
-            //         break;
-            // }
+            switch (row)
+            {
+                // case 0: ChangeResolution(value); break;
+                // case 1: ChangeFullscreen(value); break;
+            }
         }
         else if (tab == 2) // 오디오 설정
         {
@@ -471,4 +424,5 @@ public class ConfigPanel : MonoBehaviour
             }
         }
     }
+
 }

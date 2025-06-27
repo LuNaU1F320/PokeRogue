@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using Cysharp.Threading.Tasks;
 
 public class HpBar : MonoBehaviour
 {

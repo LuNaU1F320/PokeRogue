@@ -56,7 +56,6 @@ public class BattleDialogBox : MonoBehaviour
                 yield return new WaitUntil(() => Input.GetKeyDown(KeyCode.Space));
                 if (blinkCoroutine != null)
                 {
-                    Sound_Manager.Instance.PlayGUISound("UI/select");
                     StopCoroutine(blinkCoroutine);
                 }
             }

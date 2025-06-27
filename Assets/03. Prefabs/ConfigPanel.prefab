@@ -9744,7 +9744,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: "\uD574\uC0C1\uB3C4(\uCC3D \uBAA8\uB4DC)"
+  m_Text: "\uD574\uC0C1\uB3C4"
 --- !u!114 &5343825146356853871
 MonoBehaviour:
   m_ObjectHideFlags: 0

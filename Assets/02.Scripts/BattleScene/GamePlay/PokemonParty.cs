@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using System;
-using Cysharp.Threading.Tasks;
 
 public class PokemonParty : MonoBehaviour
 {

@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-using Cysharp.Threading.Tasks;
 using System;
 
 public class BattleHud : MonoBehaviour
@@ -158,44 +157,18 @@ public class BattleHud : MonoBehaviour
         float normalizeExp = GetNormalizedExp();
         ExpBar.fillAmount = normalizeExp;
     }
-    // public IEnumerator SetExpSmooth(bool reset = false)
-    // {
-    //     if (ExpBar == null)
-    //     {
-    //         yield break;
-    //     }
-    //     if (reset == true)
-    //     {
-    //         ExpBar.fillAmount = 0f;
-    //     }
-    //     float currentExp = ExpBar.fillAmount; // 현재 경험치 바 상태
-    //     float targetExp = GetNormalizedExp(); // 목표 경험치 바 상태
-    //     float duration = 0.5f / Mathf.Max(GlobalValue.ExpBarSpeed, 0.01f);
-    //     float elapsedTime = 0f;
-
-    //     while (elapsedTime < duration)
-    //     {
-    //         elapsedTime += Time.deltaTime;
-    //         ExpBar.fillAmount = Mathf.Lerp(currentExp, targetExp, elapsedTime / duration);
-    //         yield return null;
-    //     }
-
-    //     ExpBar.fillAmount = targetExp; // 최종 값 보정
-    //     yield return new WaitForSeconds(duration);
-    // }
-    public async UniTask SetExpSmooth(bool reset = false)
+    public IEnumerator SetExpSmooth(bool reset = false)
     {
         if (ExpBar == null)
         {
-            return;
+            yield break;
         }
-        if (reset)
+        if (reset == true)
         {
             ExpBar.fillAmount = 0f;
         }
-
-        float currentExp = ExpBar.fillAmount;
-        float targetExp = GetNormalizedExp();
+        float currentExp = ExpBar.fillAmount; // 현재 경험치 바 상태
+        float targetExp = GetNormalizedExp(); // 목표 경험치 바 상태
         float duration = 0.5f / Mathf.Max(GlobalValue.ExpBarSpeed, 0.01f);
         float elapsedTime = 0f;
 
@@ -203,12 +176,39 @@ public class BattleHud : MonoBehaviour
         {
             elapsedTime += Time.deltaTime;
             ExpBar.fillAmount = Mathf.Lerp(currentExp, targetExp, elapsedTime / duration);
-            await UniTask.Yield();
+            yield return null;
         }
 
-        ExpBar.fillAmount = targetExp;
-        await UniTask.Delay(TimeSpan.FromSeconds(duration));
+        ExpBar.fillAmount = targetExp; // 최종 값 보정
+        yield return new WaitForSeconds(duration);
     }
+
+    // public async UniTask SetExpSmooth(bool reset = false)
+    // {
+    //     if (ExpBar == null)
+    //     {
+    //         return;
+    //     }
+    //     if (reset)
+    //     {
+    //         ExpBar.fillAmount = 0f;
+    //     }
+
+    //     float currentExp = ExpBar.fillAmount;
+    //     float targetExp = GetNormalizedExp();
+    //     float duration = 0.5f / Mathf.Max(GlobalValue.ExpBarSpeed, 0.01f);
+    //     float elapsedTime = 0f;
+
+    //     while (elapsedTime < duration)
+    //     {
+    //         elapsedTime += Time.deltaTime;
+    //         ExpBar.fillAmount = Mathf.Lerp(currentExp, targetExp, elapsedTime / duration);
+    //         await UniTask.Yield();
+    //     }
+
+    //     ExpBar.fillAmount = targetExp;
+    //     await UniTask.Delay(TimeSpan.FromSeconds(duration));
+    // }
 
     public void SetLevel()
     {
