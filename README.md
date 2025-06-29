@@ -26,7 +26,7 @@ RunFile : https://drive.google.com/drive/folders/1ZnrkxCuWESLn9w_SS-F5ZdGuJZVN9-
 
 ## 빌드 파일
 
-- [구들 드라이브 다운로드 링크](https://drive.google.com/drive/folders/1ZnrkxCuWESLn9w_SS-F5ZdGuJZVN9-CE?usp=sharing)
+- [구글 드라이브 다운로드 링크](https://drive.google.com/file/d/1nYiI5u_aqxwmLjf0njgsE4OoadZX9ddZ/view?usp=sharing)
     - 시작 시 노래가 커 주의 부탁드립니다.
 
 ## 사용 라이브러리
