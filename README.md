@@ -1,7 +1,5 @@
 # PokeRogue
 
-RunFile : https://drive.google.com/drive/folders/1ZnrkxCuWESLn9w_SS-F5ZdGuJZVN9-CE?usp=sharing
-
 ## 게임 장르 : **턴제 로그라이크 RPG**
 
 ## 게임 소개
