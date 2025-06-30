@@ -29,13 +29,5 @@ RunFile : https://drive.google.com/drive/folders/1ZnrkxCuWESLn9w_SS-F5ZdGuJZVN9-
 - [구글 드라이브 다운로드 링크](https://drive.google.com/file/d/1nYiI5u_aqxwmLjf0njgsE4OoadZX9ddZ/view?usp=sharing)
     - 시작 시 노래가 커 주의 부탁드립니다.
 
-## 사용 라이브러리
-
-- ExcelDataReader
-- NewtonJSON
-- google Firebase
-- Dotween
-- TextMeshPro
-
 ## 포트폴리오 설명
-[포트폴리오 설명]()
+[포트폴리오 설명](https://www.notion.so/Pok-Rogue-222dbef4fbe580f69d77c6f8b9a9dea4?source=copy_link)
