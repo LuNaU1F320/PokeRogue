@@ -29,6 +29,7 @@ public class BattleDialogBox : MonoBehaviour
     Coroutine blinkCoroutine;
     BattleState prestate;
 
+
     public IEnumerator TypeDialog(string dialog)
     {
         if (GameManager.state != BattleState.Dialog)

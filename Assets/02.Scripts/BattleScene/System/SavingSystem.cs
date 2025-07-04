@@ -102,15 +102,15 @@ public class SavingSystem : MonoBehaviour
         dataSet.tabOptions[tabIndex].selectedOptions = new List<int>(selectedOptions);
 
         // 로그 확인
-        // Debug.Log($"[SavingSystem] tabOptions.Count = {dataSet.tabOptions.Count}");
-        // for (int i = 0; i < dataSet.tabOptions.Count; i++)
-        // {
-        //     Debug.Log($"탭 {i} 옵션: {string.Join(", ", dataSet.tabOptions[i].selectedOptions)}");
-        // }
+        Debug.Log($"[SavingSystem] tabOptions.Count = {dataSet.tabOptions.Count}");
+        for (int i = 0; i < dataSet.tabOptions.Count; i++)
+        {
+            Debug.Log($"탭 {i} 옵션: {string.Join(", ", dataSet.tabOptions[i].selectedOptions)}");
+        }
 
         string json = JsonUtility.ToJson(dataSet, true);
         File.WriteAllText(configPath, json);
-        // Debug.Log($"[SavingSystem] 탭 {tabIndex} 설정 저장 완료!");
+        Debug.Log($"[SavingSystem] 탭 {tabIndex} 설정 저장 완료!");
     }
 
     public List<int> LoadConfig(int tabIndex, int optionCount)
